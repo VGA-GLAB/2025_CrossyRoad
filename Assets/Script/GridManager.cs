@@ -144,9 +144,15 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public bool IsCellFree(Vector3Int gridPos)
     {
-        // 占有状態を確認して返す
-        if (!terrainCells.ContainsKey(gridPos)) return false; // 地形が存在しないセルは不可
-        return !staticObstacleCells.ContainsKey(gridPos);
+        // 地形が存在しないセルは不可
+        if (!terrainCells.ContainsKey(gridPos)) return false; 
+
+        // 障害物レイヤーを確認して返す
+        // Note: 静的障害物の配置は、Y軸についてキューブの下面がゼロとなるよう補正していため
+        // ここではY=1で検索する。あまり綺麗な実装ではないのでY軸の扱いを整理したうえで要改善。
+        var obstaclePos = new Vector3Int(gridPos.x, 1, gridPos.z);
+        return !staticObstacleCells.ContainsKey(obstaclePos);
+
     }
 
     /// <summary>
