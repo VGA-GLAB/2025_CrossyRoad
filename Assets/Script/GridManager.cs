@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -11,6 +12,24 @@ using UnityEngine;
 /// </summary>
 public class GridManager : MonoBehaviour
 {
+    //==================================================
+    // インスペクター設定項目
+    //==================================================
+    // 1セルのワールドサイズ。
+    [SerializeField] private float cellSize = 1.0f;
+
+    // 幅（左右方向）の描画範囲
+    [SerializeField] private int renderWidth = 10;
+    // 奥行き（前後方向）の描画範囲
+    [SerializeField] private int renderDepthForward = 20;
+    [SerializeField] private int renderDepthBackward = 5;
+ 
+    // 環境情報の各種Prefab
+    [SerializeField] private GameObject grassPrefab;
+    [SerializeField] private GameObject roadPrefab;
+    [SerializeField] private GameObject riverPrefab;
+    [SerializeField] private GameObject treePrefab;
+
     //==================================================
     // 列挙型定義
     //==================================================
@@ -44,6 +63,45 @@ public class GridManager : MonoBehaviour
         // 毎フレームの更新処理をここに記述予定
     }
 
+    /// <summary>
+    /// 解放時、内部データと描画オブジェクトをすべて解放する。
+    /// </summary>
+    private void OnDestroy()
+    {
+        ClearAll();
+    }
+
+    //==================================================
+    // 制御メソッド
+    //==================================================
+    /// <summary>
+    /// 内部データと描画オブジェクトをすべて解放する。
+    /// ステージ終了時やシーン破棄時に呼ぶ。
+    /// </summary>
+    public void ClearAll()
+    {
+        // 論理データのクリア
+        terrainCells.Clear();
+        staticObstacleCells.Clear();
+
+        // 地形プレハブの破棄
+        foreach (var obj in terrainPrefabs.Values)
+        {
+            if (obj != null) Destroy(obj);
+        }
+        terrainPrefabs.Clear();
+
+        // 障害物プレハブの破棄
+        foreach (var obj in staticObstaclePrefabs.Values)
+        {
+            if (obj != null) Destroy(obj);
+        }
+        staticObstaclePrefabs.Clear();
+
+        playerCell = Vector3Int.zero;
+        player = null;
+    }
+
     //==================================================
     // 1. 座標変換系
     //==================================================
@@ -54,8 +112,12 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public Vector3Int WorldToGrid(Vector3 worldPos)
     {
-        // TODO: ワールド座標をセルサイズに基づいてグリッド座標に変換する処理を実装
-        return Vector3Int.zero;
+        // ワールド座標をセルサイズに基づいてグリッド座標に変換し返却
+        int x = Mathf.FloorToInt(worldPos.x / cellSize);
+        int y = Mathf.FloorToInt(worldPos.y / cellSize);
+        int z = Mathf.FloorToInt(worldPos.z / cellSize);
+
+        return new Vector3Int(x, y, z);
     }
 
     /// <summary>
@@ -64,8 +126,12 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public Vector3 GridToWorld(Vector3Int gridPos)
     {
-        // TODO: グリッド座標をワールド座標に変換する処理を実装
-        return Vector3.zero;
+        // グリッド座標をワールド座標に変換し返却
+        float x = gridPos.x * cellSize;
+        float y = gridPos.y * cellSize;
+        float z = gridPos.z * cellSize;
+
+        return new Vector3(x, y, z);
     }
 
     //==================================================
@@ -78,17 +144,18 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public bool IsCellFree(Vector3Int gridPos)
     {
-        // TODO: 占有状態を確認して返す
-        return true;
+        // 占有状態を確認して返す
+        if (!terrainCells.ContainsKey(gridPos)) return false; // 地形が存在しないセルは不可
+        return !staticObstacleCells.ContainsKey(gridPos);
     }
 
     /// <summary>
     /// 指定セルを「埋まっている」と登録する。
     /// 静的障害物配置時に呼ばれる。
     /// </summary>
-    public void OccupyCell(Vector3Int gridPos, GameObject obj)
+    public void OccupyCell(Vector3Int gridPos, ObstacleType type)
     {
-        // TODO: 占有情報を登録する処理を実装
+        staticObstacleCells[gridPos] = type;
     }
 
     /// <summary>
@@ -97,7 +164,7 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public void ReleaseCell(Vector3Int gridPos)
     {
-        // TODO: 占有情報を解放する処理を実装
+        staticObstacleCells.Remove(gridPos);
     }
 
     //==================================================
@@ -109,7 +176,7 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public void RegisterPlayer(GameObject player)
     {
-        // TODO: プレイヤー参照を保持する処理を実装
+        this.player = player;
     }
 
     /// <summary>
@@ -118,7 +185,7 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public void UpdatePlayerCell(Vector3Int gridPos)
     {
-        // TODO: プレイヤーの現在セルを更新する処理を実装
+        playerCell = gridPos;
     }
 
     /// <summary>
@@ -127,40 +194,254 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public Vector3Int GetPlayerCell()
     {
-        // TODO: プレイヤーの現在セルを返す処理を実装
-        return Vector3Int.zero;
+        return playerCell;
     }
 
     /// <summary>
-    /// 指定セルの種類を返す。
-    /// Grass / Road / River / Occupied / Empty など。
+    /// セルの最終的な状態を返す。
+    /// - 障害物があれば Occupied
+    /// - なければ地形レイヤーの種類
+    /// - 未登録なら Empty
     /// </summary>
     public CellType GetCellType(Vector3Int gridPos)
     {
-        // TODO: セル種別を判定して返す処理を実装
+        if (staticObstacleCells.ContainsKey(gridPos))
+            return CellType.Occupied;
+
+        if (terrainCells.TryGetValue(gridPos, out var type))
+            return type;
+
+        return CellType.Empty;
+    }
+
+    /// <summary>
+    /// セルの地形レイヤーのみを返す。
+    /// 障害物は無視して純粋に地形タイプを返す。
+    /// </summary>
+    public CellType GetTerrainCellType(Vector3Int gridPos)
+    {
+        if (terrainCells.TryGetValue(gridPos, out var type))
+            return type;
+
         return CellType.Empty;
     }
 
     //==================================================
     // 4. 配置・生成系
     //==================================================
+    /// <summary>
+    /// 指定セルに地形Prefabを配置する。
+    /// すでに描画済みなら何もしない。
+    /// </summary>
+    private void CreateTerrainPrefab(Vector3Int gridPos, CellType type)
+    {
+        if (terrainPrefabs.ContainsKey(gridPos))
+            return;
+
+        GameObject prefab = null;
+        switch (type)
+        {
+            case CellType.Grass: prefab = grassPrefab; break;
+            case CellType.Road: prefab = roadPrefab; break;
+            case CellType.River: prefab = riverPrefab; break;
+            case CellType.Empty: prefab = null; break;
+        }
+
+        if (prefab != null)
+        {
+            Vector3 worldPos = GridToWorld(gridPos);
+            worldPos.y = -0.5f * cellSize;      // キューブの上面がゼロ座標となるようY座標を調整
+            GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, this.transform);
+            terrainPrefabs[gridPos] = obj;
+        }
+    }
+
+    /// <summary>
+    /// 指定セルの地形Prefabを削除する。
+    /// </summary>
+    private void DestroyTerrainPrefab(Vector3Int gridPos)
+    {
+        if (terrainPrefabs.TryGetValue(gridPos, out var obj))
+        {
+            Destroy(obj);
+            terrainPrefabs.Remove(gridPos);
+        }
+    }
+
+    /// <summary>
+    /// 指定セルに障害物Prefabを配置する。
+    /// すでに障害物がある場合は何もしない。
+    /// </summary>
+    private void CreateObstaclePrefab(Vector3Int gridPos, ObstacleType type)
+    {
+        if (staticObstaclePrefabs.ContainsKey(gridPos))
+        {
+            return; // すでに生成済みなら何もしない
+        }
+
+        GameObject prefab = null;
+        switch (type)
+        {
+            case ObstacleType.Tree: prefab = treePrefab; break;
+        }
+
+        if (prefab != null)
+        {
+            Vector3 worldPos = GridToWorld(gridPos);
+            worldPos.y = 0.5f * cellSize;      // キューブの下面がゼロ座標となるようY座標を調整
+
+            GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, this.transform);
+            staticObstaclePrefabs[gridPos] = obj;
+        }
+    }
+
+    /// <summary>
+    /// 指定セル内のオブジェクトを削除する。
+    /// </summary>
+    private void DestroyObstaclePrefab(Vector3Int gridPos)
+    {
+        if (staticObstaclePrefabs.TryGetValue(gridPos, out var obj))
+        {
+            Destroy(obj);
+            staticObstaclePrefabs.Remove(gridPos);
+        }
+    }
 
     /// <summary>
     /// 指定セルに障害物Prefabを配置し、占有情報を更新する。
+    /// すでに障害物がある場合は何もしない。
     /// 利用者：静的障害物担当、ステージ生成担当
     /// </summary>
-    public void PlaceObstacle(Vector3Int gridPos, ObstacleType type)
+    public void PlaceObstacleCell(Vector3Int gridPos, ObstacleType type)
     {
-        // TODO: Prefabを生成し、占有情報を更新する処理を実装
+        // セル内にオブジェクトを生成し、占有情報を登録する
+        OccupyCell(gridPos, type);
+        CreateObstaclePrefab(gridPos, type);
     }
 
     /// <summary>
     /// 指定セル内のオブジェクトを削除し、占有情報を解放する。
+    /// 地形レイヤーは変更しない。
     /// </summary>
-    public void ClearCell(Vector3Int gridPos)
+    public void ClearObstacleCell(Vector3Int gridPos)
     {
-        // TODO: セル内のオブジェクトを削除し、占有情報を解放する処理を実装
+        // セル内のオブジェクトを削除し、占有情報を解放する
+        ReleaseCell(gridPos);
+        DestroyObstaclePrefab(gridPos);
     }
+
+    /// <summary>
+    /// StageData を受け取り、マップ全体のレイヤーを構築する。
+    /// </summary>
+    public void BuildStage(StageData data)
+    {
+        terrainCells.Clear();
+        staticObstacleCells.Clear();
+
+        // 地形レイヤーを反映
+        foreach (var lane in data.laneTypes)
+        {
+            int z = lane.Key;
+            CellType type = lane.Value;
+
+            for (int x = 0; x < data.width; x++)
+            {
+                Vector3Int gridPos = new Vector3Int(x, 0, z);
+                terrainCells[gridPos] = type;
+            }
+        }
+
+        // 静的障害物レイヤーを反映
+        foreach (var obstacle in data.staticObstacles)
+        {
+            Vector3Int gridPos = obstacle.Key;
+            ObstacleType type = obstacle.Value;
+            staticObstacleCells[gridPos] = type;
+        }
+    }
+
+    /// <summary>
+    /// プレイヤー位置を基準に描画範囲を更新する
+    /// </summary>
+    public void UpdateRenderArea()
+    {
+        var center = playerCell;
+        var newVisible = new HashSet<Vector3Int>();
+
+        // 幅方向: -renderWidth ～ +renderWidth
+        // 奥行き方向: -renderDepthBackward ～ +renderDepthForward
+        for (int dx = -renderWidth; dx <= renderWidth; dx++)
+        {
+            for (int dz = -renderDepthBackward; dz <= renderDepthForward; dz++)
+            {
+                var pos = new Vector3Int(center.x + dx, 0, center.z + dz);
+                newVisible.Add(pos);
+
+                // 地形が存在すれば描画
+                if (terrainCells.TryGetValue(pos, out var terrainType))
+                    CreateTerrainPrefab(pos, terrainType);
+
+                // 障害物が存在すれば描画
+                // Note: 静的障害物の配置は、Y軸についてキューブの下面がゼロとなるよう補正していため
+                // ここではY=1で検索する。あまり綺麗な実装ではないのでY軸の扱いを整理したうえで要改善。
+                pos.y = 1;
+                if (staticObstacleCells.TryGetValue(pos, out var obstacleType))
+                {
+                    CreateObstaclePrefab(pos, obstacleType);
+                    newVisible.Add(pos);
+                }
+            }
+        }
+
+        // 範囲外になったセルを削除
+        foreach (var kv in new List<Vector3Int>(terrainPrefabs.Keys))
+        {
+            if (!newVisible.Contains(kv))
+                DestroyTerrainPrefab(kv);
+        }
+        foreach (var kv in new List<Vector3Int>(staticObstaclePrefabs.Keys))
+        {
+            // Note: 静的障害物の配置は、Y軸についてキューブの下面がゼロとなるよう補正していため
+            // ここでもY=1で検索する。要改善。
+            var comparePos = new Vector3Int(kv.x, 1, kv.z);
+            
+            if (!newVisible.Contains(comparePos))
+                DestroyObstaclePrefab(kv);
+        }
+    }
+
+    //==================================================
+    // 内部状態
+    //==================================================
+    // プレイヤーの現在セル位置
+    private Vector3Int playerCell = Vector3Int.zero;
+
+    // プレイヤーの参照
+    private GameObject player;
+
+    //-------------------------------------------------- 
+    // 環境情報レイヤー
+    //-------------------------------------------------- 
+
+    //
+    // マップ全体
+    //
+
+    // 地形レイヤー（セル単位）
+    private Dictionary<Vector3Int, CellType> terrainCells = new Dictionary<Vector3Int, CellType>();
+    
+    // 静的障害物レイヤー（セル単位）
+    private Dictionary<Vector3Int, ObstacleType> staticObstacleCells = new Dictionary<Vector3Int, ObstacleType>();
+
+    //
+    // 描画領域
+    //
+
+    // 地形レイヤー（プレハブ）
+    private Dictionary<Vector3Int, GameObject> terrainPrefabs = new Dictionary<Vector3Int, GameObject>();
+    
+    // 静的障害物レイヤー（プレハブ）
+    private Dictionary<Vector3Int, GameObject> staticObstaclePrefabs = new Dictionary<Vector3Int, GameObject>();
 }
 
 /// <summary>
