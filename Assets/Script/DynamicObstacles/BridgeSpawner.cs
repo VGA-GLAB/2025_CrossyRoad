@@ -10,22 +10,25 @@ public class BridgeSpawner : MonoBehaviour
     [Header("橋の生成間隔")]
     [SerializeField] float spawnTime;
     private float spawnTimer;
-    [Header("生成する個数")]
-    [SerializeField] int spawnCount;
-    [Header("生成場所")]
+    [Header("生成した橋の親")]
     [SerializeField] Transform spawnParent;
 
     private ObjectPool<GameObject> bridgePool;
+
+    //ToDo:GridManagerから川を取得して、そこに橋を生成できるようにする
+    //ToDo:GameStateがInGameStateの時のみ、生成するようにする
 
 
     void Awake()
     {
         bridgePool = new ObjectPool<GameObject>(
-            CreateBridge, GetBridge, ReleaseBridge, DestroyBridge, false, spawnCount, spawnCount);
+            CreateBridge, GetBridge, ReleaseBridge, DestroyBridge);
     }
 
     void FixedUpdate()
     {
+        if (!GameManager.instance.isInGamePlay) return;
+
         spawnTimer += Time.fixedDeltaTime;
         if(spawnTimer > spawnTime)
         {
@@ -50,7 +53,7 @@ public class BridgeSpawner : MonoBehaviour
 
     void GetBridge(GameObject obj)
     {
-        //初期位置に配置
+        //初期位置に配置　仮
         obj.transform.position = new Vector3(0f, 0f, 0f);
 
         obj.SetActive(true);
