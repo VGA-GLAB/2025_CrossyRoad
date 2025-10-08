@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
+    /// <summary>
+    /// 死亡時のアクション
+    /// </summary>
     public Action DeathAction;
     public bool _isMoving { get; private set; } = false;
     [SerializeField] private float _gridSpace = 1.0f;
@@ -67,6 +70,15 @@ public class PlayerMove : MonoBehaviour
         // 現在のセル情報を更新
         _currentCell = targetCell;
         _gridManager.UpdatePlayerCell(targetCell);
+        if (_gridManager.GetCellType(_currentCell) == CellType.River)
+        {
+            DeathAction?.Invoke();
+            _currentCell = _startCell;
+            transform.position = _gridManager.GridToWorld(_startCell);
+            _gridManager.UpdatePlayerCell(_startCell);
+            _isMoving = false;
+            yield break;
+        }
         _isMoving = false;
     }
 }
