@@ -8,6 +8,10 @@ public class MovingBridge : MonoBehaviour
     [Header("“®‚­‘¬‚³")]
     [SerializeField] float moveSpeed;
 
+    [Header("Á–ÅŽžŠÔ")]
+    [SerializeField] float destoryTime;
+    private float destoryTimer;
+
     private Rigidbody rb;
 
     void Start()
@@ -17,11 +21,35 @@ public class MovingBridge : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.linearVelocity = new Vector3(0f, 0f, moveSpeed);
+        rb.linearVelocity = new Vector3(moveSpeed, 0f, 0f);
+
+        destoryTimer += Time.fixedDeltaTime;
+        if(destoryTimer >= destoryTime)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     void OnBecameInvisible()
     {
-        bridgeSpawner.Release(this.gameObject);
+        //bridgeSpawner.Release(this.gameObject);
+    }
+
+
+    //•‚‚«’¾‚Ý‚·‚é‚æ‚¤‚É‚·‚é
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+
+        }
     }
 }

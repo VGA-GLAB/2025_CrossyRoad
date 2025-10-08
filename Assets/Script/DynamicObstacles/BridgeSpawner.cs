@@ -4,19 +4,29 @@ using UnityEngine.Pool;
 
 public class BridgeSpawner : MonoBehaviour
 {
-    [Header("橋のPrefab")]
-    [SerializeField] List<GameObject> bridges;
+    //使用しない
 
+    [Header("GridManagerの参照")]
+    [SerializeField] private GridManager gridManager;
+    
+    [Header("橋のPrefab")]
+    [SerializeField] private List<GameObject> bridges;
     [Header("橋の生成間隔")]
-    [SerializeField] float spawnTime;
+    [SerializeField] private float spawnTime;
     private float spawnTimer;
+    [Header("レーンに生成する橋の間隔")]
+    [SerializeField] private float bridgeInterval;
+    private float bridgeIntervalTimer;
+    [Header("１レーンに生成する橋の数")]
+    [SerializeField] private int bridgeNum;
+    private int currentBridgeCount;
     [Header("生成した橋の親")]
-    [SerializeField] Transform spawnParent;
+    [SerializeField] private Transform spawnParent;
+
+    private StageGenerationTestDriver stageGenerationTestDriver;
 
     private ObjectPool<GameObject> bridgePool;
-
-    //ToDo:GridManagerから川を取得して、そこに橋を生成できるようにする
-    //ToDo:GameStateがInGameStateの時のみ、生成するようにする
+    List<int> riverCount = new List<int>();
 
 
     void Awake()
@@ -25,15 +35,68 @@ public class BridgeSpawner : MonoBehaviour
             CreateBridge, GetBridge, ReleaseBridge, DestroyBridge);
     }
 
-    void FixedUpdate()
+    void Start()
     {
+        stageGenerationTestDriver = new StageGenerationTestDriver();
+        stageGenerationTestDriver.GenerateTestStage();
+        currentBridgeCount = bridgeNum;
+    }
+
+    void FixedUpdate()
+    { 
         if (!GameManager.instance.isInGamePlay) return;
 
         spawnTimer += Time.fixedDeltaTime;
         if(spawnTimer > spawnTime)
         {
-            bridgePool.Get();
-            spawnTimer = 0;
+            if(currentBridgeCount > 0) //１レーンに生成可能な橋の数
+            {
+                bridgeIntervalTimer += Time.fixedDeltaTime;
+                if(bridgeIntervalTimer > bridgeInterval)
+                {
+                    //ステージ情報を取得して、川レーンの取得
+                    GetStageData();
+
+                    //橋を生成する
+                    foreach (int river in riverCount)
+                    {
+                        //生成した橋の位置を設定
+                        GameObject bridge = bridgePool.Get();
+                        if (bridge != null)
+                        {
+                            //ToDo:一方方向だけでなく両方から橋を流せるようにする
+
+                            bridge.transform.position = new Vector3(0f, 1f, river);
+                            bridge.SetActive(true);
+                        }
+                    }
+                    currentBridgeCount--;
+                    bridgeIntervalTimer = 0f;
+                }
+            }
+
+            //１レーンに生成可能な橋を生成終了
+            if (currentBridgeCount == 0)
+            {
+                currentBridgeCount = bridgeNum;
+                spawnTimer = 0f;
+                bridgeIntervalTimer = 0f;
+            }
+        }
+    }
+
+    void GetStageData() //ステージデータ取得
+    {
+        var data = stageGenerationTestDriver.data;
+        riverCount.Clear();
+
+        //川レーンを取得
+        for (int i = 0; i < data.width; i++)
+        {
+            if (data.laneTypes[i] == GridManager.CellType.River)
+            {
+                riverCount.Add(i);
+            }
         }
     }
 
@@ -43,7 +106,7 @@ public class BridgeSpawner : MonoBehaviour
         var random = Random.Range(0, bridges.Count);
         GameObject prefab = bridges[random];
 
-        //生成
+        //橋を生成する
         GameObject bridge = Instantiate(prefab);
         bridge.SetActive(false);
         bridge.transform.SetParent(spawnParent);
@@ -53,8 +116,7 @@ public class BridgeSpawner : MonoBehaviour
 
     void GetBridge(GameObject obj)
     {
-        //初期位置に配置　仮
-        obj.transform.position = new Vector3(0f, 0f, 0f);
+        if (obj == null) return;
 
         obj.SetActive(true);
     }
