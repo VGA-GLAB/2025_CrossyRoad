@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class PlayerState : MonoBehaviour
+public class PlayerState
 {
-    public State CurrentState = State.Idle;
+    private State _currentState = State.Idle;
+    public State CurrentState => _currentState;
     public enum State
     {
         Walking,
