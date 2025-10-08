@@ -31,23 +31,6 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject treePrefab;
 
     //==================================================
-    // 列挙型定義
-    //==================================================
-
-    /// <summary>
-    /// セルの種類を表す列挙型。
-    /// 将来的に種類を増やす場合はここに追加する。
-    /// </summary>
-    public enum CellType
-    {
-        Grass,      // 草原：通常の移動可能マス
-        Road,       // 道路：車が出現するレーン
-        River,      // 川：丸太に乗っていなければ死亡
-        Occupied,   // 静的障害物で埋まっている
-        Empty       // 何もない
-    }
-
-    //==================================================
     // Unity標準イベント
     //==================================================
 
@@ -450,11 +433,3 @@ public class GridManager : MonoBehaviour
     private Dictionary<Vector3Int, GameObject> staticObstaclePrefabs = new Dictionary<Vector3Int, GameObject>();
 }
 
-/// <summary>
-/// 障害物の種類を表す列挙型（例）。
-/// 実際のゲーム仕様に応じて拡張する。
-/// </summary>
-public enum ObstacleType
-{
-    Tree,
-}

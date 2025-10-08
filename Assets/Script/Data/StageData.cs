@@ -17,8 +17,8 @@ public class StageData
     /// key: z座標（レーン番号）
     /// value: CellType（Grass, Road, River, Emptyなど）
     /// </summary>
-    public Dictionary<int, GridManager.CellType> laneTypes
-        = new Dictionary<int, GridManager.CellType>();
+    public Dictionary<int, CellType> laneTypes
+        = new Dictionary<int, CellType>();
 
     /// <summary>
     /// 静的障害物レイヤー

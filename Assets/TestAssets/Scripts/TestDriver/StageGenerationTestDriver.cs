@@ -33,23 +33,23 @@ public class StageGenerationTestDriver
             // Z方向の外周は Empty
             if (z == 0 || z == data.depth - 1)
             {
-                data.laneTypes[z] = GridManager.CellType.Empty;
+                data.laneTypes[z] = CellType.Empty;
                 continue;
             }
 
             // サンプルルール: 3レーンごとに Grass, Road, River を繰り返す
             if (z % 3 == 0)
-                data.laneTypes[z] = GridManager.CellType.Grass;
+                data.laneTypes[z] = CellType.Grass;
             else if (z % 3 == 1)
-                data.laneTypes[z] = GridManager.CellType.Road;
+                data.laneTypes[z] = CellType.Road;
             else
-                data.laneTypes[z] = GridManager.CellType.River;
+                data.laneTypes[z] = CellType.River;
         }
 
         // Grass レーンにランダムで Tree を配置
         for (int z = 1; z < data.depth - 1; z++)
         {
-            if (data.laneTypes[z] == GridManager.CellType.Grass)
+            if (data.laneTypes[z] == CellType.Grass)
             {
                 for (int x = 0; x < data.width; x++)
                 {
