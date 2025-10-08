@@ -32,23 +32,22 @@ public class PlayerMove : MonoBehaviour
             Mathf.RoundToInt(input.y)
         );
         //次の移動先セルを計算
-        Vector3Int next =_currentCell + moveDirection;
+        Vector3Int nextCell = _currentCell + moveDirection;
         //移動先セルが空いているか確認
-        if (!_gridManager.IsCellFree(next)) return;
-        StartCoroutine(MovePlayer(moveDirection));
+        if (!_gridManager.IsCellFree(nextCell)) return;
+        StartCoroutine(MovePlayer(nextCell));
     }
 
     /// <summary>
     /// プレイヤーを次のセルに移動させるコルーチン
     /// </summary>
-    /// <param name="next"></param>
-    /// <returns></returns>
-    private IEnumerator MovePlayer(Vector3Int next)
+    private IEnumerator MovePlayer(Vector3Int targetCell)
     {
         _isMoving = true;
         // 現在位置と目的地（ワールド座標）を取得
         Vector3 start = transform.position;
-        Vector3 end = _gridManager.GridToWorld(next);
+        //目的地セルを変換
+        Vector3 end = _gridManager.GridToWorld(targetCell);  
         float t = 0f;
         while (t < _gridSpace)
         {
@@ -59,8 +58,9 @@ public class PlayerMove : MonoBehaviour
         // 最終的に目的地に正確に設定
         transform.position = end;
         // 現在のセル情報を更新
-        _currentCell = next;
-        _gridManager.UpdatePlayerCell(next);
+        _currentCell = targetCell;
+        _gridManager.UpdatePlayerCell(targetCell);
+
         _isMoving = false;
     }
 }
