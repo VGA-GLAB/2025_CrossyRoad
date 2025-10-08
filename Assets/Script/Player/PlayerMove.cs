@@ -1,7 +1,12 @@
+using System;
 using System.Collections;
 using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
+    /// <summary>
+    /// 死亡時のアクション
+    /// </summary>
+    public Action DeathAction;
     public bool _isMoving { get; private set; } = false;
     [SerializeField] private float _gridSpace = 1.0f;
     [SerializeField] private float _moveSpeed = 5.0f;
@@ -10,12 +15,17 @@ public class PlayerMove : MonoBehaviour
     /// 現座のグリッド座標
     /// </summary>
     private Vector3Int _currentCell;
+    /// <summary>
+    /// スタート時のグリッド座標
+    /// </summary>
+    private Vector3Int _startCell;
 
     private void Start()
     {
         _gridManager = FindAnyObjectByType<GridManager>();
         _gridManager.RegisterPlayer(gameObject);
         _currentCell = _gridManager.WorldToGrid(transform.position);
+        _startCell = _currentCell;
     }
 
     /// <summary>
@@ -60,7 +70,15 @@ public class PlayerMove : MonoBehaviour
         // 現在のセル情報を更新
         _currentCell = targetCell;
         _gridManager.UpdatePlayerCell(targetCell);
-
+        if (_gridManager.GetCellType(_currentCell) == CellType.River)
+        {
+            DeathAction?.Invoke();
+            _currentCell = _startCell;
+            transform.position = _gridManager.GridToWorld(_startCell);
+            _gridManager.UpdatePlayerCell(_startCell);
+            _isMoving = false;
+            yield break;
+        }
         _isMoving = false;
     }
 }
