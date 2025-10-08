@@ -7,6 +7,9 @@ using UnityEngine;
 /// </summary>
 public class StageGenerationTestDriver
 {
+    // 生成したステージデータを保持（必要に応じて外部から参照可能）
+    public StageData data = null;
+
     /// <summary>
     /// テスト用のステージデータを生成して返す。
     /// - 幅20, 奥行き100
@@ -17,7 +20,10 @@ public class StageGenerationTestDriver
     /// </summary>
     public StageData GenerateTestStage()
     {
-        StageData data = new StageData();
+        if (data == null)
+        {
+            data = new StageData();
+        }
         data.width = 20;
         data.depth = 100;
 
