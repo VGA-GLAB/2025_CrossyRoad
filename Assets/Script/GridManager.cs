@@ -81,8 +81,21 @@ public class GridManager : MonoBehaviour
         }
         staticObstaclePrefabs.Clear();
 
+        // スポナープレハブの破棄
+        foreach (var entry in spawnerEntries)
+        {
+            if (entry.Instance != null)
+            {
+                Destroy(entry.Instance);
+                entry.Instance = null;
+            }
+        }
+        spawnerEntries.Clear();
+
+        // プレイヤー情報のクリア
         playerCell = Vector3Int.zero;
         player = null;
+
     }
 
     //==================================================
@@ -267,7 +280,7 @@ public class GridManager : MonoBehaviour
         {
             return; // すでに生成済みなら何もしない
         }
-
+        
         GameObject prefab = null;
         switch (type)
         {
@@ -295,6 +308,44 @@ public class GridManager : MonoBehaviour
             staticObstaclePrefabs.Remove(gridPos);
         }
     }
+
+    /// <summary>
+    /// スポナー生成
+    /// </summary>
+    private void CreateSpawnerInstance(SpawnerEntry entry)
+    {
+        if (entry.Instance != null)
+        {
+            return; // 既に生成済みなら何もしない
+        }
+
+        Vector3 worldPos = GridToWorld(entry.GridPos);
+        entry.Instance = Instantiate(entry.Prefab, worldPos, Quaternion.identity, this.transform);
+
+        // ToDo:Spawnerの種類が増えたら追加する
+        // 共通インターフェース ISpawner を導入する手もあるが柔軟性を失うのでこのスタイルでいいかも
+        if (entry.Config is BridgeSpawnerConfig bridgeConfig)
+        {
+            var bridgeSpawn = entry.Instance.GetComponent<BridgeSpawn>();
+            if (bridgeSpawn != null)
+            {
+                bridgeSpawn.Initialize(bridgeConfig);
+            }
+        }
+    }
+
+    /// <summary>
+    /// スポナー破棄
+    /// </summary>
+    private void DestroySpawnerInstance(SpawnerEntry entry)
+    {
+        if (entry.Instance != null)
+        {
+            Destroy(entry.Instance);
+            entry.Instance = null;
+        }
+    }
+
 
     /// <summary>
     /// 指定セルに障害物Prefabを配置し、占有情報を更新する。
@@ -347,6 +398,12 @@ public class GridManager : MonoBehaviour
             ObstacleType type = obstacle.Value;
             staticObstacleCells[gridPos] = type;
         }
+
+        // スポナーレイヤーを反映
+        foreach (var config in data.spawnerConfigs)
+        {
+            spawnerEntries.Add(new SpawnerEntry(config));
+        }
     }
 
     /// <summary>
@@ -379,6 +436,18 @@ public class GridManager : MonoBehaviour
                     CreateObstaclePrefab(pos, obstacleType);
                     newVisible.Add(pos);
                 }
+
+                // スポナーがこのセルにある場合は生成
+                foreach (var entry in spawnerEntries)
+                {
+                    // Note: 補正の件で、Y=0にもどす。煩雑化してるので後ほど仕様整理して修正する。
+                    pos.y = 0;
+                    if (entry.GridPos == pos)
+                    {
+                        CreateSpawnerInstance(entry);
+                        newVisible.Add(pos);
+                    }
+                }
             }
         }
 
@@ -396,6 +465,21 @@ public class GridManager : MonoBehaviour
             
             if (!newVisible.Contains(comparePos))
                 DestroyObstaclePrefab(kv);
+        }
+
+        // 範囲外になったセルを削除（スポナー）
+        for (int i = 0; i < spawnerEntries.Count; i++)
+        {
+            var entry = spawnerEntries[i];
+            // 可視範囲チェックは Y=0 基準
+            if (!newVisible.Contains(entry.GridPos))
+            {
+                if (entry.Instance != null)
+                {
+                    Destroy(entry.Instance);
+                    entry.Instance = null;
+                }
+            }
         }
     }
 
@@ -431,5 +515,37 @@ public class GridManager : MonoBehaviour
     
     // 静的障害物レイヤー（プレハブ）
     private Dictionary<Vector3Int, GameObject> staticObstaclePrefabs = new Dictionary<Vector3Int, GameObject>();
+
+    // スポナーレイヤー （プレハブ）
+    private Dictionary<Vector3Int, GameObject> spawnerPrefabs = new Dictionary<Vector3Int, GameObject>();
+
+    //
+    // スポナー管理
+    //
+    private List<SpawnerEntry> spawnerEntries = new List<SpawnerEntry>();
+
+    /// <summary>
+    /// GridManager 内部で管理するスポナーインスタンス情報。
+    /// StageData から生成時に変換され、UpdateRenderAreaで可視範囲制御する。
+    /// </summary>
+    private class SpawnerEntry
+    {
+        public Vector3Int GridPos { get; }          // スポナーのグリッド位置
+        public GameObject Prefab { get; }           // スポナー本体のプレハブ
+        public SpawnerConfigBase Config { get; }    // スポナー設定データ
+        public GameObject Instance { get; set; }    // シーンに配置されたスポナーインスタンス（未生成時は null）
+
+        /// <summary>
+        /// コンストラクタ
+        /// スポナーインスタンス情報を保持する。
+        /// </summary>
+        public SpawnerEntry(SpawnerConfigBase config)
+        {
+            GridPos = config.Position;
+            Prefab = config.SpawnerControllerPrefab;
+            Config = config;
+            Instance = null;
+        }
+    }
 }
 

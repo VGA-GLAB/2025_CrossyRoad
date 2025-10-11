@@ -9,6 +9,19 @@ public class BridgeSpawn : MonoBehaviour
     [SerializeField] private float spawnTime;
     private float spawnTimer;
 
+    // GridManager から呼ばれる初期化メソッド
+    public void Initialize(BridgeSpawnerConfig config)
+    {
+        // Note: bridgeObjの複数指定を元実装からとりこんだあとは
+        // bridges = config.SpawnTargetPrefabs;に修正予定
+        if (config.SpawnTargetPrefabs != null && config.SpawnTargetPrefabs.Count > 0)
+        {
+            // 先頭の要素を bridgeObj に設定
+            bridgeObj = config.SpawnTargetPrefabs[0];
+        }
+        this.spawnTime = config.SpawnInterval;
+    }
+
     void FixedUpdate()
     {
         if (!GameManager.instance.isInGamePlay) return;
@@ -22,7 +35,7 @@ public class BridgeSpawn : MonoBehaviour
 
     void BridgeGenerate() //橋の生成
     {
-        Instantiate(bridgeObj);
+        Instantiate(bridgeObj, transform.position, Quaternion.identity);    // 現在の位置に橋を生成
         spawnTimer = 0f;
     }
 }

@@ -27,4 +27,13 @@ public class StageData
     /// </summary>
     public Dictionary<Vector3Int, ObstacleType> staticObstacles
         = new Dictionary<Vector3Int, ObstacleType>();
+
+    /// <summary>
+    /// スポナー設定リスト。
+    /// - 各スポナーの位置や生成対象を保持する。
+    /// - GridManager が解釈してシーンにスポナーを配置する。
+    /// - BridgeSpawnerConfig など、SpawnerConfigBase を継承した型を格納。
+    /// </summary>
+    public List<SpawnerConfigBase> spawnerConfigs
+        = new List<SpawnerConfigBase>();
 }

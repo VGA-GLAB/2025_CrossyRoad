@@ -10,6 +10,31 @@ public class StageGenerationTestDriver
     // 生成したステージデータを保持（必要に応じて外部から参照可能）
     public StageData data = null;
 
+    // ScriptableObjectからロードした実行時用Config
+    private BridgeSpawnerConfig bridgeSpawnerConfig;
+
+    /// <summary>
+    /// テスト用のステージデータを生成して返す。
+    /// - 幅20, 奥行き100
+    /// - XZ両方向の外周は Empty
+    /// - Grass レーンにはランダムで Tree を配置
+    /// - Road レーンは一律 Road
+    /// - River レーンは一律 River
+    /// </summary>
+    public void Initialize()
+    {
+        // Resources/SpawnerConfigs/BridgeSpawnerConfigSO_Default.asset をロード
+        var configSO = Resources.Load<BridgeSpawnerConfigSO>("SpawnerConfigs/BridgeSpawnerConfigSO_Default");
+        if (configSO != null)
+        {
+            bridgeSpawnerConfig = configSO.ToRuntimeConfig();
+        }
+        else
+        {
+            Debug.LogError("BridgeSpawnerConfigSO_Default がロードできませんでした。");
+        }
+    }
+
     /// <summary>
     /// テスト用のステージデータを生成して返す。
     /// - 幅20, 奥行き100
@@ -43,7 +68,23 @@ public class StageGenerationTestDriver
             else if (z % 3 == 1)
                 data.laneTypes[z] = CellType.Road;
             else
+            {
                 data.laneTypes[z] = CellType.River;
+
+                // ↓川レーンなら BridgeSpawnerConfig を登録↓
+                var pos = new Vector3Int(0, 0, z);      // Note: 座標はマップ自動生成で確定する
+                var spawner = new BridgeSpawnerConfig(
+                    pos,
+                    bridgeSpawnerConfig.SpawnerControllerPrefab,
+                    bridgeSpawnerConfig.SpawnTargetPrefabs,
+                    bridgeSpawnerConfig.SpawnInterval,
+                    bridgeSpawnerConfig.BridgeInterval,
+                    bridgeSpawnerConfig.BridgeCountPerLane
+                );
+
+                data.spawnerConfigs.Add(spawner);
+                // ↑登録完了↑
+            }
         }
 
         // Grass レーンにランダムで Tree を配置
