@@ -22,6 +22,7 @@ public class GridManagerTestDriver : MonoBehaviour
     private void Start()
     {
         var generator = new StageGenerationTestDriver();
+        generator.Initialize();
         StageData stageData = generator.GenerateTestStage();
 
         // ステージ生成（論理のみ）
