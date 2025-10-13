@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public GameObject resultUI;
 
     [Header("ゲーム中")]
-    public bool isInGamePlay;
+    public bool isInGamePlay { get; private set; }
 
     private IGameState currentGameState;
 
@@ -41,18 +41,26 @@ public class GameManager : MonoBehaviour
         //タイトルの入力を検知
         currentGameState?.Key();
 
+        //後で消す
         if (Input.GetKeyDown(KeyCode.W)) //死亡確認用
         {
             ChangeIGameState(new ResultState());
         }
     }
 
-    public void ChangeIGameState(IGameState state)
+    public void ChangeIGameState(IGameState state) //現在のステートを変更する
     {
+        //同じステートだったら、処理を辞める
         if (currentGameState == state) return;
 
+        //現在のステートを終わらせて、変更する
         currentGameState?.Exit();
         currentGameState = state;
         currentGameState.Enter();
+    }
+
+    public void ChangeInGamePlay(bool isFlag) //ゲーム中かの状態切替
+    {
+        isInGamePlay = isFlag;
     }
 }

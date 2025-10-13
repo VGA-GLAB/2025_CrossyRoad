@@ -6,16 +6,18 @@ public class InGameState : IGameState
     {
         Debug.Log("インゲーム");
 
+        //インゲーム中の状態にする
         GameManager.instance.inGameUI.SetActive(true);
-        GameManager.instance.isInGamePlay = true;
+        GameManager.instance.ChangeInGamePlay(true);
     }
 
     public void Exit()
     {
         Debug.Log("インゲーム終了");
 
+        //インゲーム終了の状態にする
         GameManager.instance.inGameUI.SetActive(false);
-        GameManager.instance.isInGamePlay = false;
+        GameManager.instance.ChangeInGamePlay(false);
     }
 
     public void Key() { }

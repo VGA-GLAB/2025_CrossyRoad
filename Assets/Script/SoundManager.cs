@@ -3,7 +3,7 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     [System.Serializable]
-    public class Sound
+    public class SoundData
     {
         public string name;
         public AudioClip clip;
@@ -12,10 +12,13 @@ public class SoundManager : MonoBehaviour
     public static SoundManager instance;
 
     [Header("再生したい音と名前")]
-    [SerializeField] Sound[] sounds;
+    [SerializeField] private SoundData[] sounds;
 
-    private AudioSource audioSourceSE;
-    private AudioSource audioSourceBGM;
+    [Header("SE用")]
+    [SerializeField] private AudioSource audioSourceSE;
+    [Header("BGM用")]
+    [SerializeField] private AudioSource audioSourceBGM;
+
 
     void Awake()
     {
@@ -32,12 +35,19 @@ public class SoundManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        audioSourceSE = GetComponent<AudioSource>();
-        audioSourceBGM = GetComponent<AudioSource>();
+        if(audioSourceSE != null)
+        {
+            audioSourceSE = GetComponent<AudioSource>();
+        }
+        if (audioSourceBGM != null)
+        {
+            audioSourceBGM = GetComponent<AudioSource>();
+        }
     }
 
-    public void PlaySE(string clipName)
+    public void PlaySE(string clipName) //SEを再生する
     {
+        //再生したいサウンドの名前とリストにあるサウンドの名前が一致したら再生する
         foreach(var sound in sounds)
         {
             if(sound.name == clipName)
@@ -47,7 +57,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlayBGM(string clipName)
+    public void PlayBGM(string clipName) //BGMを再生する
     {
         foreach (var sound in sounds)
         {
@@ -58,7 +68,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void StopBGM(string clipName)
+    public void StopBGM() //現在流れているBGMを止める
     {
         audioSourceBGM.clip = null;
     }

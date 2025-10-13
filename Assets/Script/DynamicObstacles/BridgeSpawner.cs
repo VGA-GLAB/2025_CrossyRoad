@@ -90,6 +90,7 @@ public class BridgeSpawner : MonoBehaviour
         var data = stageGenerationTestDriver.data;
         riverCount.Clear();
 
+        /*
         //ìƒŒ[ƒ“‚ğæ“¾
         for (int i = 0; i < data.width; i++)
         {
@@ -98,6 +99,7 @@ public class BridgeSpawner : MonoBehaviour
                 riverCount.Add(i);
             }
         }
+        */
     }
 
     GameObject CreateBridge()
