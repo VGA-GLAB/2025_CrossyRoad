@@ -6,16 +6,22 @@ public class GameManager : MonoBehaviour
 
     [Header("UIEffect参照")]
     public UIEffect uIEffect;
+    [Header("InGameUIManager")]
+    [SerializeField] private InGameUIManager gameUIManager;
+    public InGameUIManager inGameUIManager => gameUIManager;
 
+    /*
     [Header("タイトルUI")]
     public GameObject titleUI;
     [Header("インゲームUI")]
     public GameObject inGameUI;
     [Header("リザルトUI")]
     public GameObject resultUI;
+    */
 
     [Header("ゲーム中")]
-    public bool isInGamePlay { get; private set; }
+    [SerializeField] private bool isInGamePlay;
+    public bool IsInGamePlay => isInGamePlay;
 
     private IGameState currentGameState;
 

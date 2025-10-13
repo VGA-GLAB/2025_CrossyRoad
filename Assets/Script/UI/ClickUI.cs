@@ -6,11 +6,13 @@ using UnityEngine.SceneManagement;
 public class ClickUI : MonoBehaviour, IPointerClickHandler
 {
     [Header("縮尺")]
-    [SerializeField] Vector2 changeScale;
+    [SerializeField] private Vector2 changeScale;
     [Header("元のサイズ")]
-    [SerializeField] Vector2 originalScale;
+    [SerializeField] private Vector2 originalScale;
     [Header("演出時間")]
-    [SerializeField] float scaleDuration;
+    [SerializeField] private float scaleDuration;
+
+    private bool isClicked; //クリック済みか
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
