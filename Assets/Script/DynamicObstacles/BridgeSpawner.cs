@@ -94,7 +94,7 @@ public class BridgeSpawner : MonoBehaviour
         //ìƒŒ[ƒ“‚ğæ“¾
         for (int i = 0; i < data.width; i++)
         {
-            if (data.laneTypes[i] == GridManager.CellType.River)
+            if (data.laneTypes[i] == CellType.River)        // –¼‘O‹óŠÔ‚ÌC³
             {
                 riverCount.Add(i);
             }
