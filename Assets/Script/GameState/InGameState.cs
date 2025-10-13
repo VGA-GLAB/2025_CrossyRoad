@@ -7,7 +7,7 @@ public class InGameState : IGameState
         Debug.Log("インゲーム");
 
         //インゲーム中の状態にする
-        GameManager.instance.inGameUI.SetActive(true);
+        GameManager.instance.inGameUIManager.InGameUI.SetActive(true);
         GameManager.instance.ChangeInGamePlay(true);
     }
 
@@ -16,7 +16,7 @@ public class InGameState : IGameState
         Debug.Log("インゲーム終了");
 
         //インゲーム終了の状態にする
-        GameManager.instance.inGameUI.SetActive(false);
+        GameManager.instance.inGameUIManager.InGameUI.SetActive(false);
         GameManager.instance.ChangeInGamePlay(false);
     }
 
