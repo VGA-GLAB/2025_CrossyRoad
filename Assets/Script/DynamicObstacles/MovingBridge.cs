@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class MovingBridge : MonoBehaviour
 {
-    [Header("BridgeSpawner")]
-    public BridgeSpawner bridgeSpawner;
-
     [Header("“®‚­‘¬‚³")]
     [SerializeField] private float moveSpeed;
 

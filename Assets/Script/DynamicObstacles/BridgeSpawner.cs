@@ -112,7 +112,7 @@ public class BridgeSpawner : MonoBehaviour
         GameObject bridge = Instantiate(prefab);
         bridge.SetActive(false);
         bridge.transform.SetParent(spawnParent);
-        bridge.GetComponent<MovingBridge>().bridgeSpawner = this;
+        //bridge.GetComponent<MovingBridge>().bridgeSpawner = this;
         return bridge;
     }
 
