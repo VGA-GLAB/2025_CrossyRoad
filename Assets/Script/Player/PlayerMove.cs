@@ -10,7 +10,7 @@ public class PlayerMove : MonoBehaviour
     public bool _isMoving { get; private set; } = false;
     [SerializeField] private float _gridSpace = 1.0f;
     [SerializeField] private float _moveSpeed = 5.0f;
-    private GridManager _gridManager;
+    [SerializeField] private GridManager _gridManager;
     /// <summary>
     /// 現座のグリッド座標
     /// </summary>
@@ -22,7 +22,10 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
-        _gridManager = FindAnyObjectByType<GridManager>();
+        if (_gridManager == null)
+        {
+            _gridManager = FindAnyObjectByType<GridManager>();
+        }
         _gridManager.RegisterPlayer(gameObject);
         _currentCell = _gridManager.WorldToGrid(transform.position);
         _startCell = _currentCell;
@@ -34,7 +37,7 @@ public class PlayerMove : MonoBehaviour
     /// <param name="input"></param>
     public void Move(Vector2 input)
     {
-        if(_isMoving) return;
+        if (_isMoving) return;
         //入力ベクトルをグリッド移動に変換
         Vector3Int moveDirection = new Vector3Int(
             Mathf.RoundToInt(input.x),
@@ -57,7 +60,7 @@ public class PlayerMove : MonoBehaviour
         // 現在位置と目的地（ワールド座標）を取得
         Vector3 start = transform.position;
         //目的地セルを変換
-        Vector3 end = _gridManager.GridToWorld(targetCell);  
+        Vector3 end = _gridManager.GridToWorld(targetCell);
         float t = 0f;
         while (t < _gridSpace)
         {
