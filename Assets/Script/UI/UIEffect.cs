@@ -34,7 +34,7 @@ public class UIEffect : MonoBehaviour
         title.transform.DOMove(titlePositionFinal, titleDuration).SetEase(Ease.InOutSine).
             OnComplete(() =>
             {
-                GameManager.instance.titleUI.SetActive(false);
+                GameManager.instance.inGameUIManager.TitleUI.SetActive(false);
                 title.transform.position = titlePositonFirst;
             });
     }

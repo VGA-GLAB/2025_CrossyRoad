@@ -5,8 +5,12 @@ public interface IGameState
     void Enter();
     void Exit();
 
-    void Key()
-    {
+    void Key();
+}
 
-    }
+public enum GameState
+{
+    Title,
+    InGame,
+    Result,
 }

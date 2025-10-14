@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -5,25 +6,19 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [Header("UIEffect参照")]
-    public UIEffect uIEffect;
+    [SerializeField] private UIEffect uIEffect;
+    public UIEffect UIEffect => uIEffect;
+
     [Header("InGameUIManager")]
     [SerializeField] private InGameUIManager gameUIManager;
     public InGameUIManager inGameUIManager => gameUIManager;
-
-    /*
-    [Header("タイトルUI")]
-    public GameObject titleUI;
-    [Header("インゲームUI")]
-    public GameObject inGameUI;
-    [Header("リザルトUI")]
-    public GameObject resultUI;
-    */
 
     [Header("ゲーム中")]
     [SerializeField] private bool isInGamePlay;
     public bool IsInGamePlay => isInGamePlay;
 
-    private IGameState currentGameState;
+    private Dictionary<GameState, IGameState> gameStateDictionary; //ステートマシン管理
+    private IGameState currentGameState; //現在のステート
 
     void Awake()
     {
@@ -35,11 +30,18 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-    }
 
-    void Start()
-    {
-        ChangeIGameState(new TitleState());
+        //ステートマシンを初期化時に、インスタンスを作成する
+        gameStateDictionary = new Dictionary<GameState, IGameState>
+        {
+            {GameState.Title, new TitleState() },
+            {GameState.InGame, new InGameState() },
+            {GameState.Result, new ResultState() },
+        };
+
+        //タイトルの状態にする
+        ChangeGameState(GameState.Title);
+
     }
 
     private void Update()
@@ -50,18 +52,18 @@ public class GameManager : MonoBehaviour
         //後で消す
         if (Input.GetKeyDown(KeyCode.W)) //死亡確認用
         {
-            ChangeIGameState(new ResultState());
+            ChangeGameState(GameState.Result);
         }
     }
 
-    public void ChangeIGameState(IGameState state) //現在のステートを変更する
+    public void ChangeGameState(GameState state) //現在のステートを変更する
     {
         //同じステートだったら、処理を辞める
-        if (currentGameState == state) return;
+        if (currentGameState == gameStateDictionary[state]) return;
 
         //現在のステートを終わらせて、変更する
         currentGameState?.Exit();
-        currentGameState = state;
+        currentGameState = gameStateDictionary[state];
         currentGameState.Enter();
     }
 

@@ -6,22 +6,22 @@ public class TitleState : IGameState
     {
         Debug.Log("タイトル");
 
-        GameManager.instance.titleUI.SetActive(true);
-        GameManager.instance.uIEffect.TitleFadeIn();
+        GameManager.instance.inGameUIManager.TitleUI.SetActive(true);
+        GameManager.instance.UIEffect.TitleFadeIn();
     }
 
     public void Exit()
     {
         Debug.Log("タイトル終了");
 
-        GameManager.instance.uIEffect.TitleFadeOut();
+        GameManager.instance.UIEffect.TitleFadeOut();
     }
 
     public void Key()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameManager.instance.ChangeIGameState(new InGameState());
+            GameManager.instance.ChangeGameState(GameState.InGame);
         }
     }
 }

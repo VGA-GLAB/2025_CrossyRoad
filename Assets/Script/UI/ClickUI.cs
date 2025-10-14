@@ -16,6 +16,10 @@ public class ClickUI : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
+        //既に押した場合は、クリック出来ないようにする
+        if (isClicked) return;
+        isClicked = true;
+
         this.gameObject.transform.DOScale(changeScale, scaleDuration)
             .OnComplete(() =>
             {
@@ -26,7 +30,7 @@ public class ClickUI : MonoBehaviour, IPointerClickHandler
 
     void Click()
     {
-        GameManager.instance.ChangeIGameState(new TitleState());
+        GameManager.instance.ChangeGameState(GameState.Title);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
