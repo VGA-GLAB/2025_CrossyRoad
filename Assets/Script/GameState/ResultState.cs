@@ -6,15 +6,15 @@ public class ResultState : IGameState
     {
         Debug.Log("リザルト");
 
-        GameManager.instance.resultUI.SetActive(true);
-        GameManager.instance.uIEffect.ButtonAppearanceAnimation();
+        GameManager.instance.inGameUIManager.ResultUI.SetActive(true);
+        GameManager.instance.UIEffect.ButtonAppearanceAnimation();
     }
 
     public void Exit()
     {
         Debug.Log("リザルト終了");
 
-        GameManager.instance.resultUI.SetActive(false);
+        GameManager.instance.inGameUIManager.ResultUI?.SetActive(false);
     }
 
     public void Key() { }
