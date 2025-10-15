@@ -4,9 +4,13 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     /// <summary>
+    /// スコアアップのアクション
+    /// </summary>
+    public Action OnScoreUpAction;
+    /// <summary>
     /// 死亡時のアクション
     /// </summary>
-    public Action DeathAction;
+    public Action OnPlayerDeathAction;
     public bool _isMoving { get; private set; } = false;
     [SerializeField] private float _gridSpace = 1.0f;
     [SerializeField] private float _moveSpeed = 5.0f;
@@ -19,6 +23,7 @@ public class PlayerMove : MonoBehaviour
     /// スタート時のグリッド座標
     /// </summary>
     private Vector3Int _startCell;
+    private Vector3Int _currentCellScore;
 
     private void Start()
     {
@@ -75,12 +80,17 @@ public class PlayerMove : MonoBehaviour
         _gridManager.UpdatePlayerCell(targetCell);
         if (_gridManager.GetCellType(_currentCell) == CellType.River)
         {
-            DeathAction?.Invoke();
+            OnPlayerDeathAction?.Invoke();
             _currentCell = _startCell;
             transform.position = _gridManager.GridToWorld(_startCell);
             _gridManager.UpdatePlayerCell(_startCell);
             _isMoving = false;
             yield break;
+        }
+        if (_currentCell.z > _currentCellScore.z)
+        {
+            _currentCellScore = _currentCell;
+            OnScoreUpAction?.Invoke();
         }
         _isMoving = false;
     }
