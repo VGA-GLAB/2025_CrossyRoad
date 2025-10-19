@@ -27,23 +27,4 @@ public class MovingBridge : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
-    //浮き沈みするようにする
-    private void OnCollisionEnter(Collision collision)
-    {
-        //プレイヤーが橋に乗った時、プレイヤーを橋の子オブジェクトにする
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.gameObject.transform.SetParent(transform);
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        //プレイヤーを橋の子オブジェクトじゃなくする
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.gameObject.transform.SetParent(null);
-        }
-    }
 }
