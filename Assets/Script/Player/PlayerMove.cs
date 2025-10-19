@@ -15,6 +15,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _gridSpace = 1.0f;
     [SerializeField] private float _moveSpeed = 5.0f;
     [SerializeField] private GridManager _gridManager;
+    [SerializeField] private GroundCheck _groundCheck;
     /// <summary>
     /// 現座のグリッド座標
     /// </summary>
@@ -25,6 +26,15 @@ public class PlayerMove : MonoBehaviour
     private Vector3Int _startCell;
     private Vector3Int _currentCellScore;
 
+    private void Awake()
+    {
+        if (_groundCheck == null)
+        {
+            _groundCheck = FindAnyObjectByType<GroundCheck>();
+        }
+        _groundCheck.OnPlayerRiverDie += OnRiverDeathAction;
+    }
+
     private void Start()
     {
         if (_gridManager == null)
@@ -34,6 +44,11 @@ public class PlayerMove : MonoBehaviour
         _gridManager.RegisterPlayer(gameObject);
         _currentCell = _gridManager.WorldToGrid(transform.position);
         _startCell = _currentCell;
+    }
+
+    private void OnDestroy()
+    {
+        _groundCheck.OnPlayerRiverDie -= OnRiverDeathAction;
     }
 
     /// <summary>
@@ -51,6 +66,7 @@ public class PlayerMove : MonoBehaviour
         );
         //次の移動先セルを計算
         Vector3Int nextCell = _currentCell + moveDirection;
+        //TODOnextCellを今のx,yから次のセルにする
         //移動先セルが空いているか確認
         if (!_gridManager.IsCellFree(nextCell)) return;
         StartCoroutine(MovePlayer(nextCell));
@@ -78,20 +94,30 @@ public class PlayerMove : MonoBehaviour
         // 現在のセル情報を更新
         _currentCell = targetCell;
         _gridManager.UpdatePlayerCell(targetCell);
-        if (_gridManager.GetCellType(_currentCell) == CellType.River)
-        {
-            OnPlayerDeathAction?.Invoke();
-            _currentCell = _startCell;
-            transform.position = _gridManager.GridToWorld(_startCell);
-            _gridManager.UpdatePlayerCell(_startCell);
-            _isMoving = false;
-            yield break;
-        }
+        //if (_gridManager.GetCellType(_currentCell) == CellType.River)
+        //{
+        //    OnPlayerDeathAction?.Invoke();
+        //    _currentCell = _startCell;
+        //    transform.position = _gridManager.GridToWorld(_startCell);
+        //    _gridManager.UpdatePlayerCell(_startCell);
+        //    _isMoving = false;
+        //    yield break;
+        //}
         if (_currentCell.z > _currentCellScore.z)
         {
             _currentCellScore = _currentCell;
             OnScoreUpAction?.Invoke();
         }
+        _isMoving = false;
+    }
+
+    private void OnRiverDeathAction()
+    {
+        Debug.Log("Player Dead");
+        OnPlayerDeathAction?.Invoke();
+        _currentCell = _startCell;
+        transform.position = _gridManager.GridToWorld(_startCell);
+        _gridManager.UpdatePlayerCell(_startCell);
         _isMoving = false;
     }
 }

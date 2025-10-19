@@ -32,10 +32,12 @@ public class CameraManager : MonoBehaviour
         _camTargetPos = _cameraFollowTransform.position;
         if (_camTargetPos.z < _playerPosition.position.z)
         {
+            //追い越したときカメラをプレイヤーの位置に合わせる
             _camTargetPos.z = _playerPosition.position.z;
         }
         else
         {
+            //徐々にカメラを前進させる
             _camTargetPos.z += _cameraZUpdateSpeed * Time.deltaTime;
         }
         _camTargetPos.x = _playerPosition.position.x;
@@ -45,6 +47,7 @@ public class CameraManager : MonoBehaviour
 
     private void OnPlayerDeath()
     {
+        //カメラを初期位置にリセット
         _cameraFollowTransform.position = _startPos.position;
         _camTargetPos = _startPos.position;
         Debug.Log("CameraReset");
