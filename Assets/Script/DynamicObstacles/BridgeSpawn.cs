@@ -25,7 +25,7 @@ public class BridgeSpawn : MonoBehaviour
     void FixedUpdate()
     {
         //インゲーム中のみ橋を生成する
-        if (!GameManager.instance.IsInGamePlay) return;
+        //if (!GameManager.instance.IsInGamePlay) return;
 
         spawnTimer += Time.fixedDeltaTime;
         if(spawnTimer >= spawnTime)
@@ -36,7 +36,10 @@ public class BridgeSpawn : MonoBehaviour
 
     void BridgeGenerate() //橋の生成
     {
-        Instantiate(bridgeObj, transform.position, Quaternion.identity);    // 現在の位置に橋を生成
+        // Y 軸に 0.45f 持ち上げて生成
+        Vector3 spawnPos = transform.position + new Vector3(0f, 0.451f, 0f);
+
+        Instantiate(bridgeObj, spawnPos, Quaternion.identity);    // 現在の位置に橋を生成
         spawnTimer = 0f;
     }
 }

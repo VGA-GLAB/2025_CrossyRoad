@@ -18,7 +18,8 @@ public class MovingBridge : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.linearVelocity = new Vector3(moveSpeed, 0f, 0f);
+        transform.position += Vector3.right * moveSpeed * Time.deltaTime;
+//        rb.linearVelocity = new Vector3(moveSpeed, 0f, 0f);
 
         //Á–ÅŠÔ‚ªŒo‚Á‚½‚çA‹´‚ğÁ‚·
         destoryTimer += Time.fixedDeltaTime;

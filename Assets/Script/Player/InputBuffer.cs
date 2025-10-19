@@ -13,6 +13,15 @@ public class InputBuffer : MonoBehaviour
         if (TryGetComponent<PlayerInput>(out var playerInput))
         {
             _moveAction = playerInput.actions[MOVE_ACTION];
+            if (_moveAction == null)
+            {
+                Debug.LogError($"MoveAction '{MOVE_ACTION}' が見つかりません。現在のアクションマップ: {playerInput.currentActionMap?.name}");
+            }
         }
+    }
+    
+    public Vector2 ReadMoveInput()
+    {
+        return _moveAction.ReadValue<Vector2>();
     }
 }

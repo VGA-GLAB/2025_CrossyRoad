@@ -11,6 +11,7 @@ public class StageInitializer : MonoBehaviour
         }
         // テスト用ステージ生成
         var generator = new StageGenerationTestDriver();
+        generator.Initialize();
         StageData stageData = generator.GenerateTestStage();
         // ステージ構築（論理）
         _gridManager.BuildStage(stageData);
