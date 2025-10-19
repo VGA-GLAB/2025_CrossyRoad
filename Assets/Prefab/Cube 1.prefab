@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1439430451189089957}
   - component: {fileID: 733536301273217738}
   - component: {fileID: 8613564063412326939}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 1454632555814546160}
   - component: {fileID: 777542131119142947}
   - component: {fileID: 3468225698289040635}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Judgment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
