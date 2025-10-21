@@ -72,7 +72,7 @@ public class StageGenerationTestDriver
                 data.laneTypes[z] = CellType.River;
 
                 // ↓川レーンなら BridgeSpawnerConfig を登録↓
-                var pos = new Vector3Int(0, 0, z);      // Note: 座標はマップ自動生成で確定する
+                var pos = new Vector3Int(0, -1, z);      // Note: 座標はマップ自動生成で確定する
                 var spawner = new BridgeSpawnerConfig(
                     pos,
                     bridgeSpawnerConfig.SpawnerControllerPrefab,

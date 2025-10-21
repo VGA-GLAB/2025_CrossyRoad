@@ -36,7 +36,10 @@ public class BridgeSpawn : MonoBehaviour
 
     void BridgeGenerate() //‹´‚Ì¶¬
     {
-        Instantiate(bridgeObj, transform.position, Quaternion.identity);    // Œ»İ‚ÌˆÊ’u‚É‹´‚ğ¶¬
+        // Y ²‚É 0.45f ‚¿ã‚°‚Ä¶¬
+        Vector3 spawnPos = transform.position + new Vector3(0f, 0.451f, 0f);
+
+        Instantiate(bridgeObj, spawnPos, Quaternion.identity);    // Œ»İ‚ÌˆÊ’u‚É‹´‚ğ¶¬
         spawnTimer = 0f;
     }
 }

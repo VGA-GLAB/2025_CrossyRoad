@@ -109,9 +109,9 @@ public class GridManager : MonoBehaviour
     public Vector3Int WorldToGrid(Vector3 worldPos)
     {
         // ワールド座標をセルサイズに基づいてグリッド座標に変換し返却
-        int x = Mathf.FloorToInt(worldPos.x / cellSize);
-        int y = Mathf.FloorToInt(worldPos.y / cellSize);
-        int z = Mathf.FloorToInt(worldPos.z / cellSize);
+        int x = Mathf.FloorToInt((worldPos.x - cellSize / 2f) / cellSize);
+        int y = Mathf.FloorToInt((worldPos.y - cellSize / 2f) / cellSize);
+        int z = Mathf.FloorToInt((worldPos.z - cellSize / 2f) / cellSize);
 
         return new Vector3Int(x, y, z);
     }
@@ -123,9 +123,9 @@ public class GridManager : MonoBehaviour
     public Vector3 GridToWorld(Vector3Int gridPos)
     {
         // グリッド座標をワールド座標に変換し返却
-        float x = gridPos.x * cellSize;
-        float y = gridPos.y * cellSize;
-        float z = gridPos.z * cellSize;
+        float x = gridPos.x * cellSize + (cellSize / 2f);
+        float y = gridPos.y * cellSize + (cellSize / 2f);
+        float z = gridPos.z * cellSize + (cellSize / 2f);
 
         return new Vector3(x, y, z);
     }
@@ -440,8 +440,8 @@ public class GridManager : MonoBehaviour
                 // スポナーがこのセルにある場合は生成
                 foreach (var entry in spawnerEntries)
                 {
-                    // Note: 補正の件で、Y=0にもどす。煩雑化してるので後ほど仕様整理して修正する。
-                    pos.y = 0;
+                    // Note: 補正の件で、Y=-1で検索。煩雑化してるので後ほど仕様整理して修正する。
+                    pos.y = -1;
                     if (entry.GridPos == pos)
                     {
                         CreateSpawnerInstance(entry);
