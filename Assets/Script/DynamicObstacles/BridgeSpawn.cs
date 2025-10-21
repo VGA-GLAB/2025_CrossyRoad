@@ -25,7 +25,7 @@ public class BridgeSpawn : MonoBehaviour
     void FixedUpdate()
     {
         //ƒCƒ“ƒQ[ƒ€’†‚Ì‚Ý‹´‚ð¶¬‚·‚é
-        //if (!GameManager.instance.IsInGamePlay) return;
+        if (!GameManager.instance.IsInGamePlay) return;
 
         spawnTimer += Time.fixedDeltaTime;
         if(spawnTimer >= spawnTime)

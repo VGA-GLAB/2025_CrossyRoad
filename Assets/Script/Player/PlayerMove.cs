@@ -158,6 +158,9 @@ public class PlayerMove : MonoBehaviour
                 currentBridge = null;
                 Debug.Log("橋から降りる（セル判定）");
             }
+
+            // 描画範囲の更新
+            gridManager.UpdateRenderArea();
         }
         else
         {
