@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private PlayerMove _playerMove;
     [SerializeField] private TextMeshProUGUI _maxScore;
     [SerializeField] private TextMeshProUGUI _currentScore;
+    [SerializeField] private Button _resetButton;
 
     private void Awake()
     {
@@ -31,6 +33,8 @@ public class ScoreManager : MonoBehaviour
         _playerMove.OnScoreUpAction += AddScore;
         _maxScore.text = "MaxScore : " + MaxScore.ToString();
         _currentScore.text = "Score : " + CurrentScore.ToString();
+        if (_resetButton != null)
+            _resetButton.onClick.AddListener(ResetScore);
     }
 
     private void OnDestroy()
@@ -49,4 +53,9 @@ public class ScoreManager : MonoBehaviour
         _currentScore.text = "Score : " + CurrentScore.ToString();
     }
 
+    public void ResetScore()
+    {
+        CurrentScore = 0;
+        Debug.Log("スコアリセット！");
+    }
 }

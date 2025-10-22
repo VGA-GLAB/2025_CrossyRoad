@@ -14,16 +14,17 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _inputBuffer.MoveAction.started += Move;
+         _inputBuffer.MoveAction.started += OnMove;
     }
 
     private void OnDestroy()
     {
-        _inputBuffer.MoveAction.started -= Move;
+        _inputBuffer.MoveAction.started -= OnMove;
     }
 
-    private void Move(InputAction.CallbackContext context)
+    private void OnMove(InputAction.CallbackContext context)
     {
-        _playerMove.Move(context.ReadValue<Vector2>());
+        Vector2 input = _inputBuffer.ReadMoveInput();
+        _playerMove.TryMove(input);
     }
 }

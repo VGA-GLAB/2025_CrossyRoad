@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,6 +18,9 @@ public class GameManager : MonoBehaviour
     [Header("ゲーム中")]
     [SerializeField] private bool isInGamePlay;
     public bool IsInGamePlay => isInGamePlay;
+
+    [Header("プレイヤーが死んだとのイベント用")]
+    [SerializeField] private PlayerMove _playerMove;
 
     private Dictionary<GameState, IGameState> gameStateDictionary; //ステートマシン管理
     private IGameState currentGameState; //現在のステート
@@ -41,7 +46,19 @@ public class GameManager : MonoBehaviour
 
         //タイトルの状態にする
         ChangeGameState(GameState.Title);
+        if(_playerMove == null)
+        {
+            _playerMove = FindAnyObjectByType<PlayerMove>();
+        }
+        _playerMove.OnPlayerDeathAction += PlayerDead;
+    }
 
+    private void OnDestroy()
+    {
+        if (_playerMove != null)
+        {
+            _playerMove.OnPlayerDeathAction -= PlayerDead;
+        }
     }
 
     private void Update()
@@ -70,5 +87,10 @@ public class GameManager : MonoBehaviour
     public void ChangeInGamePlay(bool isFlag) //ゲーム中かの状態切替
     {
         isInGamePlay = isFlag;
+    }
+
+    private void PlayerDead() //プレイヤーが死んだときの処理
+    {
+        ChangeGameState(GameState.Result);
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraManager : MonoBehaviour
 {
@@ -6,29 +7,30 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform _playerPosition;
     [SerializeField] private PlayerMove _playerMove;
     [SerializeField] private float _cameraZUpdateSpeed = 0.5f;
-    private Transform _startPos;
+    [SerializeField] private Button _retryButton;
+    private Vector3 _startPos;
     private Vector3 _camTargetPos;
+
+    private void Awake()
+    {
+        if (_retryButton != null)
+        {
+            _retryButton.onClick.AddListener(ResetCameraPosition);
+        }
+    }
+
     private void Start()
     {
         if (_playerMove == null)
         {
             _playerMove = FindAnyObjectByType<PlayerMove>();
         }
-
-        _playerMove.OnPlayerDeathAction += OnPlayerDeath;
-        _startPos = _playerPosition;
-    }
-
-    private void OnDestroy()
-    {
-        if (_playerMove != null)
-        {
-            _playerMove.OnPlayerDeathAction -= OnPlayerDeath;
-        }
+        _startPos = _cameraFollowTransform.position;
     }
 
     private void Update()
     {
+        if (_playerMove != null && _playerMove.IsDead) return;
         _camTargetPos = _cameraFollowTransform.position;
         if (_camTargetPos.z < _playerPosition.position.z)
         {
@@ -45,11 +47,11 @@ public class CameraManager : MonoBehaviour
         _cameraFollowTransform.position = _camTargetPos;
     }
 
-    private void OnPlayerDeath()
+    private void ResetCameraPosition()
     {
         //カメラを初期位置にリセット
-        _cameraFollowTransform.position = _startPos.position;
-        _camTargetPos = _startPos.position;
+        _cameraFollowTransform.position = _startPos;
+        _camTargetPos = _startPos;
         Debug.Log("CameraReset");
     }
 }
