@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>
 /// プレイヤーの移動処理を担当するクラス
@@ -33,6 +34,12 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private Button _retryButton;
 
+    [Header("DoTweenのアニメーション時間")]
+    [SerializeField] private float animTime; //0.3fがちょうどいい
+    [Header("飛ぶ高さ")]
+    [SerializeField] private float jumpHight; //0.3fがちょうどいい
+    private bool isJumping; //飛んでいるアニメーション中
+    
     /// <summary>
     /// 現在のグリッド座標
     /// </summary>
@@ -174,6 +181,8 @@ public class PlayerMove : MonoBehaviour
             transform.position = _targetWorldPos;
             IsMoving = false;
 
+            isJumping = false; //飛ぶアニメーションを終了
+
             var cellType = _gridManager.GetCellType(_currentGridPos);
             if (cellType == CellType.River && _currentBridge == null)
             {
@@ -200,6 +209,8 @@ public class PlayerMove : MonoBehaviour
         else
         {
             transform.position += step;
+
+            Jumping();
         }
     }
 
@@ -216,5 +227,20 @@ public class PlayerMove : MonoBehaviour
         _currentBridge = null;
         _currentCellScore = _startCell;
         ScoreManager.instance.ResetScore();
+    }
+
+
+    /// <summary>
+    /// DoTweenによる飛ぶアニメーション
+    /// </summary>
+    private void Jumping()
+    {
+        if (!isJumping) //飛んでいないとき
+        {
+            isJumping = true;
+
+            //飛ぶアニメーション
+            transform.DOMoveY(transform.position.y + jumpHight, animTime).SetEase(Ease.OutQuint);
+        }
     }
 }
