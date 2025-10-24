@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// プレイヤーの移動処理を担当するクラス
@@ -12,47 +13,69 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     /// <summary>
+    /// スコア加算時のアクション
+    /// </summary>
+    public Action OnScoreUpAction;
+
+    /// <summary>
     /// 死亡時のアクション（川に落下した場合などに呼ばれる）
     /// </summary>
-    public Action DeathAction;
+    public Action OnPlayerDeathAction;
 
     /// <summary>
     /// 現在移動中かどうか
     /// </summary>
     public bool IsMoving { get; private set; } = false;
+    public bool IsDead { get; private set; } = false;
 
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float fixedY = 0.55f;
-    [SerializeField] private GridManager gridManager;
+    [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _fixedY = 0.55f;
+    [SerializeField] private GridManager _gridManager;
+    [SerializeField] private Button _retryButton;
 
     /// <summary>
     /// 現在のグリッド座標
     /// </summary>
-    private Vector3Int currentGridPos;
+    private Vector3Int _currentGridPos;
     /// <summary>
     /// 移動先のワールド座標
     /// </summary>
-    private Vector3 targetWorldPos;
+    private Vector3 _targetWorldPos;
+    /// <summary>
+    /// スタート時のグリッド座標
+    /// </summary> 
+    private Vector3Int _startCell;
     /// <summary>
     /// 現在乗っている橋（なければnull）
     /// </summary>
-    private Transform currentBridge = null;
+    private Transform _currentBridge = null;
+    private Vector3Int _currentCellScore;
+
+    private void Awake()
+    {
+        if (_retryButton != null)
+        {
+            _retryButton.onClick.AddListener(ResetPosition);
+        }
+    }
 
     private void Start()
     {
 
-        gridManager = FindAnyObjectByType<GridManager>();
-        gridManager.RegisterPlayer(gameObject);
+        _gridManager = FindAnyObjectByType<GridManager>();
+        _gridManager.RegisterPlayer(gameObject);
 
         // 外枠を考慮して1マス進める
-        currentGridPos = gridManager.WorldToGrid(transform.position);
-        currentGridPos += new Vector3Int(1, 0, 2);
+        _currentGridPos = _gridManager.WorldToGrid(transform.position);
+        _currentGridPos += new Vector3Int(1, 0, 2);
 
         // 初期位置をグリッドに揃える
         //currentGridPos = gridManager.WorldToGrid(transform.position);
-        targetWorldPos = gridManager.GridToWorld(currentGridPos);
-        targetWorldPos.y = fixedY;
-        transform.position = targetWorldPos;
+        _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
+        _targetWorldPos.y = _fixedY;
+        transform.position = _targetWorldPos;
+        _startCell = _currentGridPos;
+        IsDead = false;
     }
 
     /// <summary>
@@ -67,8 +90,8 @@ public class PlayerMove : MonoBehaviour
             // Judgment に当たった場合でも、1階層上の Bridge 本体を親にする
             Transform bridgeRoot = other.transform.parent != null ? other.transform.parent : other.transform;
 
-            currentBridge = bridgeRoot;
-            transform.SetParent(currentBridge);
+            _currentBridge = bridgeRoot;
+            transform.SetParent(_currentBridge);
         }
     }
 
@@ -83,7 +106,7 @@ public class PlayerMove : MonoBehaviour
 
             // ワールド座標を保持してから親子関係を解除
             transform.SetParent(null);
-            currentBridge = null;
+            _currentBridge = null;
         }
     }
 
@@ -93,7 +116,7 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     public void TryMove(Vector2 input)
     {
-        if (IsMoving) return;
+        if (IsMoving||IsDead) return;
 
         // 入力ベクトルをグリッド方向に変換
         Vector3Int dir = Vector3Int.zero;
@@ -104,67 +127,94 @@ public class PlayerMove : MonoBehaviour
 
         if (dir == Vector3Int.zero) return;
 
-        // ★ 本家準拠の挙動：
+        // 本家準拠の挙動：
         // 移動開始時に橋から切り離すことで「慣性なし」にする
-        if (currentBridge != null)
+        if (_currentBridge != null)
         {
             transform.SetParent(null);
-            currentBridge = null;
+            _currentBridge = null;
         }
 
         // 次の移動先セルを計算
-        Vector3Int nextGridPos = currentGridPos + dir;
-        var cellType = gridManager.GetCellType(nextGridPos);
+        Vector3Int nextGridPos = _currentGridPos + dir;
+        var cellType = _gridManager.GetCellType(nextGridPos);
 
         // 移動先セルをワールド座標に変換
-        targetWorldPos = gridManager.GridToWorld(nextGridPos);
-        targetWorldPos.y = fixedY;
+        _targetWorldPos = _gridManager.GridToWorld(nextGridPos);
+        _targetWorldPos.y = _fixedY;
 
-        currentGridPos = nextGridPos;
+        _currentGridPos = nextGridPos;
         IsMoving = true;
+
+        if (_currentGridPos.z >_currentCellScore.z)
+        {
+            _currentCellScore = _currentGridPos;
+            OnScoreUpAction?.Invoke();
+            Debug.Log("スコアアップ！");
+        }
     }
 
     private void Update()
     {
-        if (currentBridge != null && !IsMoving)
+        if (IsDead) return;
+
+        if (_currentBridge != null && !IsMoving)
         {
-            currentGridPos = gridManager.WorldToGrid(transform.position);
+            _currentGridPos = _gridManager.WorldToGrid(transform.position);
         }
 
         if (!IsMoving) return;
        
         // --- 通常の自前移動 ---
-        Vector3 worldMoveDir = targetWorldPos - transform.position;
-        Vector3 step = worldMoveDir.normalized * moveSpeed * Time.deltaTime;
+        Vector3 worldMoveDir = _targetWorldPos - transform.position;
+        Vector3 step = worldMoveDir.normalized * _moveSpeed * Time.deltaTime;
 
         if (worldMoveDir.magnitude <= step.magnitude)
         {
-            transform.position = targetWorldPos;
+            transform.position = _targetWorldPos;
             IsMoving = false;
 
-            var cellType = gridManager.GetCellType(currentGridPos);
-            if (cellType == CellType.River && currentBridge == null)
+            var cellType = _gridManager.GetCellType(_currentGridPos);
+            if (cellType == CellType.River && _currentBridge == null)
             {
-                DeathAction?.Invoke();
+                IsDead = true;
+                OnPlayerDeathAction?.Invoke();
+                //_currentGridPos = _startCell;
                 Debug.Log("落下！");
+                return;
             }
 
             // 川セル以外に移動したら親子付け解除
-            if (cellType != CellType.River && currentBridge != null)
+            if (cellType != CellType.River && _currentBridge != null)
             {
                 //Vector3 worldPos = transform.position;
                 transform.SetParent(null);
                 //transform.position = worldPos;
-                currentBridge = null;
+                _currentBridge = null;
                 Debug.Log("橋から降りる（セル判定）");
             }
 
             // 描画範囲の更新
-            gridManager.UpdateRenderArea();
+            _gridManager.UpdateRenderArea();
         }
         else
         {
             transform.position += step;
         }
+    }
+
+    private void ResetPosition()
+    {
+        _currentGridPos = _startCell;
+        _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
+        _targetWorldPos.y = _fixedY;
+        transform.position = _targetWorldPos;   
+        IsMoving = true;
+        IsMoving = false;
+        IsDead = false;
+        transform.SetParent(null);
+        _currentBridge = null;
+        _currentCellScore = _startCell;
+        ScoreManager.instance.ResetScore();
     }
 }
