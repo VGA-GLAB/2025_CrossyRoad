@@ -1,3 +1,4 @@
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _maxScore;
     [SerializeField] private TextMeshProUGUI _currentScore;
     [SerializeField] private Button _resetButton;
+    private string _saveFilePath;
 
     private void Awake()
     {
@@ -22,6 +24,9 @@ public class ScoreManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+        //保存パスを決定
+        _saveFilePath = Path.Combine(Application.persistentDataPath, "scoreData.json");
+        LoadMaxScore();
     }
 
     private void Start()
@@ -48,14 +53,46 @@ public class ScoreManager : MonoBehaviour
         if (CurrentScore > MaxScore)
         {
             MaxScore = CurrentScore;
+            SaveMaxScore();
         }
         _maxScore.text = "MaxScore : " + MaxScore.ToString();
         _currentScore.text = "Score : " + CurrentScore.ToString();
+    }
+
+    /// <summary>
+    /// 最高スコアを保存する
+    /// </summary>
+    private void SaveMaxScore()
+    {
+        ScoreData data = new ScoreData { maxScore = MaxScore };
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(_saveFilePath, json);
+    }
+
+    private void LoadMaxScore()
+    {
+        if (File.Exists(_saveFilePath))
+        {
+            string json = File.ReadAllText(_saveFilePath);
+            ScoreData data = JsonUtility.FromJson<ScoreData>(json);
+            MaxScore = data.maxScore;
+        }
+        else
+        {
+            Debug.Log("保存ファイルなし");
+            MaxScore = 0;
+        }
     }
 
     public void ResetScore()
     {
         CurrentScore = 0;
         Debug.Log("スコアリセット！");
+    }
+
+    [System.Serializable]
+    private class ScoreData
+    {
+        public int maxScore;
     }
 }
