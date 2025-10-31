@@ -39,7 +39,9 @@ public class PlayerMove : MonoBehaviour
     [Header("飛ぶ高さ")]
     [SerializeField] private float jumpHight; //0.3fがちょうどいい
     private bool isJumping; //飛んでいるアニメーション中
-    
+    private bool isInputReservation; //入力予約
+    private Vector3Int inputReservation; //入力予約時の移動方向を保持
+
     /// <summary>
     /// 現在のグリッド座標
     /// </summary>
@@ -123,7 +125,9 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     public void TryMove(Vector2 input)
     {
-        if (IsMoving||IsDead) return;
+        //if (IsMoving||IsDead) return;
+
+        if (IsDead) return;
 
         // 入力ベクトルをグリッド方向に変換
         Vector3Int dir = Vector3Int.zero;
@@ -159,6 +163,14 @@ public class PlayerMove : MonoBehaviour
             OnScoreUpAction?.Invoke();
             Debug.Log("スコアアップ！");
         }
+
+        //入力予約
+        if (isJumping && !isInputReservation)
+        {
+            isInputReservation = true;
+            inputReservation = dir;
+            Debug.Log("アニメーション中に入力予約");
+        }
     }
 
     private void Update()
@@ -176,12 +188,45 @@ public class PlayerMove : MonoBehaviour
         Vector3 worldMoveDir = _targetWorldPos - transform.position;
         Vector3 step = worldMoveDir.normalized * _moveSpeed * Time.deltaTime;
 
+        if (isInputReservation) //入力予約の処理
+        {
+            //一個前のセルを取得する
+            //先のセルが_currentGridPosに入ってるから、前回の入力を引いて上げる
+            var cellType = _gridManager.GetCellType(_currentGridPos - inputReservation);
+            //Raycastで下のコライダーをチェックする
+            if (Physics.Raycast(transform.position + Vector3.down * 0.5f, Vector3.down, out RaycastHit hit, 2f))
+            {
+                if (hit.collider.CompareTag("Bridge"))
+                {
+                    if (cellType != CellType.River && _currentBridge != null)
+                    {
+                        isInputReservation = false;
+                        transform.SetParent(null);
+                        _currentBridge = null;
+                        Debug.Log("橋から降りる（セル判定）");
+                    }
+                }
+                else //橋じゃなかったとき
+                {
+                    if (cellType == CellType.River && _currentBridge == null)
+                    {
+                        isInputReservation = false;
+                        IsDead = true;
+                        OnPlayerDeathAction?.Invoke();
+                        Debug.Log("入力予約による落下");
+                        return;
+                    }
+                }
+            }
+        }
+
         if (worldMoveDir.magnitude <= step.magnitude)
         {
             transform.position = _targetWorldPos;
             IsMoving = false;
 
             isJumping = false; //飛ぶアニメーションを終了
+            isInputReservation = false;
 
             var cellType = _gridManager.GetCellType(_currentGridPos);
             if (cellType == CellType.River && _currentBridge == null)
