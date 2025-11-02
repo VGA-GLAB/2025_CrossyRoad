@@ -6,9 +6,8 @@ using UnityEngine;
 /// </summary>
 public class DynamicObstaclesSpawner : MonoBehaviour
 {
-
-    [Header("スポーン対象の障害物のPrefabリスト")]
-    [SerializeField] private List<GameObject> dynamicObstacles;                 // 複数の車種などを登録しておき、ランダムに選択してスポーンする
+    // 基底Configから渡される生成対象Prefab群
+    private IReadOnlyList<GameObject> spawnTargetPrefabs;
 
     [Header("スポーン対象の障害物の移動速度（レーン単位で固定）")]
     [SerializeField] private float moveSpeed                    = 10.0f;
@@ -29,6 +28,28 @@ public class DynamicObstaclesSpawner : MonoBehaviour
     // 次回スポーンまでの残り時間
     private float spawnTimer;
 
+    /// <summary>
+    /// 初期化メソッド
+    /// ScriptableObject → RuntimeConfig で設定された値を反映する
+    /// メンバー変数を初期化する
+    /// </summary>
+    // GridManager から呼ばれる
+    public void Initialize(DynamicObstaclesSpawnerConfig config)
+    {
+        // ScriptableObject → RuntimeConfig で設定された値を反映
+        spawnTargetPrefabs = config.SpawnTargetPrefabs;
+        moveSpeed = config.MoveSpeed;
+        moveRight = config.MoveRight;
+        baseSpawnInterval = config.BaseSpawnInterval;
+        spawnIntervalJitter = config.SpawnIntervalJitter;
+        minBatchCount = config.MinBatchCount;
+        maxBatchCount = config.MaxBatchCount;
+        batchSpacing = config.BatchSpacing;
+        lifeTime = config.LifeTime;
+
+        // 初回スポーンタイマーをリセット
+        spawnTimer = GetNextSpawnInterval();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -67,19 +88,17 @@ public class DynamicObstaclesSpawner : MonoBehaviour
     /// </summary>
     private void SpawnBatch()
     {
+        // 未設定時はリターン
+        if (spawnTargetPrefabs == null || spawnTargetPrefabs.Count == 0)
+            return;
+
         // 今回の編隊の台数を決定
         int batchCount = Random.Range(minBatchCount, maxBatchCount + 1);
 
         for (int i = 0; i < batchCount; i++)
         {
-            // プレハブが未登録の場合は何もしない
-            if (dynamicObstacles == null || dynamicObstacles.Count == 0)
-            {
-                return;
-            }
-
             // Prefabをランダムに選択
-            GameObject prefab = dynamicObstacles[Random.Range(0, dynamicObstacles.Count)];
+            GameObject prefab = spawnTargetPrefabs[Random.Range(0, spawnTargetPrefabs.Count)];
 
             // スポーン位置を決定
             Vector3 spawnPos = transform.position;
@@ -91,6 +110,9 @@ public class DynamicObstaclesSpawner : MonoBehaviour
             {
                 spawnPos.x += i * batchSpacing;     // 左向きなら右側に並べる
             }
+
+            // Y 軸に 1.00f 持ち上げて生成
+            spawnPos += new Vector3(0f, 1.00f, 0f);
 
             // インスタンス生成
             GameObject instance = Instantiate(prefab, spawnPos, Quaternion.identity);

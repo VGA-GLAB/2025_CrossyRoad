@@ -324,6 +324,8 @@ public class GridManager : MonoBehaviour
 
         // ToDo:Spawnerの種類が増えたら追加する
         // 共通インターフェース ISpawner を導入する手もあるが柔軟性を失うのでこのスタイルでいいかも
+
+        // 橋のスポナー
         if (entry.Config is BridgeSpawnerConfig bridgeConfig)
         {
             var bridgeSpawn = entry.Instance.GetComponent<BridgeSpawn>();
@@ -332,6 +334,17 @@ public class GridManager : MonoBehaviour
                 bridgeSpawn.Initialize(bridgeConfig);
             }
         }
+
+        // 動的障害物のスポナー
+        if (entry.Config is DynamicObstaclesSpawnerConfig dynamicConfig)
+        {
+            var dynamicSpawner = entry.Instance.GetComponent<DynamicObstaclesSpawner>();
+            if (dynamicSpawner != null)
+            {
+                dynamicSpawner.Initialize(dynamicConfig);
+            }
+        }
+
     }
 
     /// <summary>
@@ -441,11 +454,12 @@ public class GridManager : MonoBehaviour
                 foreach (var entry in spawnerEntries)
                 {
                     // Note: 補正の件で、Y=-1で検索。煩雑化してるので後ほど仕様整理して修正する。
+                    // スポナーは左右端に常に存在する必要があるのでX軸は判定から外す
                     pos.y = -1;
-                    if (entry.GridPos == pos)
+                    if (entry.GridPos.z == pos.z && entry.GridPos.y == pos.y)
                     {
                         CreateSpawnerInstance(entry);
-                        newVisible.Add(pos);
+                        newVisible.Add(entry.GridPos);
                     }
                 }
             }
