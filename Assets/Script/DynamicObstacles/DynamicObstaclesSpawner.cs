@@ -25,8 +25,8 @@ public class DynamicObstaclesSpawner : MonoBehaviour
     [Header("Destroyするまでの時間")]
     [SerializeField] private float lifeTime                     = 12.0f;        // 生成後に自動破棄するまでの時間
 
-    // 次回スポーンまでの残り時間
-    private float spawnTimer;
+    // 次回スポーン予定時刻（絶対時間）
+    private float nextSpawnTime;
 
     /// <summary>
     /// 初期化メソッド
@@ -48,39 +48,62 @@ public class DynamicObstaclesSpawner : MonoBehaviour
         lifeTime = config.LifeTime;
 
         // 初回スポーンタイマーをリセット
-        spawnTimer = GetNextSpawnInterval();
+        SetNextSpawnTime();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // 最初のスポーンまでの時間を決定
-        spawnTimer = GetNextSpawnInterval();
+        SetNextSpawnTime();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // 経過時間を減算
-        spawnTimer -= Time.deltaTime;
-
-        // タイマーが0以下になったらスポーン処理
-        if (spawnTimer <= 0f)
+        //インゲーム中のみ動的障害物を生成する
+        if (GameManager.instance != null && !GameManager.instance.IsInGamePlay) return;
+        
+        // 予定時刻(絶対時間)が過ぎたらスポーン
+        if (Time.time >= nextSpawnTime)
         {
+            Debug.Log($"[Update] Time={Time.time:F2}, nextSpawnTime={nextSpawnTime:F2} → SpawnBatch()");
             SpawnBatch();
-            // 次回スポーンまでの時間を再設定
-            spawnTimer = GetNextSpawnInterval();
+            SetNextSpawnTime();
         }
     }
 
     /// <summary>
-    /// 次回スポーンまでの時間を決定する。
-    /// baseSpawnInterval ± spawnIntervalJitter の範囲でランダムに決定。
+    /// 次回のスポーン時刻を計算して設定する。
+    /// - 基本間隔(baseSpawnInterval)にランダムな揺らぎ(spawnIntervalJitter)を加える
+    /// - その値を BaseInterval の整数倍に丸めてリズムを揃える
+    /// - 前回の nextSpawnTime から加算することで、必ず現在時刻より後に設定される
+    ///   （これにより「同じフレームで連続スポーンする」問題を防ぐ）
     /// </summary>
-    private float GetNextSpawnInterval()
+    private void SetNextSpawnTime()
     {
-        return Random.Range(baseSpawnInterval - spawnIntervalJitter,
-                            baseSpawnInterval + spawnIntervalJitter);
+        // ランダムに間隔を決定
+        float raw = Random.Range(baseSpawnInterval - spawnIntervalJitter,
+                             baseSpawnInterval + spawnIntervalJitter);
+
+        // BaseInterval の整数倍に丸める
+        float roundedInterval = Mathf.Max(
+            SpawnerConstants.BaseInterval,
+            Mathf.Round(raw / SpawnerConstants.BaseInterval) * SpawnerConstants.BaseInterval
+        );
+
+        // 前回の nextSpawnTime を基準に加算
+        //  - もし nextSpawnTime が過去にある場合は「現在時刻 + interval」
+        //  - まだ未来に残っている場合は「前回予定 + interval」
+        //    こうすることで必ず「現在より後の時刻」に設定される
+        if (nextSpawnTime < Time.time)
+        {
+            nextSpawnTime = Time.time + roundedInterval;
+        }
+        else
+        {
+            nextSpawnTime += roundedInterval;
+        }
     }
 
     /// <summary>
@@ -88,6 +111,8 @@ public class DynamicObstaclesSpawner : MonoBehaviour
     /// </summary>
     private void SpawnBatch()
     {
+        Debug.Log($"[SpawnBatch] Time={Time.time:F2}, batchCount={minBatchCount}-{maxBatchCount}");
+        
         // 未設定時はリターン
         if (spawnTargetPrefabs == null || spawnTargetPrefabs.Count == 0)
             return;
@@ -110,6 +135,9 @@ public class DynamicObstaclesSpawner : MonoBehaviour
             {
                 spawnPos.x += i * batchSpacing;     // 左向きなら右側に並べる
             }
+
+            // ToDo: 可能であれば位置ハブはプレハブのつくりで吸収し、
+            // Y軸のオフセット補正処理はおこなわないようにしたい
 
             // Y 軸に 1.00f 持ち上げて生成
             spawnPos += new Vector3(0f, 1.00f, 0f);
