@@ -67,7 +67,6 @@ public class DynamicObstaclesSpawner : MonoBehaviour
         // 予定時刻(絶対時間)が過ぎたらスポーン
         if (Time.time >= nextSpawnTime)
         {
-            Debug.Log($"[Update] Time={Time.time:F2}, nextSpawnTime={nextSpawnTime:F2} → SpawnBatch()");
             SpawnBatch();
             SetNextSpawnTime();
         }
@@ -111,8 +110,6 @@ public class DynamicObstaclesSpawner : MonoBehaviour
     /// </summary>
     private void SpawnBatch()
     {
-        Debug.Log($"[SpawnBatch] Time={Time.time:F2}, batchCount={minBatchCount}-{maxBatchCount}");
-        
         // 未設定時はリターン
         if (spawnTargetPrefabs == null || spawnTargetPrefabs.Count == 0)
             return;
