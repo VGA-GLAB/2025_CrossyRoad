@@ -16,4 +16,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e93d397a63222304ea40a846acb86b1b, type: 2}
   - {fileID: 11400000, guid: e93d397a63222304ea40a846acb86b1b, type: 2}
   - {fileID: 11400000, guid: e93d397a63222304ea40a846acb86b1b, type: 2}
-  difficulty: 32
+  difficultyAppear: 32
+  difficultyCost: 3

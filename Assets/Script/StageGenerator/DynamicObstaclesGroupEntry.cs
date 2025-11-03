@@ -8,12 +8,14 @@ using System.Collections.Generic;
 /// </summary>
 public class DynamicObstaclesGroupEntry
 {
-    public byte difficulty;
+    public byte difficultyAppear;
+    public byte difficultyCost;
     public List<DynamicObstaclesSpawnerConfig> obstacleConfigs;
 
-    public DynamicObstaclesGroupEntry(byte difficulty, List<DynamicObstaclesSpawnerConfig> obstacleConfigs)
+    public DynamicObstaclesGroupEntry(byte difficultyAppear, byte difficultyCost, List<DynamicObstaclesSpawnerConfig> obstacleConfigs)
     {
-        this.difficulty = difficulty;
+        this.difficultyAppear = difficultyAppear;
+        this.difficultyCost = difficultyCost;
         this.obstacleConfigs = obstacleConfigs;
     }
 }

@@ -9,12 +9,14 @@ using UnityEngine;
 /// </summary>
 public class BridgeSpawnerGroupEntry
 {
-    public byte difficulty;
+    public byte difficultyAppear;
+    public byte difficultyCost;
     public List<BridgeSpawnerConfig> bridgeConfigs;
 
-    public BridgeSpawnerGroupEntry(byte difficulty, List<BridgeSpawnerConfig> bridgeConfigs)
+    public BridgeSpawnerGroupEntry(byte difficultyAppear, byte difficultyCost, List<BridgeSpawnerConfig> bridgeConfigs)
     {
-        this.difficulty = difficulty;
+        this.difficultyAppear = difficultyAppear;
+        this.difficultyCost = difficultyCost;
         this.bridgeConfigs = bridgeConfigs;
     }
 }

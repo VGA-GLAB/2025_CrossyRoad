@@ -23,5 +23,6 @@ public class BridgeSpawnerGroupConfigSO : ScriptableObject
     public List<BridgeSpawnerConfigSO> bridgeConfigs;
 
     [Tooltip("このグループ全体の難易度レベル")]
-    public byte difficulty;         // 難易度は0～255の範囲
+    public byte difficultyAppear;       // このグループが登場する進行度(0～255の範囲)
+    public byte difficultyCost;         // このギミックのコスト(0～255の範囲)
 }

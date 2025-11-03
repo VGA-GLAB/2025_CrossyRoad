@@ -15,4 +15,5 @@ MonoBehaviour:
   bridgeConfigs:
   - {fileID: 11400000, guid: 2d38d14e5c294f647ae999dbd1094c74, type: 2}
   - {fileID: 11400000, guid: 2d38d14e5c294f647ae999dbd1094c74, type: 2}
-  difficulty: 64
+  difficultyAppear: 64
+  difficultyCost: 4

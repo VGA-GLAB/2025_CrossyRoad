@@ -23,20 +23,23 @@ public class StageGenerator : MonoBehaviour
 
     // プレイ時間上限（Zマス数）難易度が上限に到達する座標
     // 上限以降は常にMAX値となる
+    [Header("難易度スケーリング")]
+    [Tooltip("難易度が上限に到達するZマス座標")]
     [SerializeField] private int maxDepth = 256;
-
-    // チャンクの基礎難易度量
-    [SerializeField] private float baseDensity = 1f;
-
-    // 難易度255に向けて増える係数
-    [SerializeField] private float densitySlope = 0.05f;
+    [Tooltip("配置する障害物の下限 (maxDepthに応じてスケールする総コストの下限)")]
+    [SerializeField] private float minDifficultyTotalCost = 1;
+    [Tooltip("配置する障害物の上限 (maxDepthに応じてスケールする総コストの上限)")]
+    [SerializeField] private float maxDifficultyTotalCost = 16;
 
     // 静的障害物スケール用
     // 難易度下限の静的障害物の密度
+    [Tooltip("難易度下限の静的障害物の密度 (maxDepthに応じてスケールする密度)")]
     [SerializeField] private float minStaticDensity = 0.05f;
     // 難易度上限の静的障害物の密度
+    [Tooltip("難易度上限の静的障害物の密度 (maxDepthに応じてスケールする密度)")]
     [SerializeField] private float maxStaticDensity = 0.30f;
     // 橋・動的障害物の配置状況に応じてさらに加算される密度
+    [Tooltip("橋・動的障害物の配置状況に応じてさらに加算される密度")]
     [SerializeField] private float bonusStaticFactor = 0.10f;
 
     // 実行時用 Config のキャッシュ
@@ -62,7 +65,7 @@ public class StageGenerator : MonoBehaviour
                 configs.Add(configSO.ToRuntimeConfig());
             }
 
-            var entry = new BridgeSpawnerGroupEntry(groupSO.difficulty, configs);
+            var entry = new BridgeSpawnerGroupEntry(groupSO.difficultyAppear, groupSO.difficultyCost, configs);
             bridgeGroupEntries.Add(entry);
         }
 
@@ -75,7 +78,7 @@ public class StageGenerator : MonoBehaviour
             {
                 configs.Add(configSO.ToRuntimeConfig());
             }
-            dynamicGroupEntries.Add(new DynamicObstaclesGroupEntry(groupSO.difficulty, configs));
+            dynamicGroupEntries.Add(new DynamicObstaclesGroupEntry(groupSO.difficultyAppear, groupSO.difficultyCost, configs));
         }
     }
 
@@ -95,17 +98,22 @@ public class StageGenerator : MonoBehaviour
     /// <returns>生成された StageData</returns>
     public StageData GenerateChunk(int worldZ)
     {
+        // 返却するStageDataを生成
         var stageData = new StageData
         {
             width = this.width,
             depth = chunkSize
         };
 
+        // 候補リスト初期化
+        List<int> candidateLanes = Enumerable.Range(worldZ, chunkSize).ToList();
+
         // 難易度を進行度に応じて0～255にスケーリングして保持
         int difficulty = CalculateDifficulty(worldZ);
 
         // チャンク内で想定される合計難易度（密度目標）
-        float expectedTotal = baseDensity + densitySlope * difficulty;
+        float ratio = Mathf.Clamp01((float)worldZ / maxDepth);
+        float expectedTotal = Mathf.Lerp(minDifficultyTotalCost, maxDifficultyTotalCost, ratio);
         float accumulated = 0f;
 
         // 1. 初期化（Grassで埋める）
@@ -120,24 +128,27 @@ public class StageGenerator : MonoBehaviour
 
         // 交互配置ループ：橋と動的障害物を偏りなく配置試行
         // ループは余裕を持って chunkSize 回まで試す（充分に打ち切れる）
+        int retryCountLimit = chunkSize / 2;
         for (int attempt = 0; attempt < chunkSize; attempt++)
         {
             if (accumulated >= expectedTotal) break;
 
             bool placed = false;
-            if (attempt % 2 == 0)
+            if (attempt % 2 == 0)       // 配置すべきものを交互に配置(どちらか一方が偏って配置されないように)
             {
-                placed = TryPlaceBridges(stageData, worldZ, difficulty, out float costDelta);
+                // 3. 橋の配置
+                placed = TryPlaceBridges(candidateLanes, stageData, worldZ, difficulty, out float costDelta);
                 if (placed) accumulated += costDelta;
             }
             else
             {
-                placed = TryPlaceDynamicObstacles(stageData, worldZ, difficulty, out float costDelta);
+                // 4. 動的障害物の配置
+                placed = TryPlaceDynamicObstacles(candidateLanes, stageData, worldZ, difficulty, out float costDelta);
                 if (placed) accumulated += costDelta;
             }
 
             // どちらも置けない状況が続くなら早期終了
-            if (!placed && attempt > 8 && accumulated == 0f)
+            if (!placed && attempt > retryCountLimit && accumulated == 0f)
             {
                 // 初期数回の試行で何も置けないなら諦める
                 break;
@@ -148,6 +159,18 @@ public class StageGenerator : MonoBehaviour
         PlaceStaticObstacles(stageData, worldZ);
 
         return stageData;
+    }
+
+    /// <summary>
+    /// レーン生成管理の候補リストから範囲指定で項目を削除する。
+    /// </summary>
+    private void ReserveLanes(List<int> candidateLanes, int startZ, int width)
+    {
+        for (int z = startZ; z < startZ + width; z++)
+            candidateLanes.Remove(z);
+
+        // 後バッファも削除
+        candidateLanes.Remove(startZ + width);
     }
 
     private void AddLane(StageData stageData, int z, CellType type)
@@ -167,17 +190,17 @@ public class StageGenerator : MonoBehaviour
 
     /// <summary>
     /// 橋配置の試行。
-    /// - 難易度フィルタリング: entry.difficulty <= difficulty
+    /// - 難易度フィルタリング: entry.difficultyAppear <= difficulty
     /// - 候補ライン探索: requiredLines 連続の Grass を確保
     /// - 配置: 連続レーンを River に変更、前後1ラインを Grass 固定、SpawnerConfig 追加
     /// - 戻り値: 配置の成否と累積コストの増分
     /// </summary>
-    private bool TryPlaceBridges(StageData stageData, int worldZ, int difficulty, out float costDelta)
+    private bool TryPlaceBridges(List<int> candidateLanes, StageData stageData, int worldZ, int difficulty, out float costDelta)
     {
         costDelta = 0f;
 
         // フィルタリング
-        var groupCandidates = bridgeGroupEntries.Where(e => e.difficulty <= difficulty).ToList();
+        var groupCandidates = bridgeGroupEntries.Where(e => e.difficultyAppear <= difficulty).ToList();
         if (groupCandidates.Count == 0) return false;
 
         // グループ&コンフィグ選択（ランダム）
@@ -188,7 +211,10 @@ public class StageGenerator : MonoBehaviour
         int totalNeeded = bridgeWidth + 1;              // 後ろにGrassバッファを1レーン要求
 
         // 候補開始Zを収集
-        var possibleStarts = FindContiguousGrassStarts(stageData, worldZ, totalNeeded);
+        var possibleStarts = candidateLanes
+            .Where(z => Enumerable.Range(z, totalNeeded).All(candidateLanes.Contains))
+            .ToList();
+
         if (possibleStarts.Count == 0) return false;
 
         // 開始位置選択
@@ -218,7 +244,10 @@ public class StageGenerator : MonoBehaviour
             spawnerZ++;
         }
 
-        costDelta = group.difficulty;
+        // 生成レーンを記録するため、候補リストから削除
+        ReserveLanes(candidateLanes, startZ, bridgeWidth);
+
+        costDelta = group.difficultyCost;
         return true;
     }
 
@@ -230,11 +259,11 @@ public class StageGenerator : MonoBehaviour
     /// - 配置: 連続レーンを Road に変更、前後1ラインを Grass 固定、SpawnerConfig 追加
     /// - 戻り値: 配置の成否と累積コストの増分
     /// </summary>
-    private bool TryPlaceDynamicObstacles(StageData stageData, int worldZ, int difficulty, out float costDelta)
+    private bool TryPlaceDynamicObstacles(List<int> candidateLanes, StageData stageData, int worldZ, int difficulty, out float costDelta)
     {
         costDelta = 0f;
 
-        var groupCandidates = dynamicGroupEntries.Where(e => e.difficulty <= difficulty).ToList();
+        var groupCandidates = dynamicGroupEntries.Where(e => e.difficultyAppear <= difficulty).ToList();
         if (groupCandidates.Count == 0) return false;
 
         var group = groupCandidates[Random.Range(0, groupCandidates.Count)];
@@ -243,8 +272,11 @@ public class StageGenerator : MonoBehaviour
         int laneWidth = group.obstacleConfigs.Count;    // 連続で車道/動的レーンを作る幅。なければ1に変更してもOK。
         int totalNeeded = laneWidth + 1;                // 後ろにGrassバッファを1レーン要求
 
-        // まず安全に確保できる連続Grassを探す（その区間をRoad化する前提）
-        var possibleStarts = FindContiguousGrassStarts(stageData, worldZ, totalNeeded);
+        // 候補から連続領域を探す（その区間をRoad化する前提）
+        var possibleStarts = candidateLanes
+            .Where(z => Enumerable.Range(z, totalNeeded).All(candidateLanes.Contains))
+            .ToList(); 
+        
         if (possibleStarts.Count == 0) return false;
 
         int startZ = possibleStarts[Random.Range(0, possibleStarts.Count)];
@@ -279,7 +311,10 @@ public class StageGenerator : MonoBehaviour
             spawnerZ++;
         }
 
-        costDelta = group.difficulty;
+        // 生成レーンを記録するため、候補リストから削除
+        ReserveLanes(candidateLanes, startZ, laneWidth);
+
+        costDelta = group.difficultyCost;
         return true;
     }
 
@@ -290,6 +325,7 @@ public class StageGenerator : MonoBehaviour
         float t = difficulty / 255f;
 
         // 基本密度を補間
+        // 難易度進行度に応じて minStaticDensity～maxStaticDensity(デフォルト値: 5〜30%) の範囲でスケール
         float baseDensity = Mathf.Lerp(minStaticDensity, maxStaticDensity, t);
 
         // 動的障害物と橋の影響を考慮
@@ -301,14 +337,19 @@ public class StageGenerator : MonoBehaviour
         float obstacleRatio = Mathf.Clamp01(totalObstacleLanes / (float)chunkSize);
 
         // 実効密度
-        float effectiveDensity = baseDensity * (1f - obstacleRatio);
-        effectiveDensity += baseDensity * bonusStaticFactor;
+        // 草原の割合 = 草原レーン数 / チャンクのレーン数
+        float grassRatio = stageData.laneTypes.Count(kv => kv.Value == CellType.Grass) / (float)chunkSize;
+        // bonusStaticFactorを草原の割合でスケールさせ、基本密度に加算
+        float effectiveDensity = baseDensity + bonusStaticFactor * grassRatio;
 
         // 経路確保: ランダムに1列を除外
         int safeColumn = Random.Range(0, width);
 
         // Grass 上に障害物を配置
-        int startZ = (worldZ == 0 ? worldZ + 1 : worldZ);   // ゲーム開始時のスタートレーンは除外する
+        // チャンク境界は経路確保が担保できないので
+        // チャンクのスタートレーンは木の配置を除外する
+
+        int startZ = worldZ + 1;    // チャンク開始レーンは安全地帯とするため木を配置しない
         for (int z = startZ; z < worldZ + chunkSize; z++)
         {
             if (stageData.laneTypes[z] != CellType.Grass) continue;
@@ -317,6 +358,7 @@ public class StageGenerator : MonoBehaviour
             {
                 if (x == safeColumn) continue; // 経路確保
 
+                // 算出した密度で静的障害物を配置
                 if (Random.value < effectiveDensity)
                 {
                     var pos = new Vector3Int(x, 1, z);
