@@ -481,8 +481,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDepth: 256
-  baseDensity: 1
-  densitySlope: 0.05
+  minDifficultyTotalCost: 2
+  maxDifficultyTotalCost: 16
   minStaticDensity: 0.05
   maxStaticDensity: 0.3
   bonusStaticFactor: 0.1
@@ -499,14 +499,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellSize: 1
-  renderWidth: 10
+  renderWidth: 16
   renderDepthForward: 20
   renderDepthBackward: 5
   grassPrefab: {fileID: 8270035575672199909, guid: dfd136c2b073ebc4e8e3ddeace5fa93b, type: 3}
   roadPrefab: {fileID: 66852074560588856, guid: b5da490d1494170428cba87cdbfc08d8, type: 3}
   riverPrefab: {fileID: 3371744852525430483, guid: b2c5d3cfba4670b47b458318cc6014ce, type: 3}
   treePrefab: {fileID: 3554983547509115662, guid: bf3235d0f7809d24c80ed08e9bf1f333, type: 3}
-  gridWidth: 10
+  gridWidth: 16
   gridChunkSize: 16
 --- !u!114 &1802568418
 MonoBehaviour:

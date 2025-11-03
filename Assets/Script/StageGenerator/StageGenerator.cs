@@ -228,15 +228,17 @@ public class StageGenerator : MonoBehaviour
         int spawnerZ = startZ;
         foreach (var cfg in group.bridgeConfigs)
         {
-            // cfg.Position をコピーして、Zだけ startZ に補正
-            var pos = new Vector3Int(cfg.Position.x, -1, spawnerZ);
+            // Z はチャンク内の配置位置、X は進行方向に応じて端を決定
+            int spawnX = cfg.MoveRight ? 0 : stageData.width - 1;
+            var pos = new Vector3Int(spawnX, -1, spawnerZ);
             var newCfg = new BridgeSpawnerConfig(
                 pos,
                 cfg.SpawnerControllerPrefab,
                 cfg.SpawnTargetPrefabs,
                 cfg.SpawnInterval,
                 cfg.BridgeInterval,
-                cfg.BridgeCountPerLane
+                cfg.BridgeCountPerLane,
+                cfg.MoveRight
             );
 
             AddSpawner(stageData, newCfg);
@@ -290,7 +292,9 @@ public class StageGenerator : MonoBehaviour
         int spawnerZ = startZ;
         foreach (var cfg in group.obstacleConfigs)
         {
-            var posSpawner = new Vector3Int(cfg.Position.x, -1, spawnerZ);
+            // Z はチャンク内の配置位置、X は進行方向に応じて端を決定
+            int spawnX = cfg.MoveRight ? 0 : stageData.width - 1;
+            var posSpawner = new Vector3Int(spawnX, -1, spawnerZ);
 
             var newCfg = new DynamicObstaclesSpawnerConfig(
                 posSpawner,

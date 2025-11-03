@@ -125,7 +125,8 @@ public class StageGenerationTestDriver
                     bridgeSpawnerConfig.SpawnTargetPrefabs,
                     bridgeSpawnerConfig.SpawnInterval,
                     bridgeSpawnerConfig.BridgeInterval,
-                    bridgeSpawnerConfig.BridgeCountPerLane
+                    bridgeSpawnerConfig.BridgeCountPerLane,
+                    bridgeSpawnerConfig.MoveRight
                 );
 
                 data.spawnerConfigs.Add(spawner);

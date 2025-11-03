@@ -8,6 +8,9 @@ public class BridgeSpawn : MonoBehaviour
     [Header("橋の生成間隔")]
     [SerializeField] private float spawnIntervalSeconds;
 
+    [Header("進行方向設定")]
+    [SerializeField] private bool moveRight = true;
+
     // 次回スポーン予定時刻（絶対時間）
     private float nextSpawnTime;
 
@@ -21,6 +24,7 @@ public class BridgeSpawn : MonoBehaviour
 
         // BridgeSpawnerConfig 値の反映
         spawnIntervalSeconds = config.SpawnInterval;
+        moveRight = config.MoveRight;
 
         // Note: bridgeObjの複数指定を元実装からとりこんだあとは
         // bridges = config.SpawnTargetPrefabs;に修正予定
@@ -77,7 +81,14 @@ public class BridgeSpawn : MonoBehaviour
         // Y 軸に 0.45f 持ち上げて生成
         Vector3 spawnPos = transform.position + new Vector3(0f, 0.451f, 0f);
 
-        Instantiate(bridgeObj, spawnPos, Quaternion.identity);    // 現在の位置に橋を生成
+        GameObject instance = Instantiate(bridgeObj, spawnPos, Quaternion.identity);    // 現在の位置に橋を生成
+
+        // MovingBridge に初期化パラメータを渡す
+        var mover = instance.GetComponent<MovingBridge>();
+        if (mover != null)
+        {
+            mover.Initialize(moveRight);
+        }
 
         // 次回のスポーン予定時刻を設定
         SetNextSpawnTime();

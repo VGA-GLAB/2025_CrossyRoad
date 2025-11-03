@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2c42f4dc1863f9148acf37d35fd2d3fe, type: 3}
-  m_Name: BridgeSpawnerConfigSO_Default
+  m_Name: BridgeSpawnerRightConfigSO_Default
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0, z: 0}
   spawnerControllerPrefab: {fileID: 8619366110931969009, guid: a8d93e59d04c8724dac7ec91ed9bb535, type: 3}
@@ -21,4 +21,3 @@ MonoBehaviour:
   spawnInterval: 2
   bridgeInterval: 1
   bridgeCountPerLane: 4
-  moveRight: 1

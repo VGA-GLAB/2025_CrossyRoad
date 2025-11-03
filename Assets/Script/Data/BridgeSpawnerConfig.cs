@@ -25,6 +25,8 @@ public sealed class BridgeSpawnerConfig : SpawnerConfigBase
     /// </summary>
     public int BridgeCountPerLane { get; }
 
+    public bool MoveRight { get; }
+
     /// <summary>
     /// コンストラクタ。
     /// Config は不変オブジェクトとして扱うため、すべての値をコンストラクタで設定する。
@@ -35,11 +37,13 @@ public sealed class BridgeSpawnerConfig : SpawnerConfigBase
         IReadOnlyList<GameObject> spawnTargetPrefabs,
         float spawnInterval,
         float bridgeInterval,
-        int bridgeCountPerLane
+        int bridgeCountPerLane,
+        bool moveRight
     ) : base(position, spawnerControllerPrefab, spawnTargetPrefabs)
     {
         SpawnInterval = spawnInterval;
         BridgeInterval = bridgeInterval;
         BridgeCountPerLane = bridgeCountPerLane;
+        MoveRight = moveRight;
     }
 }
