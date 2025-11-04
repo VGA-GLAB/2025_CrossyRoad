@@ -48,6 +48,7 @@ public class ResaltManager : MonoBehaviour
     {
         _playerMove.OnPlayerDeathAction -= OnPlayerDeath;
     }
+
     private void OnPlayerDeath()
     {
         _inGameCurrentScore.gameObject.SetActive(false);
@@ -56,10 +57,12 @@ public class ResaltManager : MonoBehaviour
         _scorePanel.gameObject.SetActive(true);
         _maxScoreText.gameObject.SetActive(true);
         _currentScoreText.gameObject.SetActive(true);
-        _gameOverText.text = "GAME OVER";
-        _maxScoreText.text = "最高　記録 :" + ScoreManager.instance.MaxScore.ToString();
-        _currentScoreText.text = "今回 :" + ScoreManager.instance.CurrentScore.ToString();
         _retryButton.gameObject.SetActive(true);
+        _gameOverText.text = "GAME OVER";
+        int max = ScoreManager.instance.MaxScore;
+        int current = ScoreManager.instance.CurrentScore;
+        _maxScoreText.text = "最高　記録 :" + max;
+        _currentScoreText.text = "今回 :" + current;
     }
 
     private void RetryGame()
