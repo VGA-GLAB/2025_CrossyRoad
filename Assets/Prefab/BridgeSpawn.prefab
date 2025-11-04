@@ -67,4 +67,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bridgeObj: {fileID: 4684303592860879409, guid: eae1240bebf546a429172aa647976250, type: 3}
-  spawnTime: 1
+  spawnIntervalSeconds: 1

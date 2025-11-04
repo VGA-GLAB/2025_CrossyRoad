@@ -34,6 +34,9 @@ public class BridgeSpawnerConfigSO : ScriptableObject
     [Header("1レーンに生成する橋の数")]
     public int bridgeCountPerLane;
 
+    [Header("進行方向")]
+    public bool moveRight;
+
     /// <summary>
     /// ScriptableObject に保存された値をもとに、
     /// 実行時専用の <see cref="BridgeSpawnerConfig"/> を生成する。
@@ -53,7 +56,8 @@ public class BridgeSpawnerConfigSO : ScriptableObject
             bridgePrefabs,
             spawnInterval,
             bridgeInterval,
-            bridgeCountPerLane
+            bridgeCountPerLane,
+            moveRight
         );
     }
 }

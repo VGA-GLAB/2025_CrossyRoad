@@ -37,7 +37,17 @@ public class GridManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // 初期化処理をここに記述予定
+        // StageGenerator をアタッチしている前提
+        stageGenerator = GetComponent<StageGenerator>();
+        stageGenerator.Initialize(gridWidth, gridChunkSize);
+
+        // 最初のチャンクを生成
+        GenerateChunkAt(0);
+        lastGeneratedZ += gridChunkSize;
+
+        // プレイヤー初期セルを登録
+        Vector3Int startCell = new Vector3Int(1, 0, 1);
+        UpdatePlayerCell(startCell);
     }
 
     // Update is called once per frame
@@ -324,6 +334,8 @@ public class GridManager : MonoBehaviour
 
         // ToDo:Spawnerの種類が増えたら追加する
         // 共通インターフェース ISpawner を導入する手もあるが柔軟性を失うのでこのスタイルでいいかも
+
+        // 橋のスポナー
         if (entry.Config is BridgeSpawnerConfig bridgeConfig)
         {
             var bridgeSpawn = entry.Instance.GetComponent<BridgeSpawn>();
@@ -332,6 +344,17 @@ public class GridManager : MonoBehaviour
                 bridgeSpawn.Initialize(bridgeConfig);
             }
         }
+
+        // 動的障害物のスポナー
+        if (entry.Config is DynamicObstaclesSpawnerConfig dynamicConfig)
+        {
+            var dynamicSpawner = entry.Instance.GetComponent<DynamicObstaclesSpawner>();
+            if (dynamicSpawner != null)
+            {
+                dynamicSpawner.Initialize(dynamicConfig);
+            }
+        }
+
     }
 
     /// <summary>
@@ -441,11 +464,12 @@ public class GridManager : MonoBehaviour
                 foreach (var entry in spawnerEntries)
                 {
                     // Note: 補正の件で、Y=-1で検索。煩雑化してるので後ほど仕様整理して修正する。
+                    // スポナーは左右端に常に存在する必要があるのでX軸は判定から外す
                     pos.y = -1;
-                    if (entry.GridPos == pos)
+                    if (entry.GridPos.z == pos.z && entry.GridPos.y == pos.y)
                     {
                         CreateSpawnerInstance(entry);
-                        newVisible.Add(pos);
+                        newVisible.Add(entry.GridPos);
                     }
                 }
             }
@@ -483,14 +507,109 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 指定した worldZ のチャンクを生成し、内部データに統合してシーンに反映する
+    /// </summary>
+    private void GenerateChunkAt(int worldZ)
+    {
+        // StageData を生成
+        StageData data = stageGenerator.GenerateChunk(worldZ);
+
+        // 内部データに統合
+        foreach (var lane in data.laneTypes)
+        {
+            for (int x = 0; x < data.width; x++)
+            {
+                Vector3Int gridPos = new Vector3Int(x, 0, lane.Key);
+                terrainCells[gridPos] = lane.Value;
+            }
+        }
+
+        foreach (var obstacle in data.staticObstacles)
+        {
+            staticObstacleCells[obstacle.Key] = obstacle.Value;
+        }
+
+        foreach (var config in data.spawnerConfigs)
+        {
+            spawnerEntries.Add(new SpawnerEntry(config));
+        }
+
+        // シーンに反映
+        BuildChunkVisuals(data, worldZ);
+    }
+
+    /// <summary>
+    /// StageData をもとにシーンにプレハブを配置する
+    /// </summary>
+    private void BuildChunkVisuals(StageData data, int worldZ)
+    {
+        // 地形
+        foreach (var lane in data.laneTypes)
+        {
+            int z = lane.Key;
+            CellType type = lane.Value;
+            for (int x = 0; x < data.width; x++)
+            {
+                Vector3Int gridPos = new Vector3Int(x, 0, z);
+                CreateTerrainPrefab(gridPos, type);
+            }
+        }
+
+        // 静的障害物
+        foreach (var obstacle in data.staticObstacles)
+        {
+            Vector3Int gridPos = obstacle.Key;
+            CreateObstaclePrefab(gridPos, obstacle.Value);
+        }
+
+        // スポナー
+        foreach (var entry in spawnerEntries)
+        {
+            if (entry.Instance == null)
+            {
+                CreateSpawnerInstance(entry);
+            }
+        }
+    }
+
+    /// <summary>
+    /// プレイヤーの進行に応じてチャンク生成と描画更新を行う
+    /// </summary>
+    public void UpdateStageFlow()
+    {
+        // プレイヤーの現在セル位置を更新
+        //playerCell = WorldToGrid(player.transform.position);
+
+        // 可視範囲のZ座標を計算
+        int needMinZ = playerCell.z - renderDepthBackward;
+        int needMaxZ = playerCell.z + renderDepthForward;
+
+        // 生成済み範囲をチェックし、不足があればチャンク生成
+        while (lastGeneratedZ <= needMaxZ)
+        {
+            GenerateChunkAt(lastGeneratedZ);
+            lastGeneratedZ += gridChunkSize;
+        }
+
+        // 可視範囲を更新
+        UpdateRenderArea();
+    }
+
     //==================================================
     // 内部状態
     //==================================================
     // プレイヤーの現在セル位置
     private Vector3Int playerCell = Vector3Int.zero;
 
+    // 直近で生成したチャンクの末尾Z位置
+    private int lastGeneratedZ = 0;
+
     // プレイヤーの参照
     private GameObject player;
+
+    // ステージ自動生成の参照
+    private StageGenerator stageGenerator;
 
     //-------------------------------------------------- 
     // 環境情報レイヤー
@@ -509,6 +628,12 @@ public class GridManager : MonoBehaviour
     //
     // 描画領域
     //
+
+    // グリッドのX軸に対する幅(マス単位)
+    [SerializeField] private int gridWidth = 10;
+
+    // チャンクサイズ(マス単位)
+    [SerializeField] private int gridChunkSize = 16;
 
     // 地形レイヤー（プレハブ）
     private Dictionary<Vector3Int, GameObject> terrainPrefabs = new Dictionary<Vector3Int, GameObject>();

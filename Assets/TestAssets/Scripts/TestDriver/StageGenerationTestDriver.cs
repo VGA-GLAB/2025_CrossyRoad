@@ -12,6 +12,8 @@ public class StageGenerationTestDriver
 
     // ScriptableObjectからロードした実行時用Config
     private BridgeSpawnerConfig bridgeSpawnerConfig;
+    private DynamicObstaclesSpawnerConfig dynamicObstaclesSpawnerConfig;
+
 
     /// <summary>
     /// テスト用のステージデータを生成して返す。
@@ -24,14 +26,25 @@ public class StageGenerationTestDriver
     public void Initialize()
     {
         // Resources/SpawnerConfigs/BridgeSpawnerConfigSO_Default.asset をロード
-        var configSO = Resources.Load<BridgeSpawnerConfigSO>("SpawnerConfigs/BridgeSpawnerConfigSO_Default");
-        if (configSO != null)
+        var configBridgeSO = Resources.Load<BridgeSpawnerConfigSO>("SpawnerConfigs/BridgeSpawnerConfigSO_Default");
+        if (configBridgeSO != null)
         {
-            bridgeSpawnerConfig = configSO.ToRuntimeConfig();
+            bridgeSpawnerConfig = configBridgeSO.ToRuntimeConfig();
         }
         else
         {
             Debug.LogError("BridgeSpawnerConfigSO_Default がロードできませんでした。");
+        }
+
+        // Resources/SpawnerConfigs/DynamicObstaclesSpawnerConfigSO_Default.asset をロード
+        var configDynamicObstaclesSO = Resources.Load<DynamicObstaclesSpawnerConfigSO>("SpawnerConfigs/DynamicObstaclesSpawnerConfigSO_Default");
+        if (configDynamicObstaclesSO != null)
+        {
+            dynamicObstaclesSpawnerConfig = configDynamicObstaclesSO.ToRuntimeConfig();
+        }
+        else
+        {
+            Debug.LogError("DynamicObstaclesConfigSO_Default がロードできませんでした。");
         }
     }
 
@@ -53,6 +66,7 @@ public class StageGenerationTestDriver
         data.depth = 100;
 
         // レーンごとの地形を決定
+        int roadLaneIndex = 0;
         for (int z = 0; z < data.depth; z++)
         {
             // Z方向の外周は Empty
@@ -66,7 +80,39 @@ public class StageGenerationTestDriver
             if (z % 3 == 0)
                 data.laneTypes[z] = CellType.Grass;
             else if (z % 3 == 1)
+            {
                 data.laneTypes[z] = CellType.Road;
+
+                // ↓Roadレーンなら DynamicObstaclesSpawnerConfig を登録↓
+                var pos = new Vector3Int(0, -1, z); // Y=-1はSpawner配置用の慣例
+
+                // 交互に左右に配置
+                bool isMoveRight = (roadLaneIndex % 2 == 1);
+                roadLaneIndex++;
+
+                if (!isMoveRight)
+                {
+                    pos += new Vector3Int(data.width - 1, 0, 0); // 右レーンは右端に配置
+                }
+
+                var spawner = new DynamicObstaclesSpawnerConfig(
+                    pos,
+                    dynamicObstaclesSpawnerConfig.SpawnerControllerPrefab,
+                    dynamicObstaclesSpawnerConfig.SpawnTargetPrefabs,
+                    dynamicObstaclesSpawnerConfig.MoveSpeed,
+                    isMoveRight,
+                    dynamicObstaclesSpawnerConfig.BaseSpawnInterval,
+                    dynamicObstaclesSpawnerConfig.SpawnIntervalJitter,
+                    dynamicObstaclesSpawnerConfig.MinBatchCount,
+                    dynamicObstaclesSpawnerConfig.MaxBatchCount,
+                    dynamicObstaclesSpawnerConfig.BatchSpacing,
+                    dynamicObstaclesSpawnerConfig.LifeTime
+                );
+
+                data.spawnerConfigs.Add(spawner);
+                // ↑登録完了↑
+                
+            }
             else
             {
                 data.laneTypes[z] = CellType.River;
@@ -79,7 +125,8 @@ public class StageGenerationTestDriver
                     bridgeSpawnerConfig.SpawnTargetPrefabs,
                     bridgeSpawnerConfig.SpawnInterval,
                     bridgeSpawnerConfig.BridgeInterval,
-                    bridgeSpawnerConfig.BridgeCountPerLane
+                    bridgeSpawnerConfig.BridgeCountPerLane,
+                    bridgeSpawnerConfig.MoveRight
                 );
 
                 data.spawnerConfigs.Add(spawner);
