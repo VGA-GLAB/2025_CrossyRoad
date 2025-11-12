@@ -126,6 +126,18 @@ public class StageGenerator : MonoBehaviour
         // 2. 開始ライン固定
         stageData.laneTypes[worldZ] = CellType.Grass;
 
+        // プレイヤー初期位置となる最初のチャンクだけ安全地帯を拡張
+        if (worldZ == 0)
+        {
+            // Z=1 行目を安全地帯に固定
+            stageData.laneTypes[worldZ + 1] = CellType.Grass;
+            candidateLanes.Remove(worldZ + 1);
+
+            // Z=2 行目も安全地帯に固定
+            stageData.laneTypes[worldZ + 2] = CellType.Grass;
+            candidateLanes.Remove(worldZ + 2);
+        }
+
         // 交互配置ループ：橋と動的障害物を偏りなく配置試行
         // ループは余裕を持って chunkSize 回まで試す（充分に打ち切れる）
         int retryCountLimit = chunkSize / 2;
@@ -157,7 +169,7 @@ public class StageGenerator : MonoBehaviour
 
         // 5. 静的障害物の配置
         PlaceStaticObstacles(stageData, worldZ);
-
+                
         return stageData;
     }
 
@@ -322,6 +334,13 @@ public class StageGenerator : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 静的障害物（木）の配置処理を行う。
+    /// - 難易度に応じた密度計算でランダムに木を配置
+    /// - 経路確保のためランダムに1列を除外
+    /// - チャンク開始行(Z=0)は安全地帯として扱うが、最初のチャンクのみ全面木を配置（外枠表現）
+    /// - その他のGrass行は両端(X=0, X=width-1)に木を強制配置して外枠を形成
+    /// </summary>
     private void PlaceStaticObstacles(StageData stageData, int worldZ)
     {
         // 難易度を0〜1に正規化
@@ -352,8 +371,14 @@ public class StageGenerator : MonoBehaviour
         // Grass 上に障害物を配置
         // チャンク境界は経路確保が担保できないので
         // チャンクのスタートレーンは木の配置を除外する
-
         int startZ = worldZ + 1;    // チャンク開始レーンは安全地帯とするため木を配置しない
+
+        // 最初のチャンクだけはプレイヤー初期位置(Z=1)も安全地帯にするため、さらに除外
+        if (worldZ == 0)
+        {
+            startZ++;
+        }
+
         for (int z = startZ; z < worldZ + chunkSize; z++)
         {
             if (stageData.laneTypes[z] != CellType.Grass) continue;
@@ -370,7 +395,33 @@ public class StageGenerator : MonoBehaviour
                 }
             }
         }
+
+        //==================================================
+        // 外枠ルールの適用
+        // - 最初のチャンクのZ=0行目は全面木配置
+        // - それ以外のGrass行は両端(X=0, X=width-1)に木を強制配置
+        //==================================================
+        for (int z = worldZ; z < worldZ + chunkSize; z++)
+        {
+            if (stageData.laneTypes[z] != CellType.Grass) continue;
+
+            if (worldZ == 0 && z == 0)
+            {
+                // 最初のチャンクのZ=0行目は全面木配置
+                for (int x = 0; x < width; x++)
+                {
+                    stageData.staticObstacles[new Vector3Int(x, 1, z)] = ObstacleType.Tree;
+                }
+            }
+            else
+            {
+                // 両端に木を強制配置
+                stageData.staticObstacles[new Vector3Int(0, 1, z)] = ObstacleType.Tree;
+                stageData.staticObstacles[new Vector3Int(width - 1, 1, z)] = ObstacleType.Tree;
+            }
+        }
     }
+
 
     /// <summary>
     /// worldZ に応じた難易度を 0〜255 で返す。

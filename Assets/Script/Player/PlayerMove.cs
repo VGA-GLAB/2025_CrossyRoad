@@ -72,9 +72,9 @@ public class PlayerMove : MonoBehaviour
         _gridManager = FindAnyObjectByType<GridManager>();
         _gridManager.RegisterPlayer(gameObject);
 
-        // 初期位置を1マス前に進めてスタート
+        // 外周を考慮して、初期位置を1マス前と右に進めてスタート
         _currentGridPos = _gridManager.WorldToGrid(transform.position);
-        _currentGridPos += new Vector3Int(1, 0, 2);
+        _currentGridPos += new Vector3Int(2, 0, 2);
 
         // ワールド座標に変換して配置
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
