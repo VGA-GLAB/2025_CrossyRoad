@@ -133,16 +133,22 @@ public class PlayerMove : MonoBehaviour
 
         if (dir == Vector3Int.zero) return;
 
+        // 次のマス座標を計算
+        Vector3Int nextGridPos = _currentGridPos + dir;
+        var cellType = _gridManager.GetCellType(nextGridPos);
+
+        // セルが木または空なら入力キャンセル
+        if (cellType == CellType.Occupied || cellType == CellType.Empty)
+        {
+            return;
+        }
+
         // 橋の上にいる場合は一旦解除
         if (_currentBridge != null)
         {
             transform.SetParent(null);
             _currentBridge = null;
         }
-
-        // 次のマス座標を計算
-        Vector3Int nextGridPos = _currentGridPos + dir;
-        var cellType = _gridManager.GetCellType(nextGridPos);
 
         // ワールド座標に変換
         _targetWorldPos = _gridManager.GridToWorld(nextGridPos);
@@ -238,8 +244,9 @@ public class PlayerMove : MonoBehaviour
                 Debug.Log("橋から離れた（陸地に到達）");
             }
 
-            // 表示範囲を更新
-            _gridManager.UpdateRenderArea();
+            // プレイヤー位置、表示範囲を更新
+            _gridManager.UpdatePlayerCell(_currentGridPos);
+            _gridManager.UpdateStageFlow();
         }
         else
         {
