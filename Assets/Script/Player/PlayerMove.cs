@@ -4,27 +4,27 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ˆ—‚ğ’S“–‚·‚éƒNƒ‰ƒX
-/// –{‰ÆCrossyRoad€‹’‚Ì‹““®‚ğÄŒ»‚·‚é‚½‚ßA
-/// EˆÚ“®‚ÍƒOƒŠƒbƒh’PˆÊ
-/// EˆÚ“®ŠJn‚É‹´‚©‚çØ‚è—£‚·iŠµ«‚È‚µj
-/// E‹´‚Ìã‚Å‚Íeq•t‚¯‚µ‚Ä’Ç]
-/// ‚ğÀ‘•‚µ‚Ä‚¢‚é
+/// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½X
+/// ï¿½{ï¿½ï¿½CrossyRoadï¿½ï¿½ï¿½ï¿½ï¿½Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄŒï¿½ï¿½ï¿½ï¿½é‚½ï¿½ßA
+/// ï¿½Eï¿½Ú“ï¿½ï¿½ÍƒOï¿½ï¿½ï¿½bï¿½hï¿½Pï¿½ï¿½
+/// ï¿½Eï¿½Ú“ï¿½ï¿½Jï¿½nï¿½ï¿½ï¿½É‹ï¿½ï¿½ï¿½ï¿½ï¿½Ø‚è—£ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½j
+/// ï¿½Eï¿½ï¿½ï¿½Ìï¿½Å‚Íeï¿½qï¿½tï¿½ï¿½ï¿½ï¿½ï¿½Ä’Ç]
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 /// </summary>
 public class PlayerMove : MonoBehaviour
 {
     /// <summary>
-    /// ƒXƒRƒA‰ÁZ‚ÌƒAƒNƒVƒ‡ƒ“
+    /// ï¿½Xï¿½Rï¿½Aï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public Action OnScoreUpAction;
 
     /// <summary>
-    /// €–S‚ÌƒAƒNƒVƒ‡ƒ“iì‚É—‰º‚µ‚½ê‡‚È‚Ç‚ÉŒÄ‚Î‚ê‚éj
+    /// ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½É—ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½È‚Ç‚ÉŒÄ‚Î‚ï¿½ï¿½j
     /// </summary>
     public Action OnPlayerDeathAction;
 
     /// <summary>
-    /// Œ»İˆÚ“®’†‚©‚Ç‚¤‚©
+    /// ï¿½ï¿½ï¿½İˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½
     /// </summary>
     public bool IsMoving { get; private set; } = false;
     public bool IsDead { get; private set; } = false;
@@ -34,28 +34,28 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private Button _retryButton;
 
-    [Header("DoTween‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ŠÔ")]
-    [SerializeField] private float animTime; //0.3f‚ª‚¿‚å‚¤‚Ç‚¢‚¢
-    [Header("”ò‚Ô‚‚³")]
-    [SerializeField] private float jumpHight; //0.3f‚ª‚¿‚å‚¤‚Ç‚¢‚¢
-    private bool isJumping; //”ò‚ñ‚Å‚¢‚éƒAƒjƒ[ƒVƒ‡ƒ“’†
-    private bool isInputReservation; //“ü—Í—\–ñ
-    private Vector3Int inputReservation; //“ü—Í—\–ñ‚ÌˆÚ“®•ûŒü‚ğ•Û
+    [Header("DoTweenï¿½ÌƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    [SerializeField] private float animTime; //0.3fï¿½ï¿½ï¿½ï¿½ï¿½å‚¤ï¿½Ç‚ï¿½ï¿½ï¿½
+    [Header("ï¿½ï¿½Ôï¿½ï¿½ï¿½")]
+    [SerializeField] private float jumpHight; //0.3fï¿½ï¿½ï¿½ï¿½ï¿½å‚¤ï¿½Ç‚ï¿½ï¿½ï¿½
+    private bool isJumping; //ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private bool isInputReservation; //ï¿½ï¿½ï¿½Í—\ï¿½ï¿½
+    private Vector3Int inputReservation; //ï¿½ï¿½ï¿½Í—\ï¿½ñ‚ÌˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ûï¿½
 
     /// <summary>
-    /// Œ»İ‚ÌƒOƒŠƒbƒhÀ•W
+    /// ï¿½ï¿½ï¿½İ‚ÌƒOï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½W
     /// </summary>
     private Vector3Int _currentGridPos;
     /// <summary>
-    /// ˆÚ“®æ‚Ìƒ[ƒ‹ƒhÀ•W
+    /// ï¿½Ú“ï¿½ï¿½ï¿½Ìƒï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½W
     /// </summary>
     private Vector3 _targetWorldPos;
     /// <summary>
-    /// ƒXƒ^[ƒg‚ÌƒOƒŠƒbƒhÀ•W
+    /// ï¿½Xï¿½^ï¿½[ï¿½gï¿½ï¿½ï¿½ÌƒOï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½W
     /// </summary> 
     private Vector3Int _startCell;
     /// <summary>
-    /// Œ»İæ‚Á‚Ä‚¢‚é‹´i‚È‚¯‚ê‚Înullj
+    /// ï¿½ï¿½ï¿½İï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‹´ï¿½iï¿½È‚ï¿½ï¿½ï¿½ï¿½nullï¿½j
     /// </summary>
     private Transform _currentBridge = null;
     private Vector3Int _currentCellScore;
@@ -74,11 +74,11 @@ public class PlayerMove : MonoBehaviour
         _gridManager = FindAnyObjectByType<GridManager>();
         _gridManager.RegisterPlayer(gameObject);
 
-        // ŠO˜g‚ğl—¶‚µ‚Ä1ƒ}ƒXi‚ß‚é
+        // ï¿½Oï¿½gï¿½ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½}ï¿½Xï¿½iï¿½ß‚ï¿½
         _currentGridPos = _gridManager.WorldToGrid(transform.position);
         _currentGridPos += new Vector3Int(1, 0, 2);
 
-        // ‰ŠúˆÊ’u‚ğƒOƒŠƒbƒh‚É‘µ‚¦‚é
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½bï¿½hï¿½É‘ï¿½ï¿½ï¿½ï¿½ï¿½
         //currentGridPos = gridManager.WorldToGrid(transform.position);
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
         _targetWorldPos.y = _fixedY;
@@ -88,15 +88,15 @@ public class PlayerMove : MonoBehaviour
     }
 
     /// <summary>
-    /// ‹´‚ÌTrigger‚É“ü‚Á‚½‚Æ‚«‚Éeq•t‚¯‚·‚é
+    /// ï¿½ï¿½ï¿½ï¿½Triggerï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Éeï¿½qï¿½tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Bridge"))
         {
-            Debug.Log("‹´‚Éæ‚é");
+            Debug.Log("ï¿½ï¿½ï¿½Éï¿½ï¿½");
 
-            // Judgment ‚É“–‚½‚Á‚½ê‡‚Å‚àA1ŠK‘wã‚Ì Bridge –{‘Ì‚ğe‚É‚·‚é
+            // Judgment ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Å‚ï¿½ï¿½A1ï¿½Kï¿½wï¿½ï¿½ï¿½ Bridge ï¿½{ï¿½Ì‚ï¿½eï¿½É‚ï¿½ï¿½ï¿½
             Transform bridgeRoot = other.transform.parent != null ? other.transform.parent : other.transform;
 
             _currentBridge = bridgeRoot;
@@ -105,23 +105,23 @@ public class PlayerMove : MonoBehaviour
     }
 
     /// <summary>
-    /// ‹´‚ÌTrigger‚©‚ço‚½‚Æ‚«‚ÉeqŠÖŒW‚ğ‰ğœ‚·‚é
+    /// ï¿½ï¿½ï¿½ï¿½Triggerï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Éeï¿½qï¿½ÖŒWï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Bridge"))
         {
-            Debug.Log("‹´‚©‚ç~‚è‚é");
+            Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½");
 
-            // ƒ[ƒ‹ƒhÀ•W‚ğ•Û‚µ‚Ä‚©‚çeqŠÖŒW‚ğ‰ğœ
+            // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Wï¿½ï¿½Ûï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½eï¿½qï¿½ÖŒWï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             transform.SetParent(null);
             _currentBridge = null;
         }
     }
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚ğˆÚ“®‚³‚¹‚é
-    /// “ü—ÍƒxƒNƒgƒ‹‚ğƒOƒŠƒbƒhˆÚ“®‚É•ÏŠ·‚µAˆÚ“®æƒZƒ‹‚ğŒˆ’è‚·‚é
+    /// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// ï¿½ï¿½ï¿½Íƒxï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½bï¿½hï¿½Ú“ï¿½ï¿½É•ÏŠï¿½ï¿½ï¿½ï¿½Aï¿½Ú“ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è‚·ï¿½ï¿½
     /// </summary>
     public void TryMove(Vector2 input)
     {
@@ -129,7 +129,7 @@ public class PlayerMove : MonoBehaviour
 
         if (IsDead) return;
 
-        // “ü—ÍƒxƒNƒgƒ‹‚ğƒOƒŠƒbƒh•ûŒü‚É•ÏŠ·
+        // ï¿½ï¿½ï¿½Íƒxï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ï¿½É•ÏŠï¿½
         Vector3Int dir = Vector3Int.zero;
         if (input.y > 0) dir = Vector3Int.forward;
         else if (input.y < 0) dir = Vector3Int.back;
@@ -138,19 +138,19 @@ public class PlayerMove : MonoBehaviour
 
         if (dir == Vector3Int.zero) return;
 
-        // –{‰Æ€‹’‚Ì‹““®F
-        // ˆÚ“®ŠJn‚É‹´‚©‚çØ‚è—£‚·‚±‚Æ‚ÅuŠµ«‚È‚µv‚É‚·‚é
+        // ï¿½{ï¿½Æï¿½ï¿½ï¿½ï¿½Ì‹ï¿½ï¿½ï¿½ï¿½F
+        // ï¿½Ú“ï¿½ï¿½Jï¿½nï¿½ï¿½ï¿½É‹ï¿½ï¿½ï¿½ï¿½ï¿½Ø‚è—£ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚Åuï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½vï¿½É‚ï¿½ï¿½ï¿½
         if (_currentBridge != null)
         {
             transform.SetParent(null);
             _currentBridge = null;
         }
 
-        // Ÿ‚ÌˆÚ“®æƒZƒ‹‚ğŒvZ
+        // ï¿½ï¿½ï¿½ÌˆÚ“ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Z
         Vector3Int nextGridPos = _currentGridPos + dir;
         var cellType = _gridManager.GetCellType(nextGridPos);
 
-        // ˆÚ“®æƒZƒ‹‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·
+        // ï¿½Ú“ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Wï¿½É•ÏŠï¿½
         _targetWorldPos = _gridManager.GridToWorld(nextGridPos);
         _targetWorldPos.y = _fixedY;
 
@@ -161,15 +161,15 @@ public class PlayerMove : MonoBehaviour
         {
             _currentCellScore = _currentGridPos;
             OnScoreUpAction?.Invoke();
-            Debug.Log("ƒXƒRƒAƒAƒbƒvI");
+            Debug.Log("ï¿½Xï¿½Rï¿½Aï¿½Aï¿½bï¿½vï¿½I");
         }
 
-        //“ü—Í—\–ñ
+        //ï¿½ï¿½ï¿½Í—\ï¿½ï¿½
         if (isJumping && !isInputReservation)
         {
             isInputReservation = true;
             inputReservation = dir;
-            Debug.Log("ƒAƒjƒ[ƒVƒ‡ƒ“’†‚É“ü—Í—\–ñ");
+            //Debug.Log("ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½Í—\ï¿½ï¿½");
         }
     }
 
@@ -184,16 +184,16 @@ public class PlayerMove : MonoBehaviour
 
         if (!IsMoving) return;
        
-        // --- ’Êí‚Ì©‘OˆÚ“® ---
+        // --- ï¿½Êï¿½Ìï¿½ï¿½Oï¿½Ú“ï¿½ ---
         Vector3 worldMoveDir = _targetWorldPos - transform.position;
         Vector3 step = worldMoveDir.normalized * _moveSpeed * Time.deltaTime;
 
-        if (isInputReservation) //“ü—Í—\–ñ‚Ìˆ—
+        if (isInputReservation) //ï¿½ï¿½ï¿½Í—\ï¿½ï¿½Ìï¿½ï¿½ï¿½
         {
-            //ˆêŒÂ‘O‚ÌƒZƒ‹‚ğæ“¾‚·‚é
-            //æ‚ÌƒZƒ‹‚ª_currentGridPos‚É“ü‚Á‚Ä‚é‚©‚çA‘O‰ñ‚Ì“ü—Í‚ğˆø‚¢‚Äã‚°‚é
+            //ï¿½ï¿½Â‘Oï¿½ÌƒZï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
+            //ï¿½ï¿½ÌƒZï¿½ï¿½ï¿½ï¿½_currentGridPosï¿½É“ï¿½ï¿½ï¿½ï¿½Ä‚é‚©ï¿½ï¿½Aï¿½Oï¿½ï¿½Ì“ï¿½ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äã‚°ï¿½ï¿½
             var cellType = _gridManager.GetCellType(_currentGridPos - inputReservation);
-            //Raycast‚Å‰º‚ÌƒRƒ‰ƒCƒ_[‚ğƒ`ƒFƒbƒN‚·‚é
+            //Raycastï¿½Å‰ï¿½ï¿½ÌƒRï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½
             if (Physics.Raycast(transform.position + Vector3.down * 0.5f, Vector3.down, out RaycastHit hit, 2f))
             {
                 if (hit.collider.CompareTag("Bridge"))
@@ -203,17 +203,17 @@ public class PlayerMove : MonoBehaviour
                         isInputReservation = false;
                         transform.SetParent(null);
                         _currentBridge = null;
-                        Debug.Log("‹´‚©‚ç~‚è‚éiƒZƒ‹”»’èj");
+                        Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½iï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j");
                     }
                 }
-                else //‹´‚¶‚á‚È‚©‚Á‚½‚Æ‚«
+                else //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½
                 {
                     if (cellType == CellType.River && _currentBridge == null)
                     {
                         isInputReservation = false;
                         IsDead = true;
                         OnPlayerDeathAction?.Invoke();
-                        Debug.Log("“ü—Í—\–ñ‚É‚æ‚é—‰º");
+                        //Debug.Log("ï¿½ï¿½ï¿½Í—\ï¿½ï¿½É‚ï¿½é—ï¿½ï¿½");
                         return;
                     }
                 }
@@ -225,7 +225,7 @@ public class PlayerMove : MonoBehaviour
             transform.position = _targetWorldPos;
             IsMoving = false;
 
-            isJumping = false; //”ò‚ÔƒAƒjƒ[ƒVƒ‡ƒ“‚ğI—¹
+            isJumping = false; //ï¿½ï¿½ÔƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½
             isInputReservation = false;
 
             var cellType = _gridManager.GetCellType(_currentGridPos);
@@ -234,21 +234,21 @@ public class PlayerMove : MonoBehaviour
                 IsDead = true;
                 OnPlayerDeathAction?.Invoke();
                 //_currentGridPos = _startCell;
-                Debug.Log("—‰ºI");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½I");
                 return;
             }
 
-            // ìƒZƒ‹ˆÈŠO‚ÉˆÚ“®‚µ‚½‚çeq•t‚¯‰ğœ
+            // ï¿½ï¿½Zï¿½ï¿½ï¿½ÈŠOï¿½ÉˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½eï¿½qï¿½tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (cellType != CellType.River && _currentBridge != null)
             {
                 //Vector3 worldPos = transform.position;
                 transform.SetParent(null);
                 //transform.position = worldPos;
                 _currentBridge = null;
-                Debug.Log("‹´‚©‚ç~‚è‚éiƒZƒ‹”»’èj");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½iï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j");
             }
 
-            // •`‰æ”ÍˆÍ‚ÌXV
+            // ï¿½`ï¿½ï¿½ÍˆÍ‚ÌXï¿½V
             _gridManager.UpdateRenderArea();
         }
         else
@@ -276,15 +276,15 @@ public class PlayerMove : MonoBehaviour
 
 
     /// <summary>
-    /// DoTween‚É‚æ‚é”ò‚ÔƒAƒjƒ[ƒVƒ‡ƒ“
+    /// DoTweenï¿½É‚ï¿½ï¿½ï¿½ÔƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½
     /// </summary>
     private void Jumping()
     {
-        if (!isJumping) //”ò‚ñ‚Å‚¢‚È‚¢‚Æ‚«
+        if (!isJumping) //ï¿½ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½Æ‚ï¿½
         {
             isJumping = true;
 
-            //”ò‚ÔƒAƒjƒ[ƒVƒ‡ƒ“
+            //ï¿½ï¿½ÔƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½
             transform.DOMoveY(transform.position.y + jumpHight, animTime).SetEase(Ease.OutQuint);
         }
     }

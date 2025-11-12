@@ -4,7 +4,7 @@ public class TitleState : IGameState
 {
     public void Enter()
     {
-        Debug.Log("ƒ^ƒCƒgƒ‹");
+        Debug.Log("ï¿½^ï¿½Cï¿½gï¿½ï¿½");
 
         GameManager.instance.inGameUIManager.TitleUI.SetActive(true);
         GameManager.instance.UIEffect.TitleFadeIn();
@@ -12,14 +12,15 @@ public class TitleState : IGameState
 
     public void Exit()
     {
-        Debug.Log("ƒ^ƒCƒgƒ‹I—¹");
+        Debug.Log("ï¿½^ï¿½Cï¿½gï¿½ï¿½ï¿½Iï¿½ï¿½");
 
         GameManager.instance.UIEffect.TitleFadeOut();
     }
 
     public void Key()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å…¥åŠ›ãŒã‚ã£ãŸã‚‰ã€ã‚¤ãƒ³ã‚²ãƒ¼ãƒ ã¸ã¨ç§»ã‚‹
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
         {
             GameManager.instance.ChangeGameState(GameState.InGame);
         }
