@@ -1,51 +1,53 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 
 /// <summary>
-/// ƒOƒŠƒbƒh‘S‘Ì‚ğŠÇ—‚·‚éƒNƒ‰ƒXB
-/// - À•W•ÏŠ·iƒ[ƒ‹ƒhÀ•W‚ÆƒOƒŠƒbƒhÀ•W‚Ì‘ŠŒİ•ÏŠ·j
-/// - è—LŠÇ—iÃ“IáŠQ•¨‚Ì”z’uó‘Ôj
-/// - ƒvƒŒƒCƒ„[ˆÊ’u‚Ì“o˜^EQÆ
-/// - ŠÂ‹«î•ñiƒZƒ‹í•Ê‚Ì–â‚¢‡‚í‚¹j
-/// - áŠQ•¨‚Ì”z’uEíœ
-/// ‚ğˆêŒ³“I‚Éˆµ‚¤B
+/// ã‚°ãƒªãƒƒãƒ‰å…¨ä½“ã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+/// - åº§æ¨™å¤‰æ›ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¨ã‚°ãƒªãƒƒãƒ‰åº§æ¨™ã®ç›¸äº’å¤‰æ›ï¼‰
+/// - å æœ‰ç®¡ç†ï¼ˆé™çš„éšœå®³ç‰©ã®é…ç½®çŠ¶æ…‹ï¼‰
+/// - ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã®ç™»éŒ²ãƒ»å‚ç…§
+/// - ç’°å¢ƒæƒ…å ±ï¼ˆã‚»ãƒ«ç¨®åˆ¥ã®å•ã„åˆã‚ã›ï¼‰
+/// - éšœå®³ç‰©ã®é…ç½®ãƒ»å‰Šé™¤
+/// ã‚’ä¸€å…ƒçš„ã«æ‰±ã†ã€‚
 /// </summary>
 public class GridManager : MonoBehaviour
 {
     //==================================================
-    // ƒCƒ“ƒXƒyƒNƒ^[İ’è€–Ú
+    // ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼è¨­å®šé …ç›®
     //==================================================
-    // 1ƒZƒ‹‚Ìƒ[ƒ‹ƒhƒTƒCƒYB
+    // 1ã‚»ãƒ«ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰ã‚µã‚¤ã‚ºã€‚
     [SerializeField] private float cellSize = 1.0f;
 
-    // •i¶‰E•ûŒüj‚Ì•`‰æ”ÍˆÍ
+    // å¹…ï¼ˆå·¦å³æ–¹å‘ï¼‰ã®æç”»ç¯„å›²
     [SerializeField] private int renderWidth = 10;
-    // ‰œs‚«i‘OŒã•ûŒüj‚Ì•`‰æ”ÍˆÍ
+    // å¥¥è¡Œãï¼ˆå‰å¾Œæ–¹å‘ï¼‰ã®æç”»ç¯„å›²
     [SerializeField] private int renderDepthForward = 20;
     [SerializeField] private int renderDepthBackward = 5;
  
-    // ŠÂ‹«î•ñ‚ÌŠeíPrefab
+    // ç’°å¢ƒæƒ…å ±ã®å„ç¨®Prefab
     [SerializeField] private GameObject grassPrefab;
     [SerializeField] private GameObject roadPrefab;
     [SerializeField] private GameObject riverPrefab;
     [SerializeField] private GameObject treePrefab;
 
     //==================================================
-    // Unity•W€ƒCƒxƒ“ƒg
+    // Unityæ¨™æº–ã‚¤ãƒ™ãƒ³ãƒˆ
     //==================================================
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // StageGenerator ‚ğƒAƒ^ƒbƒ`‚µ‚Ä‚¢‚é‘O’ñ
+        // StageGenerator ã‚’ã‚¢ã‚¿ãƒƒãƒã—ã¦ã„ã‚‹å‰æ
         stageGenerator = GetComponent<StageGenerator>();
         stageGenerator.Initialize(gridWidth, gridChunkSize);
 
-        // Å‰‚Ìƒ`ƒƒƒ“ƒN‚ğ¶¬
+        // æœ€åˆã®ãƒãƒ£ãƒ³ã‚¯ã‚’ç”Ÿæˆ
         GenerateChunkAt(0);
         lastGeneratedZ += gridChunkSize;
 
-        // ƒvƒŒƒCƒ„[‰ŠúƒZƒ‹‚ğ“o˜^
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åˆæœŸã‚»ãƒ«ã‚’ç™»éŒ²
         Vector3Int startCell = new Vector3Int(1, 0, 1);
         UpdatePlayerCell(startCell);
     }
@@ -53,11 +55,11 @@ public class GridManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // –ˆƒtƒŒ[ƒ€‚ÌXVˆ—‚ğ‚±‚±‚É‹Lq—\’è
+        // æ¯ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ›´æ–°å‡¦ç†ã‚’ã“ã“ã«è¨˜è¿°äºˆå®š
     }
 
     /// <summary>
-    /// ‰ğ•úA“à•”ƒf[ƒ^‚Æ•`‰æƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Ä‰ğ•ú‚·‚éB
+    /// è§£æ”¾æ™‚ã€å†…éƒ¨ãƒ‡ãƒ¼ã‚¿ã¨æç”»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã™ã¹ã¦è§£æ”¾ã™ã‚‹ã€‚
     /// </summary>
     private void OnDestroy()
     {
@@ -65,33 +67,32 @@ public class GridManager : MonoBehaviour
     }
 
     //==================================================
-    // §Œäƒƒ\ƒbƒh
+    // åˆ¶å¾¡ãƒ¡ã‚½ãƒƒãƒ‰
     //==================================================
     /// <summary>
-    /// “à•”ƒf[ƒ^‚Æ•`‰æƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Ä‰ğ•ú‚·‚éB
-    /// ƒXƒe[ƒWI—¹‚âƒV[ƒ“”jŠü‚ÉŒÄ‚ÔB
+    /// å†…éƒ¨ãƒ‡ãƒ¼ã‚¿ã¨æç”»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã™ã¹ã¦è§£æ”¾ã™ã‚‹ã€‚
+    /// ã‚¹ãƒ†ãƒ¼ã‚¸çµ‚äº†æ™‚ã‚„ã‚·ãƒ¼ãƒ³ç ´æ£„æ™‚ã«å‘¼ã¶ã€‚
     /// </summary>
     public void ClearAll()
     {
-        // ˜_—ƒf[ƒ^‚ÌƒNƒŠƒA
-        terrainCells.Clear();
-        staticObstacleCells.Clear();
+        // è«–ç†ãƒ‡ãƒ¼ã‚¿ã®ã‚¯ãƒªã‚¢
+        cellEntitiesMap.Clear();
 
-        // ’nŒ`ƒvƒŒƒnƒu‚Ì”jŠü
+        // åœ°å½¢ãƒ—ãƒ¬ãƒãƒ–ã®ç ´æ£„
         foreach (var obj in terrainPrefabs.Values)
         {
             if (obj != null) Destroy(obj);
         }
         terrainPrefabs.Clear();
 
-        // áŠQ•¨ƒvƒŒƒnƒu‚Ì”jŠü
+        // éšœå®³ç‰©ãƒ—ãƒ¬ãƒãƒ–ã®ç ´æ£„
         foreach (var obj in staticObstaclePrefabs.Values)
         {
             if (obj != null) Destroy(obj);
         }
         staticObstaclePrefabs.Clear();
 
-        // ƒXƒ|ƒi[ƒvƒŒƒnƒu‚Ì”jŠü
+        // ã‚¹ãƒãƒŠãƒ¼ãƒ—ãƒ¬ãƒãƒ–ã®ç ´æ£„
         foreach (var entry in spawnerEntries)
         {
             if (entry.Instance != null)
@@ -102,23 +103,23 @@ public class GridManager : MonoBehaviour
         }
         spawnerEntries.Clear();
 
-        // ƒvƒŒƒCƒ„[î•ñ‚ÌƒNƒŠƒA
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ã®ã‚¯ãƒªã‚¢
         playerCell = Vector3Int.zero;
         player = null;
 
     }
 
     //==================================================
-    // 1. À•W•ÏŠ·Œn
+    // 1. åº§æ¨™å¤‰æ›ç³»
     //==================================================
 
     /// <summary>
-    /// ƒ[ƒ‹ƒhÀ•W‚ğƒOƒŠƒbƒhÀ•W(Vector3Int)‚É•ÏŠ·‚·‚éB
-    /// —˜—pÒFƒvƒŒƒCƒ„[’S“–iˆÚ“®ˆÊ’uŒvZjAƒJƒƒ‰’S“–i’Ç]ˆÊ’uŒvZjA“®“IáŠQ•¨’S“–iˆÚ“®ˆ—j
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚°ãƒªãƒƒãƒ‰åº§æ¨™(Vector3Int)ã«å¤‰æ›ã™ã‚‹ã€‚
+    /// åˆ©ç”¨è€…ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ‹…å½“ï¼ˆç§»å‹•ä½ç½®è¨ˆç®—ï¼‰ã€ã‚«ãƒ¡ãƒ©æ‹…å½“ï¼ˆè¿½å¾“ä½ç½®è¨ˆç®—ï¼‰ã€å‹•çš„éšœå®³ç‰©æ‹…å½“ï¼ˆç§»å‹•å‡¦ç†ï¼‰
     /// </summary>
     public Vector3Int WorldToGrid(Vector3 worldPos)
     {
-        // ƒ[ƒ‹ƒhÀ•W‚ğƒZƒ‹ƒTƒCƒY‚ÉŠî‚Ã‚¢‚ÄƒOƒŠƒbƒhÀ•W‚É•ÏŠ·‚µ•Ô‹p
+        // ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚»ãƒ«ã‚µã‚¤ã‚ºã«åŸºã¥ã„ã¦ã‚°ãƒªãƒƒãƒ‰åº§æ¨™ã«å¤‰æ›ã—è¿”å´
         int x = Mathf.FloorToInt((worldPos.x - cellSize / 2f) / cellSize);
         int y = Mathf.FloorToInt((worldPos.y - cellSize / 2f) / cellSize);
         int z = Mathf.FloorToInt((worldPos.z - cellSize / 2f) / cellSize);
@@ -127,12 +128,12 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒOƒŠƒbƒhÀ•W(Vector3Int)‚ğƒ[ƒ‹ƒhÀ•W(Vector3)‚É•ÏŠ·‚·‚éB
-    /// ƒZƒ‹‚Ì’†SÀ•W‚ğ•Ô‚·B
+    /// ã‚°ãƒªãƒƒãƒ‰åº§æ¨™(Vector3Int)ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™(Vector3)ã«å¤‰æ›ã™ã‚‹ã€‚
+    /// ã‚»ãƒ«ã®ä¸­å¿ƒåº§æ¨™ã‚’è¿”ã™ã€‚
     /// </summary>
     public Vector3 GridToWorld(Vector3Int gridPos)
     {
-        // ƒOƒŠƒbƒhÀ•W‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·‚µ•Ô‹p
+        // ã‚°ãƒªãƒƒãƒ‰åº§æ¨™ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ã—è¿”å´
         float x = gridPos.x * cellSize + (cellSize / 2f);
         float y = gridPos.y * cellSize + (cellSize / 2f);
         float z = gridPos.z * cellSize + (cellSize / 2f);
@@ -140,51 +141,110 @@ public class GridManager : MonoBehaviour
         return new Vector3(x, y, z);
     }
 
+    /// <summary>
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚°ãƒªãƒƒãƒ‰åº§æ¨™(GridPos2D)ã«å¤‰æ›ã™ã‚‹ã€‚
+    /// Yã¯ç„¡è¦–ã—ã¦X,Zã®ã¿ã‚’è¿”ã™ã€‚
+    /// </summary>
+    public GridPos2D WorldToGrid2D(Vector3 worldPos)
+    {
+        int x = Mathf.FloorToInt((worldPos.x - cellSize / 2f) / cellSize);
+        int z = Mathf.FloorToInt((worldPos.z - cellSize / 2f) / cellSize);
+        return new GridPos2D(x, z);
+    }
+
+    /// <summary>
+    /// ã‚°ãƒªãƒƒãƒ‰åº§æ¨™(GridPos2D)ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™(Vector3)ã«å¤‰æ›ã™ã‚‹ã€‚
+    /// ã‚»ãƒ«ã®ä¸­å¿ƒåº§æ¨™ã‚’è¿”ã™ã€‚Yã¯å‘¼ã³å‡ºã—å´ã§è£œæ­£ã™ã‚‹ã€‚
+    /// </summary>
+    public Vector3 GridToWorld2D(GridPos2D gridPos, float y = 0f)
+    {
+        float x = gridPos.X * cellSize + (cellSize / 2f);
+        float z = gridPos.Z * cellSize + (cellSize / 2f);
+        return new Vector3(x, y, z);
+    }
+
     //==================================================
-    // 2. è—LŠÇ—ŒniÃ“IáŠQ•¨—pj
+    // 2. å æœ‰ç®¡ç†ç³»ï¼ˆé™çš„éšœå®³ç‰©ç”¨ï¼‰
     //==================================================
 
     /// <summary>
-    /// w’èƒZƒ‹‚ª‹ó‚¢‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğ•Ô‚·B
-    /// Ã“IáŠQ•¨‚Ì“ü—ÍƒLƒƒƒ“ƒZƒ‹”»’è‚Ég—pB
+    /// æŒ‡å®šã‚»ãƒ«ãŒç©ºã„ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™ã€‚
+    /// é™çš„éšœå®³ç‰©ã®å…¥åŠ›ã‚­ãƒ£ãƒ³ã‚»ãƒ«åˆ¤å®šã«ä½¿ç”¨ã€‚
+    /// - éšœå®³ç‰©ãŒå­˜åœ¨ã—ãªã‘ã‚Œã° true
+    /// - è¤‡æ•°éšœå®³ç‰©ãŒã‚ã£ã¦ã‚‚ã€Œå æœ‰ã€ã¨ã¿ãªã™
     /// </summary>
-    public bool IsCellFree(Vector3Int gridPos)
+    public bool IsCellFree(GridPos2D pos)
     {
-        // ’nŒ`‚ª‘¶İ‚µ‚È‚¢ƒZƒ‹‚Í•s‰Â
-        if (!terrainCells.ContainsKey(gridPos)) return false; 
-
-        // áŠQ•¨ƒŒƒCƒ„[‚ğŠm”F‚µ‚Ä•Ô‚·
-        // Note: Ã“IáŠQ•¨‚Ì”z’u‚ÍAY²‚É‚Â‚¢‚ÄƒLƒ…[ƒu‚Ì‰º–Ê‚ªƒ[ƒ‚Æ‚È‚é‚æ‚¤•â³‚µ‚Ä‚¢‚½‚ß
-        // ‚±‚±‚Å‚ÍY=1‚ÅŒŸõ‚·‚éB‚ ‚Ü‚èãY—í‚ÈÀ‘•‚Å‚Í‚È‚¢‚Ì‚ÅY²‚Ìˆµ‚¢‚ğ®—‚µ‚½‚¤‚¦‚Å—v‰ü‘PB
-        var obstaclePos = new Vector3Int(gridPos.x, 1, gridPos.z);
-        return !staticObstacleCells.ContainsKey(obstaclePos);
+        if (cellEntitiesMap.TryGetValue(pos, out var entities))
+        {
+            return entities.Obstacles.Count == 0;
+        }
+        return true; // cellEntitiesMapã«å­˜åœ¨ã—ãªã„ã‚»ãƒ«ã¯ç©ºãã¨ã¿ãªã™
 
     }
 
     /// <summary>
-    /// w’èƒZƒ‹‚ğu–„‚Ü‚Á‚Ä‚¢‚év‚Æ“o˜^‚·‚éB
-    /// Ã“IáŠQ•¨”z’u‚ÉŒÄ‚Î‚ê‚éB
+    /// æŒ‡å®šã‚»ãƒ«ãŒç©ºã„ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™ï¼ˆVector3Intç‰ˆï¼‰ã€‚
+    /// Yã¯ç„¡è¦–ã—ã¦ X,Z ã®ã¿ã‚’åˆ©ç”¨ã™ã‚‹ã€‚
     /// </summary>
-    public void OccupyCell(Vector3Int gridPos, ObstacleType type)
+    public bool IsCellFree(Vector3Int pos3D)
     {
-        staticObstacleCells[gridPos] = type;
+        return IsCellFree(new GridPos2D(pos3D.x, pos3D.z));
     }
 
     /// <summary>
-    /// w’èƒZƒ‹‚ğ‰ğ•ú‚·‚éB
-    /// Ã“IáŠQ•¨íœ‚ÉŒÄ‚Î‚ê‚éB
+    /// æŒ‡å®šã‚»ãƒ«ã‚’ã€ŒåŸ‹ã¾ã£ã¦ã„ã‚‹ã€ã¨ç™»éŒ²ã™ã‚‹ã€‚
+    /// é™çš„éšœå®³ç‰©é…ç½®æ™‚ã«å‘¼ã°ã‚Œã‚‹ã€‚
     /// </summary>
-    public void ReleaseCell(Vector3Int gridPos)
+    public void OccupyCell(GridPos2D pos, ObstacleType type)
     {
-        staticObstacleCells.Remove(gridPos);
+        if (!cellEntitiesMap.TryGetValue(pos, out var entities))
+        {
+            entities = new CellEntities();
+            cellEntitiesMap[pos] = entities;
+        }
+
+        entities.Obstacles.Add(type);
+
+        // Prefabç”Ÿæˆ
+        CreateObstaclePrefab(pos, entities);
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã‚’è§£æ”¾ã™ã‚‹ã€‚
+    /// é™çš„éšœå®³ç‰©å‰Šé™¤æ™‚ã«å‘¼ã°ã‚Œã‚‹ã€‚
+    /// </summary>
+    public void ReleaseCell(GridPos2D pos)
+    {
+        if (cellEntitiesMap.TryGetValue(pos, out var entities))
+        {
+            entities.Obstacles.Clear();
+
+            // Prefabç ´æ£„
+            var gridPos = new Vector3Int(pos.X, 1, pos.Z);
+            if (staticObstaclePrefabs.TryGetValue(gridPos, out var obj))
+            {
+                UnityEngine.Object.Destroy(obj);
+                staticObstaclePrefabs.Remove(gridPos);
+            }
+        }
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã‚’è§£æ”¾ã™ã‚‹ã€‚ï¼ˆVector3Intç‰ˆï¼‰ã€‚
+    /// é™çš„éšœå®³ç‰©å‰Šé™¤æ™‚ã«å‘¼ã°ã‚Œã‚‹ã€‚
+    /// </summary>
+    public void ReleaseCell(Vector3Int pos3D)
+    {
+        ReleaseCell(new GridPos2D(pos3D.x, pos3D.z));
     }
 
     //==================================================
-    // 3. ƒvƒŒƒCƒ„[ˆÊ’uŒn
+    // 3. ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ç³»
     //==================================================
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚ğ“o˜^‚·‚éi‰Šú‰»‚ÉŒÄ‚ÔjB
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç™»éŒ²ã™ã‚‹ï¼ˆåˆæœŸåŒ–æ™‚ã«å‘¼ã¶ï¼‰ã€‚
     /// </summary>
     public void RegisterPlayer(GameObject player)
     {
@@ -192,8 +252,8 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚ÌŒ»İƒZƒ‹‚ğXV‚·‚éB
-    /// ƒvƒŒƒCƒ„[ˆÚ“®‚²‚Æ‚ÉŒÄ‚Î‚ê‚éB
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã‚»ãƒ«ã‚’æ›´æ–°ã™ã‚‹ã€‚
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•ã”ã¨ã«å‘¼ã°ã‚Œã‚‹ã€‚
     /// </summary>
     public void UpdatePlayerCell(Vector3Int gridPos)
     {
@@ -201,8 +261,8 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚ÌŒ»İƒZƒ‹‚ğ•Ô‚·B
-    /// ƒJƒƒ‰’Ç]‚âƒXƒNƒ[ƒ‹ˆ—AƒXƒRƒAŒvZ‚É—˜—pB
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã‚»ãƒ«ã‚’è¿”ã™ã€‚
+    /// ã‚«ãƒ¡ãƒ©è¿½å¾“ã‚„ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«å‡¦ç†ã€ã‚¹ã‚³ã‚¢è¨ˆç®—ã«åˆ©ç”¨ã€‚
     /// </summary>
     public Vector3Int GetPlayerCell()
     {
@@ -210,66 +270,105 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒZƒ‹‚ÌÅI“I‚Èó‘Ô‚ğ•Ô‚·B
-    /// - áŠQ•¨‚ª‚ ‚ê‚Î Occupied
-    /// - ‚È‚¯‚ê‚Î’nŒ`ƒŒƒCƒ„[‚Ìí—Ş
-    /// - –¢“o˜^‚È‚ç Empty
+    /// Vector3Int ã®ã‚°ãƒªãƒƒãƒ‰åº§æ¨™ã‹ã‚‰ã‚»ãƒ«ç¨®åˆ¥ã‚’è¿”ã™ã€‚
+    /// Yã¯ç„¡è¦–ã—ã¦ X,Z ã®ã¿ã‚’åˆ©ç”¨ã™ã‚‹ã€‚
     /// </summary>
-    public CellType GetCellType(Vector3Int gridPos)
+    public CellType GetCellType(Vector3Int pos3D)
     {
-        if (staticObstacleCells.ContainsKey(gridPos))
-            return CellType.Occupied;
+        return GetCellType(new GridPos2D(pos3D.x, pos3D.z));
+    }
 
-        if (terrainCells.TryGetValue(gridPos, out var type))
-            return type;
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã®çŠ¶æ…‹ã‚’è¿”ã™ã€‚
+    /// - éšœå®³ç‰©ãŒ1ã¤ã§ã‚‚ã‚ã‚Œã° Occupied ã‚’è¿”ã™
+    /// - éšœå®³ç‰©ãŒãªã‘ã‚Œã° Terrains ã®å…ˆé ­ã‚’è¿”ã™ï¼ˆè¤‡æ•°ã‚ã‚‹å ´åˆã¯ä¸å®šã§å…ˆé ­ã®è¦ç´ ã‚’è¿”å´ï¼‰
+    /// - Terrains ãŒç©ºãªã‚‰ Empty ã‚’è¿”ã™
+    /// </summary>
+    public CellType GetCellType(GridPos2D pos)
+    {
+        if (cellEntitiesMap.TryGetValue(pos, out var entities))
+        {
+            // éšœå®³ç‰©å„ªå…ˆ
+            if (entities.Obstacles.Count > 0)
+            {
+                return CellType.Occupied;
+            }
+
+            // TerrainãŒå­˜åœ¨ã™ã‚Œã°å…ˆé ­ã‚’è¿”ã™ï¼ˆè¤‡æ•°ã‚ã‚‹å ´åˆã¯ä¸å®šï¼‰
+            if (entities.Terrains.Count > 0)
+            {
+                return entities.Terrains[0];
+            }
+        }
 
         return CellType.Empty;
     }
 
+
     /// <summary>
-    /// ƒZƒ‹‚Ì’nŒ`ƒŒƒCƒ„[‚Ì‚İ‚ğ•Ô‚·B
-    /// áŠQ•¨‚Í–³‹‚µ‚Äƒˆ‚É’nŒ`ƒ^ƒCƒv‚ğ•Ô‚·B
+    /// æŒ‡å®šã‚»ãƒ«ã®åœ°å½¢ã‚¿ã‚¤ãƒ—ã‚’ã™ã¹ã¦è¿”ã™ã€‚
+    /// - é€šå¸¸ã¯1ã¤ã ã‘ã ãŒã€è¤‡æ•°ç©å±¤ã—ã¦ã„ã‚‹å ´åˆã¯å…¨ã¦è¿”å´ã™ã‚‹ã€‚
+    /// - å‘¼ã³å‡ºã—å´ã§å„ªå…ˆé †ä½ã‚’æ±ºã‚ã¦åˆ©ç”¨ã™ã‚‹ã“ã¨ã€‚
     /// </summary>
-    public CellType GetTerrainCellType(Vector3Int gridPos)
+    public List<CellType> GetTerrainCellType(GridPos2D pos)
     {
-        if (terrainCells.TryGetValue(gridPos, out var type))
-            return type;
-
-        return CellType.Empty;
-    }
-
-    //==================================================
-    // 4. ”z’uE¶¬Œn
-    //==================================================
-    /// <summary>
-    /// w’èƒZƒ‹‚É’nŒ`Prefab‚ğ”z’u‚·‚éB
-    /// ‚·‚Å‚É•`‰æÏ‚İ‚È‚ç‰½‚à‚µ‚È‚¢B
-    /// </summary>
-    private void CreateTerrainPrefab(Vector3Int gridPos, CellType type)
-    {
-        if (terrainPrefabs.ContainsKey(gridPos))
-            return;
-
-        GameObject prefab = null;
-        switch (type)
+        if (cellEntitiesMap.TryGetValue(pos, out var entities))
         {
-            case CellType.Grass: prefab = grassPrefab; break;
-            case CellType.Road: prefab = roadPrefab; break;
-            case CellType.River: prefab = riverPrefab; break;
-            case CellType.Empty: prefab = null; break;
+            // Terrainsãƒªã‚¹ãƒˆã‚’ãã®ã¾ã¾è¿”ã™ï¼ˆè¤‡æ•°ç©å±¤å¯¾å¿œï¼‰
+            return new List<CellType>(entities.Terrains);
         }
 
-        if (prefab != null)
-        {
-            Vector3 worldPos = GridToWorld(gridPos);
-            worldPos.y = -0.5f * cellSize;      // ƒLƒ…[ƒu‚Ìã–Ê‚ªƒ[ƒÀ•W‚Æ‚È‚é‚æ‚¤YÀ•W‚ğ’²®
-            GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, this.transform);
-            terrainPrefabs[gridPos] = obj;
-        }
+        // è©²å½“ã‚»ãƒ«ãŒå­˜åœ¨ã—ãªã„å ´åˆã¯ç©ºãƒªã‚¹ãƒˆ
+        return new List<CellType>();
     }
 
     /// <summary>
-    /// w’èƒZƒ‹‚Ì’nŒ`Prefab‚ğíœ‚·‚éB
+    /// æŒ‡å®šã‚»ãƒ«ã®åœ°å½¢ã‚¿ã‚¤ãƒ—ã‚’ã™ã¹ã¦è¿”ã™ã€‚ï¼ˆVector3Intç‰ˆï¼‰ã€‚
+    /// - é€šå¸¸ã¯1ã¤ã ã‘ã ãŒã€è¤‡æ•°ç©å±¤ã—ã¦ã„ã‚‹å ´åˆã¯å…¨ã¦è¿”å´ã™ã‚‹ã€‚
+    /// - å‘¼ã³å‡ºã—å´ã§å„ªå…ˆé †ä½ã‚’æ±ºã‚ã¦åˆ©ç”¨ã™ã‚‹ã“ã¨ã€‚
+    /// </summary>
+    public List<CellType> GetTerrainCellType(Vector3Int pos3D)
+    {
+        return GetTerrainCellType(new GridPos2D(pos3D.x, pos3D.z));
+    }
+    //==================================================
+    // 4. é…ç½®ãƒ»ç”Ÿæˆç³»
+    //==================================================
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã«åœ°å½¢Prefabã‚’é…ç½®ã™ã‚‹ã€‚
+    /// ã™ã§ã«æç”»æ¸ˆã¿ãªã‚‰ä½•ã‚‚ã—ãªã„ã€‚
+    /// </summary>
+    private void CreateTerrainPrefab(GridPos2D pos2D, CellEntities entities)
+    {
+        foreach (var type in entities.Terrains)
+        {
+            // æ—¢ã«ç”Ÿæˆæ¸ˆã¿ãªã‚‰ã‚¹ã‚­ãƒƒãƒ—
+            if (terrainPrefabs.ContainsKey(new Vector3Int(pos2D.X, 0, pos2D.Z)))
+                continue;
+
+            GameObject prefab = null;
+            switch (type)
+            {
+                case CellType.Grass: prefab = grassPrefab; break;
+                case CellType.Road: prefab = roadPrefab; break;
+                case CellType.River: prefab = riverPrefab; break;
+                case CellType.Empty: prefab = null; break;
+            }
+
+            if (prefab != null)
+            {
+                Vector3 worldPos = GridToWorld(new Vector3Int(pos2D.X, 0, pos2D.Z));
+                worldPos.y = -0.5f * cellSize; // ã‚­ãƒ¥ãƒ¼ãƒ–ã®ä¸Šé¢ãŒã‚¼ãƒ­åº§æ¨™ã«ãªã‚‹ã‚ˆã†ã€åœ°å½¢ã®é«˜ã•è£œæ­£
+                GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, this.transform);
+
+                // Terrainã¯Y=0ã§ç®¡ç†
+                terrainPrefabs[new Vector3Int(pos2D.X, 0, pos2D.Z)] = obj;
+            }
+        }
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã®åœ°å½¢Prefabã‚’å‰Šé™¤ã™ã‚‹ã€‚
     /// </summary>
     private void DestroyTerrainPrefab(Vector3Int gridPos)
     {
@@ -281,34 +380,37 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// w’èƒZƒ‹‚ÉáŠQ•¨Prefab‚ğ”z’u‚·‚éB
-    /// ‚·‚Å‚ÉáŠQ•¨‚ª‚ ‚éê‡‚Í‰½‚à‚µ‚È‚¢B
+    /// æŒ‡å®šã‚»ãƒ«ã«éšœå®³ç‰©Prefabã‚’é…ç½®ã™ã‚‹ã€‚
+    /// ã™ã§ã«éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã¯ä½•ã‚‚ã—ãªã„ã€‚
     /// </summary>
-    private void CreateObstaclePrefab(Vector3Int gridPos, ObstacleType type)
+    private void CreateObstaclePrefab(GridPos2D pos2D, CellEntities entities)
     {
-        if (staticObstaclePrefabs.ContainsKey(gridPos))
+        foreach (var type in entities.Obstacles)
         {
-            return; // ‚·‚Å‚É¶¬Ï‚İ‚È‚ç‰½‚à‚µ‚È‚¢
-        }
-        
-        GameObject prefab = null;
-        switch (type)
-        {
-            case ObstacleType.Tree: prefab = treePrefab; break;
-        }
+            var gridPos = new Vector3Int(pos2D.X, 1, pos2D.Z); // éšœå®³ç‰©ã¯Y=1ã§ç®¡ç†
 
-        if (prefab != null)
-        {
-            Vector3 worldPos = GridToWorld(gridPos);
-            worldPos.y = 0.5f * cellSize;      // ƒLƒ…[ƒu‚Ì‰º–Ê‚ªƒ[ƒÀ•W‚Æ‚È‚é‚æ‚¤YÀ•W‚ğ’²®
+            if (staticObstaclePrefabs.ContainsKey(gridPos))
+                continue;
 
-            GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, this.transform);
-            staticObstaclePrefabs[gridPos] = obj;
+            GameObject prefab = null;
+            switch (type)
+            {
+                case ObstacleType.Tree: prefab = treePrefab; break;
+            }
+
+            if (prefab != null)
+            {
+                Vector3 worldPos = GridToWorld(gridPos);
+                worldPos.y = 0.5f * cellSize; // ã‚­ãƒ¥ãƒ¼ãƒ–ã®ä¸‹é¢ãŒã‚¼ãƒ­åº§æ¨™ã¨ãªã‚‹ã‚ˆã†Yåº§æ¨™ã‚’èª¿æ•´
+                GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, this.transform);
+
+                staticObstaclePrefabs[gridPos] = obj;
+            }
         }
     }
 
     /// <summary>
-    /// w’èƒZƒ‹“à‚ÌƒIƒuƒWƒFƒNƒg‚ğíœ‚·‚éB
+    /// æŒ‡å®šã‚»ãƒ«å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤ã™ã‚‹ã€‚
     /// </summary>
     private void DestroyObstaclePrefab(Vector3Int gridPos)
     {
@@ -320,45 +422,49 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒXƒ|ƒi[¶¬
+    /// ã‚¹ãƒãƒŠãƒ¼ç”Ÿæˆ
     /// </summary>
-    private void CreateSpawnerInstance(SpawnerEntry entry)
+    private void CreateSpawnerInstance(GridPos2D pos2D, CellEntities entities)
     {
-        if (entry.Instance != null)
+
+        foreach (var config in entities.Spawners)
         {
-            return; // Šù‚É¶¬Ï‚İ‚È‚ç‰½‚à‚µ‚È‚¢
-        }
+            var gridPos = config.Position; // Positionã«ã¯X,ZãŒå«ã¾ã‚Œã‚‹ï¼ˆY=-1å›ºå®šï¼‰
 
-        Vector3 worldPos = GridToWorld(entry.GridPos);
-        entry.Instance = Instantiate(entry.Prefab, worldPos, Quaternion.identity, this.transform);
+            // æ—¢ã«ç”Ÿæˆæ¸ˆã¿ãªã‚‰ã‚¹ã‚­ãƒƒãƒ—
+            if (spawnerPrefabs.ContainsKey(gridPos))
+                continue;
 
-        // ToDo:Spawner‚Ìí—Ş‚ª‘‚¦‚½‚ç’Ç‰Á‚·‚é
-        // ‹¤’ÊƒCƒ“ƒ^[ƒtƒF[ƒX ISpawner ‚ğ“±“ü‚·‚éè‚à‚ ‚é‚ª_“î«‚ğ¸‚¤‚Ì‚Å‚±‚ÌƒXƒ^ƒCƒ‹‚Å‚¢‚¢‚©‚à
+            GameObject prefab = config.SpawnerControllerPrefab;
+            if (prefab == null) continue;
 
-        // ‹´‚ÌƒXƒ|ƒi[
-        if (entry.Config is BridgeSpawnerConfig bridgeConfig)
-        {
-            var bridgeSpawn = entry.Instance.GetComponent<BridgeSpawn>();
-            if (bridgeSpawn != null)
+            Vector3 worldPos = GridToWorld(gridPos);
+            GameObject instance = Instantiate(prefab, worldPos, Quaternion.identity, this.transform);
+
+            spawnerPrefabs[gridPos] = instance;
+
+            // Spawnerã®åˆæœŸåŒ–
+            // ToDo:Spawnerã®ç¨®é¡ãŒå¢—ãˆãŸã‚‰è¿½åŠ ã™ã‚‹
+            // å…±é€šã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ ISpawner ã‚’å°å…¥ã™ã‚‹æ‰‹ã‚‚ã‚ã‚‹ãŒæŸ”è»Ÿæ€§ã‚’å¤±ã†ã®ã§ã“ã®ã‚¹ã‚¿ã‚¤ãƒ«ã§ã„ã„ã‹ã‚‚
+
+            // æ©‹ã®ã‚¹ãƒãƒŠãƒ¼
+            if (config is BridgeSpawnerConfig bridgeConfig)
             {
-                bridgeSpawn.Initialize(bridgeConfig);
+                var bridgeSpawn = instance.GetComponent<BridgeSpawn>();
+                bridgeSpawn?.Initialize(bridgeConfig);
+            }
+
+            // å‹•çš„éšœå®³ç‰©ã®ã‚¹ãƒãƒŠãƒ¼
+            else if (config is DynamicObstaclesSpawnerConfig dynamicConfig)
+            {
+                var dynamicSpawner = instance.GetComponent<DynamicObstaclesSpawner>();
+                dynamicSpawner?.Initialize(dynamicConfig);
             }
         }
-
-        // “®“IáŠQ•¨‚ÌƒXƒ|ƒi[
-        if (entry.Config is DynamicObstaclesSpawnerConfig dynamicConfig)
-        {
-            var dynamicSpawner = entry.Instance.GetComponent<DynamicObstaclesSpawner>();
-            if (dynamicSpawner != null)
-            {
-                dynamicSpawner.Initialize(dynamicConfig);
-            }
-        }
-
     }
 
     /// <summary>
-    /// ƒXƒ|ƒi[”jŠü
+    /// ã‚¹ãƒãƒŠãƒ¼ç ´æ£„
     /// </summary>
     private void DestroySpawnerInstance(SpawnerEntry entry)
     {
@@ -369,39 +475,110 @@ public class GridManager : MonoBehaviour
         }
     }
 
-
     /// <summary>
-    /// w’èƒZƒ‹‚ÉáŠQ•¨Prefab‚ğ”z’u‚µAè—Lî•ñ‚ğXV‚·‚éB
-    /// ‚·‚Å‚ÉáŠQ•¨‚ª‚ ‚éê‡‚Í‰½‚à‚µ‚È‚¢B
-    /// —˜—pÒFÃ“IáŠQ•¨’S“–AƒXƒe[ƒW¶¬’S“–
+    /// æŒ‡å®šã‚»ãƒ«ã«éšœå®³ç‰©Prefabã‚’é…ç½®ã—ã€å æœ‰æƒ…å ±ã‚’æ›´æ–°ã™ã‚‹ã€‚
+    /// ã™ã§ã«éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã¯ä½•ã‚‚ã—ãªã„ã€‚
+    /// åˆ©ç”¨è€…ï¼šé™çš„éšœå®³ç‰©æ‹…å½“ã€ã‚¹ãƒ†ãƒ¼ã‚¸ç”Ÿæˆæ‹…å½“
     /// </summary>
-    public void PlaceObstacleCell(Vector3Int gridPos, ObstacleType type)
+    public void PlaceObstacleCell(GridPos2D pos, ObstacleType type)
     {
-        // ƒZƒ‹“à‚ÉƒIƒuƒWƒFƒNƒg‚ğ¶¬‚µAè—Lî•ñ‚ğ“o˜^‚·‚é
-        OccupyCell(gridPos, type);
-        CreateObstaclePrefab(gridPos, type);
+        // ã‚»ãƒ«å†…ã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆã—ã€å æœ‰æƒ…å ±ã‚’ç™»éŒ²ã™ã‚‹
+        if (!cellEntitiesMap.TryGetValue(pos, out var entities))
+        {
+            entities = new CellEntities();
+            cellEntitiesMap[pos] = entities;
+        }
+
+        entities.Obstacles.Add(type);
+
+        // Prefabç”Ÿæˆ
+        CreateObstaclePrefab(pos, entities);
     }
 
     /// <summary>
-    /// w’èƒZƒ‹“à‚ÌƒIƒuƒWƒFƒNƒg‚ğíœ‚µAè—Lî•ñ‚ğ‰ğ•ú‚·‚éB
-    /// ’nŒ`ƒŒƒCƒ„[‚Í•ÏX‚µ‚È‚¢B
+    /// æŒ‡å®šã‚»ãƒ«ã«éšœå®³ç‰©ã‚’é…ç½®ã™ã‚‹ï¼ˆVector3Intç‰ˆï¼‰ã€‚
+    /// Yã¯ç„¡è¦–ã—ã¦ X,Z ã®ã¿ã‚’åˆ©ç”¨ã™ã‚‹ã€‚
     /// </summary>
-    public void ClearObstacleCell(Vector3Int gridPos)
+    public void PlaceObstacleCell(Vector3Int pos3D, ObstacleType type)
     {
-        // ƒZƒ‹“à‚ÌƒIƒuƒWƒFƒNƒg‚ğíœ‚µAè—Lî•ñ‚ğ‰ğ•ú‚·‚é
-        ReleaseCell(gridPos);
-        DestroyObstaclePrefab(gridPos);
+        PlaceObstacleCell(new GridPos2D(pos3D.x, pos3D.z), type);
     }
 
     /// <summary>
-    /// StageData ‚ğó‚¯æ‚èAƒ}ƒbƒv‘S‘Ì‚ÌƒŒƒCƒ„[‚ğ\’z‚·‚éB
+    /// æŒ‡å®šã‚»ãƒ«ã®éšœå®³ç‰©ã‚’å‰Šé™¤ã™ã‚‹ã€‚
+    /// - å…¨å‰Šé™¤ã‹ã€ç‰¹å®šã‚¿ã‚¤ãƒ—ã®ã¿å‰Šé™¤ã‹ã‚’é¸ã¹ã‚‹ã‚ˆã†ã«ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
+    /// </summary>
+    public void ClearObstacleCell(GridPos2D pos)
+    {
+        if (cellEntitiesMap.TryGetValue(pos, out var entities))
+        {
+            entities.Obstacles.Clear();
+
+            // Prefabç ´æ£„
+            var gridPos = new Vector3Int(pos.X, 1, pos.Z);
+            if (staticObstaclePrefabs.TryGetValue(gridPos, out var obj))
+            {
+                UnityEngine.Object.Destroy(obj);
+                staticObstaclePrefabs.Remove(gridPos);
+            }
+        }
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã®éšœå®³ç‰©ã‚’å‰Šé™¤ã™ã‚‹ã€‚ï¼ˆVector3Intç‰ˆï¼‰ã€‚
+    /// Yã¯ç„¡è¦–ã—ã¦ X,Z ã®ã¿ã‚’åˆ©ç”¨ã™ã‚‹ã€‚
+    /// </summary>
+    public void ClearObstacleCell(Vector3Int pos3D)
+    {
+        ClearObstacleCell(new GridPos2D(pos3D.x, pos3D.z));
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã‹ã‚‰ç‰¹å®šã‚¿ã‚¤ãƒ—ã®éšœå®³ç‰©ã ã‘å‰Šé™¤ã™ã‚‹ã€‚
+    /// - è¤‡æ•°éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã«éƒ¨åˆ†å‰Šé™¤å¯èƒ½
+    /// </summary>
+    public void ClearObstacleCell(GridPos2D pos, ObstacleType type)
+    {
+        if (cellEntitiesMap.TryGetValue(pos, out var entities))
+        {
+            if (entities.Obstacles.Remove(type))
+            {
+                // Prefabç ´æ£„ï¼ˆå˜ç´”åŒ–ã®ãŸã‚å…¨å‰Šé™¤â†’å†ç”Ÿæˆã§ã‚‚ã‚ˆã„ï¼‰
+                var gridPos = new Vector3Int(pos.X, 1, pos.Z);
+                if (staticObstaclePrefabs.TryGetValue(gridPos, out var obj))
+                {
+                    UnityEngine.Object.Destroy(obj);
+                    staticObstaclePrefabs.Remove(gridPos);
+                }
+
+                // æ®‹ã£ã¦ã„ã‚‹éšœå®³ç‰©ãŒã‚ã‚Œã°å†ç”Ÿæˆ
+                if (entities.Obstacles.Count > 0)
+                {
+                    CreateObstaclePrefab(pos, entities);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚»ãƒ«ã‹ã‚‰ç‰¹å®šã‚¿ã‚¤ãƒ—ã®éšœå®³ç‰©ã ã‘å‰Šé™¤ã™ã‚‹ã€‚ï¼ˆVector3Intç‰ˆï¼‰ã€‚
+    /// - è¤‡æ•°éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã«éƒ¨åˆ†å‰Šé™¤å¯èƒ½
+    /// Yã¯ç„¡è¦–ã—ã¦ X,Z ã®ã¿ã‚’åˆ©ç”¨ã™ã‚‹ã€‚
+    /// </summary>
+    public void ClearObstacleCell(Vector3Int pos3D, ObstacleType type)
+    {
+        ClearObstacleCell(new GridPos2D(pos3D.x, pos3D.z), type);
+    }
+
+    /// <summary>
+    /// StageData ã‚’å—ã‘å–ã‚Šã€ãƒãƒƒãƒ—å…¨ä½“ã®ã‚»ãƒ«æƒ…å ±ã‚’ cellEntitiesMap ã«æ§‹ç¯‰ã™ã‚‹ã€‚
     /// </summary>
     public void BuildStage(StageData data)
     {
-        terrainCells.Clear();
-        staticObstacleCells.Clear();
+        // æ—¢å­˜ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¯ãƒªã‚¢
+        cellEntitiesMap.Clear();
 
-        // ’nŒ`ƒŒƒCƒ„[‚ğ”½‰f
+        // åœ°å½¢ãƒ¬ãƒ¼ãƒ³ã‚’ç™»éŒ²
         foreach (var lane in data.laneTypes)
         {
             int z = lane.Key;
@@ -409,260 +586,297 @@ public class GridManager : MonoBehaviour
 
             for (int x = 0; x < data.width; x++)
             {
-                Vector3Int gridPos = new Vector3Int(x, 0, z);
-                terrainCells[gridPos] = type;
+                var pos2D = new GridPos2D(x, z);
+
+                if (!cellEntitiesMap.TryGetValue(pos2D, out var entities))
+                {
+                    entities = new CellEntities();
+                    cellEntitiesMap[pos2D] = entities;
+                }
+
+                // Terrainã‚’è¿½åŠ ï¼ˆè¤‡æ•°ç©å±¤å¯¾å¿œï¼‰
+                entities.Terrains.Add(type);
             }
         }
 
-        // Ã“IáŠQ•¨ƒŒƒCƒ„[‚ğ”½‰f
+        // é™çš„éšœå®³ç‰©ã‚’ç™»éŒ²
         foreach (var obstacle in data.staticObstacles)
         {
-            Vector3Int gridPos = obstacle.Key;
-            ObstacleType type = obstacle.Value;
-            staticObstacleCells[gridPos] = type;
+            var gridPos = obstacle.Key;
+            var pos2D = new GridPos2D(gridPos.x, gridPos.z);
+
+            if (!cellEntitiesMap.TryGetValue(pos2D, out var entities))
+            {
+                entities = new CellEntities();
+                cellEntitiesMap[pos2D] = entities;
+            }
+
+            entities.Obstacles.Add(obstacle.Value);
         }
 
-        // ƒXƒ|ƒi[ƒŒƒCƒ„[‚ğ”½‰f
+        // Spawner ã‚’ç™»éŒ²
         foreach (var config in data.spawnerConfigs)
         {
-            spawnerEntries.Add(new SpawnerEntry(config));
+            var pos2D = new GridPos2D(config.Position.x, config.Position.z);
+
+            if (!cellEntitiesMap.TryGetValue(pos2D, out var entities))
+            {
+                entities = new CellEntities();
+                cellEntitiesMap[pos2D] = entities;
+            }
+
+            entities.Spawners.Add(config);
         }
     }
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[ˆÊ’u‚ğŠî€‚É•`‰æ”ÍˆÍ‚ğXV‚·‚é
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’åŸºæº–ã«æç”»ç¯„å›²ã‚’æ›´æ–°ã™ã‚‹
     /// </summary>
     public void UpdateRenderArea()
     {
         var center = playerCell;
-        var newVisible = new HashSet<Vector3Int>();
+        var newVisible = new HashSet<GridPos2D>();
 
-        // ••ûŒü: -renderWidth ` +renderWidth
-        // ‰œs‚«•ûŒü: -renderDepthBackward ` +renderDepthForward
+        // å¹…æ–¹å‘: -renderWidth ï½ +renderWidth
+        // å¥¥è¡Œãæ–¹å‘: -renderDepthBackward ï½ +renderDepthForward
         for (int dx = -renderWidth; dx <= renderWidth; dx++)
         {
             for (int dz = -renderDepthBackward; dz <= renderDepthForward; dz++)
             {
-                var pos = new Vector3Int(center.x + dx, 0, center.z + dz);
-                newVisible.Add(pos);
-
-                // ’nŒ`‚ª‘¶İ‚·‚ê‚Î•`‰æ
-                if (terrainCells.TryGetValue(pos, out var terrainType))
-                    CreateTerrainPrefab(pos, terrainType);
-
-                // áŠQ•¨‚ª‘¶İ‚·‚ê‚Î•`‰æ
-                // Note: Ã“IáŠQ•¨‚Ì”z’u‚ÍAY²‚É‚Â‚¢‚ÄƒLƒ…[ƒu‚Ì‰º–Ê‚ªƒ[ƒ‚Æ‚È‚é‚æ‚¤•â³‚µ‚Ä‚¢‚½‚ß
-                // ‚±‚±‚Å‚ÍY=1‚ÅŒŸõ‚·‚éB‚ ‚Ü‚èãY—í‚ÈÀ‘•‚Å‚Í‚È‚¢‚Ì‚ÅY²‚Ìˆµ‚¢‚ğ®—‚µ‚½‚¤‚¦‚Å—v‰ü‘PB
-                pos.y = 1;
-                if (staticObstacleCells.TryGetValue(pos, out var obstacleType))
+                var pos2D = new GridPos2D(center.x + dx, center.z + dz);
+                newVisible.Add(pos2D);
+                if (cellEntitiesMap.TryGetValue(pos2D, out var entities))
                 {
-                    CreateObstaclePrefab(pos, obstacleType);
-                    newVisible.Add(pos);
-                }
+                    // åœ°å½¢ç”Ÿæˆ
+                    CreateTerrainPrefab(pos2D, entities);
 
-                // ƒXƒ|ƒi[‚ª‚±‚ÌƒZƒ‹‚É‚ ‚éê‡‚Í¶¬
-                foreach (var entry in spawnerEntries)
-                {
-                    // Note: •â³‚ÌŒ‚ÅAY=-1‚ÅŒŸõB”ÏG‰»‚µ‚Ä‚é‚Ì‚ÅŒã‚Ù‚Çd—l®—‚µ‚ÄC³‚·‚éB
-                    // ƒXƒ|ƒi[‚Í¶‰E’[‚Éí‚É‘¶İ‚·‚é•K—v‚ª‚ ‚é‚Ì‚ÅX²‚Í”»’è‚©‚çŠO‚·
-                    pos.y = -1;
-                    if (entry.GridPos.z == pos.z && entry.GridPos.y == pos.y)
-                    {
-                        CreateSpawnerInstance(entry);
-                        newVisible.Add(entry.GridPos);
-                    }
+                    // éšœå®³ç‰©ç”Ÿæˆ
+                    CreateObstaclePrefab(pos2D, entities);
+
+                    // Spawnerç”Ÿæˆ
+                    CreateSpawnerInstance(pos2D, entities);
                 }
             }
         }
 
-        // ”ÍˆÍŠO‚É‚È‚Á‚½ƒZƒ‹‚ğíœ
+        // ç¯„å›²å¤–ã«ãªã£ãŸã‚»ãƒ«ã‚’ç ´æ£„
+        // åœ°å½¢ã‚’ç ´æ£„
         foreach (var kv in new List<Vector3Int>(terrainPrefabs.Keys))
         {
-            if (!newVisible.Contains(kv))
+            var pos2D = new GridPos2D(kv.x, kv.z);
+            if (!newVisible.Contains(pos2D))
+            {
                 DestroyTerrainPrefab(kv);
-        }
-        foreach (var kv in new List<Vector3Int>(staticObstaclePrefabs.Keys))
-        {
-            // Note: Ã“IáŠQ•¨‚Ì”z’u‚ÍAY²‚É‚Â‚¢‚ÄƒLƒ…[ƒu‚Ì‰º–Ê‚ªƒ[ƒ‚Æ‚È‚é‚æ‚¤•â³‚µ‚Ä‚¢‚½‚ß
-            // ‚±‚±‚Å‚àY=1‚ÅŒŸõ‚·‚éB—v‰ü‘PB
-            var comparePos = new Vector3Int(kv.x, 1, kv.z);
-            
-            if (!newVisible.Contains(comparePos))
-                DestroyObstaclePrefab(kv);
+            }
         }
 
-        // ”ÍˆÍŠO‚É‚È‚Á‚½ƒZƒ‹‚ğíœiƒXƒ|ƒi[j
-        for (int i = 0; i < spawnerEntries.Count; i++)
+        // é™çš„éšœå®³ç‰©ã‚’ç ´æ£„
+        foreach (var kv in new List<Vector3Int>(staticObstaclePrefabs.Keys))
         {
-            var entry = spawnerEntries[i];
-            // ‰Â‹”ÍˆÍƒ`ƒFƒbƒN‚Í Y=0 Šî€
-            if (!newVisible.Contains(entry.GridPos))
+            var pos2D = new GridPos2D(kv.x, kv.z);
+            if (!newVisible.Contains(pos2D))
             {
-                if (entry.Instance != null)
-                {
-                    Destroy(entry.Instance);
-                    entry.Instance = null;
-                }
+                DestroyObstaclePrefab(kv);
+            }
+        }
+
+        // ã‚¹ãƒãƒŠãƒ¼ã‚’ç ´æ£„
+        foreach (var kv in new List<Vector3Int>(spawnerPrefabs.Keys))
+        {
+            var pos2D = new GridPos2D(kv.x, kv.z);
+            if (!newVisible.Contains(pos2D))
+            {
+                Destroy(spawnerPrefabs[kv]);
+                spawnerPrefabs.Remove(kv);
             }
         }
     }
 
     /// <summary>
-    /// w’è‚µ‚½ worldZ ‚Ìƒ`ƒƒƒ“ƒN‚ğ¶¬‚µA“à•”ƒf[ƒ^‚É“‡‚µ‚ÄƒV[ƒ“‚É”½‰f‚·‚é
+    /// æŒ‡å®šã—ãŸ worldZ ã®ãƒãƒ£ãƒ³ã‚¯ã‚’ç”Ÿæˆã—ã€cellEntitiesMap ã«çµ±åˆã™ã‚‹ã€‚
+    /// Prefabç”Ÿæˆã¯ BuildChunkVisuals ã«å§”è­²ã™ã‚‹ã€‚
     /// </summary>
     private void GenerateChunkAt(int worldZ)
     {
-        // StageData ‚ğ¶¬
+        // StageData ã‚’ç”Ÿæˆ
         StageData data = stageGenerator.GenerateChunk(worldZ);
 
-        // “à•”ƒf[ƒ^‚É“‡
-        foreach (var lane in data.laneTypes)
-        {
-            for (int x = 0; x < data.width; x++)
-            {
-                Vector3Int gridPos = new Vector3Int(x, 0, lane.Key);
-                terrainCells[gridPos] = lane.Value;
-            }
-        }
-
-        foreach (var obstacle in data.staticObstacles)
-        {
-            staticObstacleCells[obstacle.Key] = obstacle.Value;
-        }
-
-        foreach (var config in data.spawnerConfigs)
-        {
-            spawnerEntries.Add(new SpawnerEntry(config));
-        }
-
-        // ƒV[ƒ“‚É”½‰f
-        BuildChunkVisuals(data, worldZ);
-    }
-
-    /// <summary>
-    /// StageData ‚ğ‚à‚Æ‚ÉƒV[ƒ“‚ÉƒvƒŒƒnƒu‚ğ”z’u‚·‚é
-    /// </summary>
-    private void BuildChunkVisuals(StageData data, int worldZ)
-    {
-        // ’nŒ`
+        // StageData ã‚’ cellEntitiesMap ã«åæ˜ 
         foreach (var lane in data.laneTypes)
         {
             int z = lane.Key;
             CellType type = lane.Value;
+
             for (int x = 0; x < data.width; x++)
             {
-                Vector3Int gridPos = new Vector3Int(x, 0, z);
-                CreateTerrainPrefab(gridPos, type);
+                var pos2D = new GridPos2D(x, z);
+
+                if (!cellEntitiesMap.TryGetValue(pos2D, out var entities))
+                {
+                    entities = new CellEntities();
+                    cellEntitiesMap[pos2D] = entities;
+                }
+
+                entities.Terrains.Add(type);
             }
         }
 
-        // Ã“IáŠQ•¨
         foreach (var obstacle in data.staticObstacles)
         {
-            Vector3Int gridPos = obstacle.Key;
-            CreateObstaclePrefab(gridPos, obstacle.Value);
+            var gridPos = obstacle.Key;
+            var pos2D = new GridPos2D(gridPos.x, gridPos.z);
+
+            if (!cellEntitiesMap.TryGetValue(pos2D, out var entities))
+            {
+                entities = new CellEntities();
+                cellEntitiesMap[pos2D] = entities;
+            }
+
+            entities.Obstacles.Add(obstacle.Value);
         }
 
-        // ƒXƒ|ƒi[
-        foreach (var entry in spawnerEntries)
+        foreach (var config in data.spawnerConfigs)
         {
-            if (entry.Instance == null)
+            var pos2D = new GridPos2D(config.Position.x, config.Position.z);
+
+            if (!cellEntitiesMap.TryGetValue(pos2D, out var entities))
             {
-                CreateSpawnerInstance(entry);
+                entities = new CellEntities();
+                cellEntitiesMap[pos2D] = entities;
+            }
+
+            entities.Spawners.Add(config);
+        }
+
+        // Prefabç”Ÿæˆã¯åˆ¥ãƒ¡ã‚½ãƒƒãƒ‰ã«å§”è­²ã—ã‚·ãƒ¼ãƒ³ã«åæ˜ ã™ã‚‹
+        BuildChunkVisuals(data, worldZ);
+    }
+
+    /// <summary>
+    /// StageData ã‚’ã‚‚ã¨ã«ã‚·ãƒ¼ãƒ³ã«ãƒ—ãƒ¬ãƒãƒ–ã‚’é…ç½®ã™ã‚‹
+    /// </summary>
+    private void BuildChunkVisuals(StageData data, int worldZ)
+    {
+        // åœ°å½¢
+        foreach (var lane in data.laneTypes)
+        {
+            int z = lane.Key;
+            for (int x = 0; x < data.width; x++)
+            {
+                var pos2D = new GridPos2D(x, z);
+                if (cellEntitiesMap.TryGetValue(pos2D, out var entities))
+                {
+                    CreateTerrainPrefab(pos2D, entities);
+                }
+            }
+        }
+
+        // é™çš„éšœå®³ç‰©
+        foreach (var obstacle in data.staticObstacles)
+        {
+            var pos2D = new GridPos2D(obstacle.Key.x, obstacle.Key.z);
+            if (cellEntitiesMap.TryGetValue(pos2D, out var entities))
+            {
+                CreateObstaclePrefab(pos2D, entities);
+            }
+        }
+
+        // ã‚¹ãƒãƒŠãƒ¼
+        foreach (var config in data.spawnerConfigs)
+        {
+            var pos2D = new GridPos2D(config.Position.x, config.Position.z);
+            if (cellEntitiesMap.TryGetValue(pos2D, out var entities))
+            {
+                CreateSpawnerInstance(pos2D, entities);
             }
         }
     }
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚Ìis‚É‰‚¶‚Äƒ`ƒƒƒ“ƒN¶¬‚Æ•`‰æXV‚ğs‚¤
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®é€²è¡Œã«å¿œã˜ã¦ãƒãƒ£ãƒ³ã‚¯ç”Ÿæˆã¨æç”»æ›´æ–°ã‚’è¡Œã†
     /// </summary>
     public void UpdateStageFlow()
     {
-        // ƒvƒŒƒCƒ„[‚ÌŒ»İƒZƒ‹ˆÊ’u‚ğXV
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã‚»ãƒ«ä½ç½®ã‚’æ›´æ–°
         //playerCell = WorldToGrid(player.transform.position);
 
-        // ‰Â‹”ÍˆÍ‚ÌZÀ•W‚ğŒvZ
+        // å¯è¦–ç¯„å›²ã®Zåº§æ¨™ã‚’è¨ˆç®—
         int needMinZ = playerCell.z - renderDepthBackward;
         int needMaxZ = playerCell.z + renderDepthForward;
 
-        // ¶¬Ï‚İ”ÍˆÍ‚ğƒ`ƒFƒbƒN‚µA•s‘«‚ª‚ ‚ê‚Îƒ`ƒƒƒ“ƒN¶¬
+        // ç”Ÿæˆæ¸ˆã¿ç¯„å›²ã‚’ãƒã‚§ãƒƒã‚¯ã—ã€ä¸è¶³ãŒã‚ã‚Œã°ãƒãƒ£ãƒ³ã‚¯ç”Ÿæˆ
         while (lastGeneratedZ <= needMaxZ)
         {
             GenerateChunkAt(lastGeneratedZ);
             lastGeneratedZ += gridChunkSize;
         }
 
-        // ‰Â‹”ÍˆÍ‚ğXV
+        // å¯è¦–ç¯„å›²ã‚’æ›´æ–°
         UpdateRenderArea();
     }
 
     //==================================================
-    // “à•”ó‘Ô
+    // å†…éƒ¨çŠ¶æ…‹
     //==================================================
-    // ƒvƒŒƒCƒ„[‚ÌŒ»İƒZƒ‹ˆÊ’u
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã‚»ãƒ«ä½ç½®
     private Vector3Int playerCell = Vector3Int.zero;
 
-    // ’¼‹ß‚Å¶¬‚µ‚½ƒ`ƒƒƒ“ƒN‚Ì––”öZˆÊ’u
+    // ç›´è¿‘ã§ç”Ÿæˆã—ãŸãƒãƒ£ãƒ³ã‚¯ã®æœ«å°¾Zä½ç½®
     private int lastGeneratedZ = 0;
 
-    // ƒvƒŒƒCƒ„[‚ÌQÆ
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‚ç…§
     private GameObject player;
 
-    // ƒXƒe[ƒW©“®¶¬‚ÌQÆ
+    // ã‚¹ãƒ†ãƒ¼ã‚¸è‡ªå‹•ç”Ÿæˆã®å‚ç…§
     private StageGenerator stageGenerator;
 
     //-------------------------------------------------- 
-    // ŠÂ‹«î•ñƒŒƒCƒ„[
+    // ç’°å¢ƒæƒ…å ±ãƒ¬ã‚¤ãƒ¤ãƒ¼
     //-------------------------------------------------- 
 
     //
-    // ƒ}ƒbƒv‘S‘Ì
+    // ãƒãƒƒãƒ—å…¨ä½“
     //
-
-    // ’nŒ`ƒŒƒCƒ„[iƒZƒ‹’PˆÊj
-    private Dictionary<Vector3Int, CellType> terrainCells = new Dictionary<Vector3Int, CellType>();
+    private Dictionary<GridPos2D, CellEntities> cellEntitiesMap = new Dictionary<GridPos2D, CellEntities>();
     
-    // Ã“IáŠQ•¨ƒŒƒCƒ„[iƒZƒ‹’PˆÊj
-    private Dictionary<Vector3Int, ObstacleType> staticObstacleCells = new Dictionary<Vector3Int, ObstacleType>();
-
     //
-    // •`‰æ—Ìˆæ
+    // æç”»é ˜åŸŸ
     //
 
-    // ƒOƒŠƒbƒh‚ÌX²‚É‘Î‚·‚é•(ƒ}ƒX’PˆÊ)
+    // ã‚°ãƒªãƒƒãƒ‰ã®Xè»¸ã«å¯¾ã™ã‚‹å¹…(ãƒã‚¹å˜ä½)
     [SerializeField] private int gridWidth = 10;
 
-    // ƒ`ƒƒƒ“ƒNƒTƒCƒY(ƒ}ƒX’PˆÊ)
+    // ãƒãƒ£ãƒ³ã‚¯ã‚µã‚¤ã‚º(ãƒã‚¹å˜ä½)
     [SerializeField] private int gridChunkSize = 16;
 
-    // ’nŒ`ƒŒƒCƒ„[iƒvƒŒƒnƒuj
+    // åœ°å½¢ãƒ¬ã‚¤ãƒ¤ãƒ¼ï¼ˆãƒ—ãƒ¬ãƒãƒ–ï¼‰
     private Dictionary<Vector3Int, GameObject> terrainPrefabs = new Dictionary<Vector3Int, GameObject>();
     
-    // Ã“IáŠQ•¨ƒŒƒCƒ„[iƒvƒŒƒnƒuj
+    // é™çš„éšœå®³ç‰©ãƒ¬ã‚¤ãƒ¤ãƒ¼ï¼ˆãƒ—ãƒ¬ãƒãƒ–ï¼‰
     private Dictionary<Vector3Int, GameObject> staticObstaclePrefabs = new Dictionary<Vector3Int, GameObject>();
 
-    // ƒXƒ|ƒi[ƒŒƒCƒ„[ iƒvƒŒƒnƒuj
+    // ã‚¹ãƒãƒŠãƒ¼ãƒ¬ã‚¤ãƒ¤ãƒ¼ ï¼ˆãƒ—ãƒ¬ãƒãƒ–ï¼‰
     private Dictionary<Vector3Int, GameObject> spawnerPrefabs = new Dictionary<Vector3Int, GameObject>();
 
     //
-    // ƒXƒ|ƒi[ŠÇ—
+    // ã‚¹ãƒãƒŠãƒ¼ç®¡ç†
     //
     private List<SpawnerEntry> spawnerEntries = new List<SpawnerEntry>();
 
     /// <summary>
-    /// GridManager “à•”‚ÅŠÇ—‚·‚éƒXƒ|ƒi[ƒCƒ“ƒXƒ^ƒ“ƒXî•ñB
-    /// StageData ‚©‚ç¶¬‚É•ÏŠ·‚³‚êAUpdateRenderArea‚Å‰Â‹”ÍˆÍ§Œä‚·‚éB
+    /// GridManager å†…éƒ¨ã§ç®¡ç†ã™ã‚‹ã‚¹ãƒãƒŠãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹æƒ…å ±ã€‚
+    /// StageData ã‹ã‚‰ç”Ÿæˆæ™‚ã«å¤‰æ›ã•ã‚Œã€UpdateRenderAreaã§å¯è¦–ç¯„å›²åˆ¶å¾¡ã™ã‚‹ã€‚
     /// </summary>
     private class SpawnerEntry
     {
-        public Vector3Int GridPos { get; }          // ƒXƒ|ƒi[‚ÌƒOƒŠƒbƒhˆÊ’u
-        public GameObject Prefab { get; }           // ƒXƒ|ƒi[–{‘Ì‚ÌƒvƒŒƒnƒu
-        public SpawnerConfigBase Config { get; }    // ƒXƒ|ƒi[İ’èƒf[ƒ^
-        public GameObject Instance { get; set; }    // ƒV[ƒ“‚É”z’u‚³‚ê‚½ƒXƒ|ƒi[ƒCƒ“ƒXƒ^ƒ“ƒXi–¢¶¬‚Í nullj
+        public Vector3Int GridPos { get; }          // ã‚¹ãƒãƒŠãƒ¼ã®ã‚°ãƒªãƒƒãƒ‰ä½ç½®
+        public GameObject Prefab { get; }           // ã‚¹ãƒãƒŠãƒ¼æœ¬ä½“ã®ãƒ—ãƒ¬ãƒãƒ–
+        public SpawnerConfigBase Config { get; }    // ã‚¹ãƒãƒŠãƒ¼è¨­å®šãƒ‡ãƒ¼ã‚¿
+        public GameObject Instance { get; set; }    // ã‚·ãƒ¼ãƒ³ã«é…ç½®ã•ã‚ŒãŸã‚¹ãƒãƒŠãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ï¼ˆæœªç”Ÿæˆæ™‚ã¯ nullï¼‰
 
         /// <summary>
-        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-        /// ƒXƒ|ƒi[ƒCƒ“ƒXƒ^ƒ“ƒXî•ñ‚ğ•Û‚·‚éB
+        /// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+        /// ã‚¹ãƒãƒŠãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹æƒ…å ±ã‚’ä¿æŒã™ã‚‹ã€‚
         /// </summary>
         public SpawnerEntry(SpawnerConfigBase config)
         {
@@ -672,5 +886,51 @@ public class GridManager : MonoBehaviour
             Instance = null;
         }
     }
+
+    /// <summary>
+    /// ã‚°ãƒªãƒƒãƒ‰åº§æ¨™ã‚’2D (X,Z) ã§è¡¨ç¾ã™ã‚‹æ§‹é€ ä½“ã€‚
+    /// Vector3Int ã® Yè£œæ­£ã‚’ãªãã™ãŸã‚ã«å°å…¥ã€‚
+    /// </summary>
+    public struct GridPos2D
+    {
+        public int X;
+        public int Z;
+
+        public GridPos2D(int x, int z)
+        {
+            X = x;
+            Z = z;
+        }
+
+        // Dictionaryã‚­ãƒ¼ã¨ã—ã¦ä½¿ã†ãŸã‚ã®Equals/GetHashCodeã‚’å®Ÿè£…
+        public override bool Equals(object obj)
+        {
+            if (!(obj is GridPos2D)) return false;
+            var other = (GridPos2D)obj;
+            return X == other.X && Z == other.Z;
+        }
+
+        public override int GetHashCode()
+        {
+            return (X, Z).GetHashCode();
+        }
+    }
+
+    /// <summary>
+    /// 1ã‚»ãƒ«ã«å­˜åœ¨ã™ã‚‹ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç¾¤ã‚’ã¾ã¨ã‚ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+    /// - Terrain: è‰åŸ/é“è·¯/å·ãªã©ã®åœ°å½¢
+    /// - Obstacles: æœ¨ãªã©ã®é™çš„éšœå®³ç‰©ï¼ˆè¤‡æ•°å¯ï¼‰
+    /// - Spawners: æ©‹ã‚„å‹•çš„éšœå®³ç‰©ã®ã‚¹ãƒ‘ãƒŠãƒ¼ï¼ˆè¤‡æ•°å¯ï¼‰
+    /// </summary>
+    public class CellEntities
+    {
+        // åœ°å½¢ãƒ¬ã‚¤ãƒ¤ãƒ¼
+        public List<CellType> Terrains { get; } = new List<CellType>();
+        // é™çš„éšœå®³ç‰©ãƒ¬ã‚¤ãƒ¤ãƒ¼
+        public List<ObstacleType> Obstacles { get; } = new List<ObstacleType>();
+        // ã‚¹ãƒãƒŠãƒ¼ãƒ¬ã‚¤ãƒ¤ãƒ¼
+        public List<SpawnerConfigBase> Spawners { get; } = new List<SpawnerConfigBase>();
+    }
+
 }
 
