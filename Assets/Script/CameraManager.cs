@@ -8,6 +8,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private PlayerMove _playerMove;
     [SerializeField] private float _cameraZUpdateSpeed = 0.5f;
     [SerializeField] private Button _retryButton;
+    private GameManager _gameManager;
     private Vector3 _startPos;
     private Vector3 _camTargetPos;
 
@@ -25,6 +26,11 @@ public class CameraManager : MonoBehaviour
         {
             _playerMove = FindAnyObjectByType<PlayerMove>();
         }
+
+        if (_gameManager == null)
+        {
+            _gameManager = FindAnyObjectByType<GameManager>();
+        }
         _startPos = _cameraFollowTransform.position;
     }
 
@@ -37,7 +43,7 @@ public class CameraManager : MonoBehaviour
             //追い越したときカメラをプレイヤーの位置に合わせる
             _camTargetPos.z = _playerPosition.position.z;
         }
-        else
+        else if (_gameManager.IsInGamePlay)
         {
             //徐々にカメラを前進させる
             _camTargetPos.z += _cameraZUpdateSpeed * Time.deltaTime;
