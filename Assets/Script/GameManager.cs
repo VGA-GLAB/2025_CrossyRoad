@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    [Header("UIEffectQÆ")]
+    [Header("UIEffectï¿½Qï¿½ï¿½")]
     [SerializeField] private UIEffect uIEffect;
     public UIEffect UIEffect => uIEffect;
 
@@ -14,15 +14,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InGameUIManager gameUIManager;
     public InGameUIManager inGameUIManager => gameUIManager;
 
-    [Header("ƒQ[ƒ€’†")]
+    [Header("ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private bool isInGamePlay;
     public bool IsInGamePlay => isInGamePlay;
 
-    [Header("ƒvƒŒƒCƒ„[‚ª€‚ñ‚¾‚Æ‚ÌƒCƒxƒ“ƒg—p")]
+    [Header("ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ñ‚¾‚Æ‚ÌƒCï¿½xï¿½ï¿½ï¿½gï¿½p")]
     [SerializeField] private PlayerMove _playerMove;
 
-    private Dictionary<GameState, IGameState> gameStateDictionary; //ƒXƒe[ƒgƒ}ƒVƒ“ŠÇ—
-    private IGameState currentGameState; //Œ»İ‚ÌƒXƒe[ƒg
+    private Dictionary<GameState, IGameState> gameStateDictionary; //ï¿½Xï¿½eï¿½[ï¿½gï¿½}ï¿½Vï¿½ï¿½ï¿½Ç—ï¿½
+    private IGameState currentGameState; //ï¿½ï¿½ï¿½İ‚ÌƒXï¿½eï¿½[ï¿½g
 
     void Awake()
     {
@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        //ƒXƒe[ƒgƒ}ƒVƒ“‚ğ‰Šú‰»‚ÉAƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚·‚é
+        //ï¿½Xï¿½eï¿½[ï¿½gï¿½}ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÉAï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½
         gameStateDictionary = new Dictionary<GameState, IGameState>
         {
             {GameState.Title, new TitleState() },
@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
             {GameState.Result, new ResultState() },
         };
 
-        //ƒ^ƒCƒgƒ‹‚Ìó‘Ô‚É‚·‚é
+        //ï¿½^ï¿½Cï¿½gï¿½ï¿½ï¿½Ìï¿½Ô‚É‚ï¿½ï¿½ï¿½
         ChangeGameState(GameState.Title);
         if(_playerMove == null)
         {
@@ -62,33 +62,35 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        //ƒ^ƒCƒgƒ‹‚Ì“ü—Í‚ğŒŸ’m
+        //ï¿½^ï¿½Cï¿½gï¿½ï¿½ï¿½Ì“ï¿½ï¿½Í‚ï¿½ï¿½ï¿½ï¿½m
         currentGameState?.Key();
 
-        //Œã‚ÅÁ‚·
-        if (Input.GetKeyDown(KeyCode.W)) //€–SŠm”F—p
+        //ï¿½ï¿½Åï¿½ï¿½ï¿½
+        /*
+        if (Input.GetKeyDown(KeyCode.W)) //ï¿½ï¿½ï¿½Sï¿½mï¿½Fï¿½p
         {
             ChangeGameState(GameState.Result);
         }
+        */
     }
 
-    public void ChangeGameState(GameState state) //Œ»İ‚ÌƒXƒe[ƒg‚ğ•ÏX‚·‚é
+    public void ChangeGameState(GameState state) //ï¿½ï¿½ï¿½İ‚ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½ÏXï¿½ï¿½ï¿½ï¿½
     {
-        //“¯‚¶ƒXƒe[ƒg‚¾‚Á‚½‚çAˆ—‚ğ«‚ß‚é
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
         if (currentGameState == gameStateDictionary[state]) return;
 
-        //Œ»İ‚ÌƒXƒe[ƒg‚ğI‚í‚ç‚¹‚ÄA•ÏX‚·‚é
+        //ï¿½ï¿½ï¿½İ‚ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½ï¿½Iï¿½ï¿½ç‚¹ï¿½ÄAï¿½ÏXï¿½ï¿½ï¿½ï¿½
         currentGameState?.Exit();
         currentGameState = gameStateDictionary[state];
         currentGameState.Enter();
     }
 
-    public void ChangeInGamePlay(bool isFlag) //ƒQ[ƒ€’†‚©‚Ìó‘ÔØ‘Ö
+    public void ChangeInGamePlay(bool isFlag) //ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ÔØ‘ï¿½
     {
         isInGamePlay = isFlag;
     }
 
-    private void PlayerDead() //ƒvƒŒƒCƒ„[‚ª€‚ñ‚¾‚Æ‚«‚Ìˆ—
+    private void PlayerDead() //ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ñ‚¾‚Æ‚ï¿½ï¿½Ìï¿½ï¿½ï¿½
     {
         ChangeGameState(GameState.Result);
     }
