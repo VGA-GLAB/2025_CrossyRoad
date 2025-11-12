@@ -258,5 +258,5 @@ MonoBehaviour:
   _fixedY: 0.55
   _gridManager: {fileID: 0}
   _retryButton: {fileID: 0}
-  animTime: 0
-  jumpHight: 0
+  animTime: 0.3
+  jumpHight: 0.3
