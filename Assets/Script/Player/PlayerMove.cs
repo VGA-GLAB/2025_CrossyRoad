@@ -150,6 +150,13 @@ public class PlayerMove : MonoBehaviour
         Vector3Int nextGridPos = _currentGridPos + dir;
         var cellType = _gridManager.GetCellType(nextGridPos);
 
+        // 静的障害物、マップ外の判定
+        // Occupied または Empty ならキャンセル
+        if (cellType == CellType.Occupied || cellType == CellType.Empty)
+        {
+            return;
+        }
+
         // 移動先セルをワールド座標に変換
         _targetWorldPos = _gridManager.GridToWorld(nextGridPos);
         _targetWorldPos.y = _fixedY;
@@ -249,7 +256,8 @@ public class PlayerMove : MonoBehaviour
             }
 
             // 描画範囲の更新
-            _gridManager.UpdateRenderArea();
+            _gridManager.UpdatePlayerCell(_currentGridPos);
+            _gridManager.UpdateStageFlow();
         }
         else
         {
