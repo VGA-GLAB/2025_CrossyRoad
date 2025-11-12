@@ -74,9 +74,9 @@ public class PlayerMove : MonoBehaviour
         _gridManager = FindAnyObjectByType<GridManager>();
         _gridManager.RegisterPlayer(gameObject);
 
-        // 外枠を考慮して1マス進める
+        // 初期マス(1, 1)として配置
         _currentGridPos = _gridManager.WorldToGrid(transform.position);
-        _currentGridPos += new Vector3Int(1, 0, 2);
+        _currentGridPos += new Vector3Int(1, 0, 1);
 
         // 初期位置をグリッドに揃える
         //currentGridPos = gridManager.WorldToGrid(transform.position);
