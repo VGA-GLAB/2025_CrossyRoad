@@ -2237,6 +2237,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7098238570495102180, guid: 1099ea993a54b304c89a639e8a7fb423, type: 3}
+      propertyPath: riverPrefab
+      value: 
+      objectReference: {fileID: 3321774702504838099, guid: 66d3509ffc10cda4b8487792e3caed12, type: 3}
     - target: {fileID: 8565608981913714198, guid: 1099ea993a54b304c89a639e8a7fb423, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
