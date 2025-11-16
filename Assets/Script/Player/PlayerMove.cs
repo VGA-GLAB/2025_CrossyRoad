@@ -100,6 +100,14 @@ public class PlayerMove : MonoBehaviour
             _currentBridge = bridgeRoot;
             transform.SetParent(_currentBridge);
         }
+        // “®“IáŠQ•¨‚ÌÕ“Ë”»’è
+        else if (other.CompareTag("Obstacle"))
+        {
+            Debug.Log("áŠQ•¨‚ÉÕ“Ë ¨ €–S");
+
+            IsDead = true;
+            OnPlayerDeathAction?.Invoke();
+        }
     }
 
     /// <summary>
