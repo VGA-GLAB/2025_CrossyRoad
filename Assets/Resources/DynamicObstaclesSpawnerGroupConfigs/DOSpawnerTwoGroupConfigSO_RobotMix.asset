@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2fa1f47cbe3a2b645b35be43013f6674, type: 3}
-  m_Name: DynamicObstaclesSpawnerThreeGroupConfigSO_Default 2
+  m_Name: DOSpawnerTwoGroupConfigSO_RobotMix
   m_EditorClassIdentifier: 
   dynamicObstaclesConfigs:
-  - {fileID: 11400000, guid: e93d397a63222304ea40a846acb86b1b, type: 2}
-  - {fileID: 11400000, guid: e93d397a63222304ea40a846acb86b1b, type: 2}
-  difficultyAppear: 64
-  difficultyCost: 5
+  - {fileID: 11400000, guid: cbacd4dd590a22744b1a4cc142af2f14, type: 2}
+  - {fileID: 11400000, guid: 58e2a987218410e41b921d95d2b3fa0f, type: 2}
+  difficultyAppear: 96
+  difficultyCost: 3

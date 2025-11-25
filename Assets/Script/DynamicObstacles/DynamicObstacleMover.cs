@@ -25,13 +25,30 @@ public class DynamicObstacleMover : MonoBehaviour
         moveDir = moveRight ? Vector3.right : Vector3.left;
         initialized = true;
 
-        // Animator があれば走行アニメを再生
-        animator = GetComponent<Animator>();
-        if (animator != null)
+        // モデル反転処理
+        Vector3 localScale = transform.localScale;
+        if (moveRight)
         {
-            // ToDo: 再生するアニメーションを設定
-            // animator.SetBool("IsMoving", true);
+            // 右向き → 正常スケール
+            localScale.x = Mathf.Abs(localScale.x);
         }
+        else
+        {
+            // 左向き → X軸反転
+            localScale.x = -Mathf.Abs(localScale.x);
+        }
+
+        transform.localScale = localScale;
+
+
+        // Animator があれば走行アニメを再生
+        // (Animator で自動でループ再生されるため現状、プログラム制御不要)
+        //animator = GetComponent<Animator>();
+        //if (animator != null)
+        //{
+        //    // ToDo: 再生するアニメーションを設定
+        //    // animator.SetBool("IsMoving", true);
+        //}
     }
 
     void Update()

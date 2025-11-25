@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnerControllerPrefab: {fileID: 8612191763433995687, guid: c132ea35a1905dd4988bff5af33c2edd, type: 3}
   dynamicObstaclePrefabs:
-  - {fileID: 3060368603207947674, guid: f04aa8b097d3a6442bfea79afe77896a, type: 3}
+  - {fileID: 2979842760539694034, guid: 8f43b0bc0ba92b341894e4c3904efb42, type: 3}
   moveSpeed: 10
   moveRight: 1
   baseSpawnInterval: 3
