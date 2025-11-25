@@ -2246,7 +2246,7 @@ PrefabInstance:
     - target: {fileID: 7098238570495102180, guid: 1099ea993a54b304c89a639e8a7fb423, type: 3}
       propertyPath: roadPrefab
       value: 
-      objectReference: {fileID: 66852074560588856, guid: d5bd7116582666f4fbb4b47ef6b6069f, type: 3}
+      objectReference: {fileID: 66852074560588856, guid: b5da490d1494170428cba87cdbfc08d8, type: 3}
     - target: {fileID: 7098238570495102180, guid: 1099ea993a54b304c89a639e8a7fb423, type: 3}
       propertyPath: renderWidth
       value: 32
