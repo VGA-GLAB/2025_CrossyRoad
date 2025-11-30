@@ -1,6 +1,7 @@
 using DG.Tweening;
 using NUnit.Framework.Internal;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -32,8 +33,10 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private GameObject _blockEffectPrefab;
     [SerializeField] private float _explosionForce = 5f;
     [SerializeField] private float _explosionRadius = 2f;
+    [SerializeField] private float _duration = 0.25f;
     [SerializeField] private int _pieceCount = 12;
     [SerializeField] private Vector2 _pieceScaleRange = new Vector2(0.2f, 0.5f);
+    [SerializeField] private Ease _ease;
 
     [Header("DoTweenジャンプアニメーション設定")]
     [SerializeField] private float animTime; // ��: 0.3f ���x
@@ -53,6 +56,7 @@ public class PlayerMove : MonoBehaviour
     private Transform _currentBridge = null;
     /// <summary>スコア判定用の最後に到達したセル</summary>
     private Vector3Int _currentCellScore;
+    private Vector3 _startScale;
 
     private void Awake()
     {
@@ -78,6 +82,7 @@ public class PlayerMove : MonoBehaviour
 
         _startCell = _currentGridPos;
         IsDead = false;
+        _startScale = transform.localScale;
     }
 
     /// <summary>
@@ -101,8 +106,9 @@ public class PlayerMove : MonoBehaviour
             Debug.Log("��Q���ɏՓ� �� ���S");
 
             IsDead = true;
-            OnPlayerDeathAction?.Invoke();
             DeadEffect();
+            SquashEffect(transform, _duration);
+            OnPlayerDeathAction?.Invoke();
         }
     }
 
@@ -207,8 +213,9 @@ public class PlayerMove : MonoBehaviour
             if (cellType == CellType.River && _currentBridge == null)
             {
                 IsDead = true;
+                DeadEffect();
+                SquashEffect(transform, _duration);
                 OnPlayerDeathAction?.Invoke();
-                //DeadEffect();
                 Debug.Log("��ɗ��� �� ���S");
                 return;
             }
@@ -253,6 +260,7 @@ public class PlayerMove : MonoBehaviour
         _currentBridge = null;
         _currentCellScore = _startCell;
         ScoreManager.instance.ResetScore();
+        transform.localScale = _startScale;
     }
 
     /// <summary>
@@ -289,5 +297,18 @@ public class PlayerMove : MonoBehaviour
 
             Destroy(piece, 3f);
         }
+    }
+
+    [ContextMenu("縮む")]
+    private async Task SquashEffect(Transform player, float duration)
+    {
+        Vector3 startScale = _startScale;
+        Vector3 endScale = new Vector3(
+            startScale.x * 1.3f,
+            0.1f,
+            startScale.z);
+        await player.DOScale(endScale, duration)
+            .SetEase(_ease)
+            .AsyncWaitForCompletion();
     }
 }
