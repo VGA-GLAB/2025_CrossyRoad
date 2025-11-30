@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8704944549360197012, guid: 87c12b9c229f66e42ac2b946e2b90749, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 87c12b9c229f66e42ac2b946e2b90749, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -59,6 +63,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 87c12b9c229f66e42ac2b946e2b90749, type: 3}
       propertyPath: m_TagString
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 1738470841789156312, guid: 87c12b9c229f66e42ac2b946e2b90749, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2623964550384803389, guid: 87c12b9c229f66e42ac2b946e2b90749, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5487691
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
