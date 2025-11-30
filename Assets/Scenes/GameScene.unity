@@ -1425,6 +1425,10 @@ PrefabInstance:
       propertyPath: _retryButton
       value: 
       objectReference: {fileID: 44157735}
+    - target: {fileID: 155824911859345660, guid: 0f0a02c4eca70aa4ba60f18b9ae84f66, type: 3}
+      propertyPath: _blockEffectPrefab
+      value: 
+      objectReference: {fileID: 4704401119454609605, guid: ed7510696ef6b8648812a0d28853cbf4, type: 3}
     - target: {fileID: 3209040000958765459, guid: 0f0a02c4eca70aa4ba60f18b9ae84f66, type: 3}
       propertyPath: m_Name
       value: Player

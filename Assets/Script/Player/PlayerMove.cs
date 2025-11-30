@@ -1,62 +1,57 @@
+using DG.Tweening;
+using NUnit.Framework.Internal;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
+using Random = UnityEngine.Random;
 
 /// <summary>
-/// �v���C���[�̈ړ��𐧌䂷��N���X�B
-/// CrossyRoad�̂悤�ȃ}�X�P�ʂ̈ړ���z��B
-/// �E�ړ��̓O���b�h�P��
-/// �E�ړ��J�n���ɃW�����v�A�j���[�V�������Đ��i�Ȃ߂炩�ȓ����j
-/// �E��ł͋��̏�ɂ��Ȃ��Ǝ��S
+/// プレイヤーの移動を制御するクラス。
+/// CrossyRoadのようなマス制移動を実現。
+/// ・移動方向はグリッド1マス単位
+/// ・移動開始時にジャンプアニメーションが入る（ただし実際には上昇のみ）
+/// ・川では橋の上でなければ死亡
 /// </summary>
 public class PlayerMove : MonoBehaviour
 {
-    /// <summary>
-    /// �X�R�A���Z�̃A�N�V����
-    /// </summary>
+    /// <summary>スコアが上がったときのアクション</summary>
     public Action OnScoreUpAction;
 
-    /// <summary>
-    /// �v���C���[���S���̃A�N�V�����i��ɗ������Ȃǁj
-    /// </summary>
+    /// <summary>プレイヤー死亡時のアクション（UI表示など）</summary>
     public Action OnPlayerDeathAction;
 
-    /// <summary>
-    /// ���݈ړ������ǂ���
-    /// </summary>
+    /// <summary>現在移動中かどうか</summary>
     public bool IsMoving { get; private set; } = false;
+    /// <summary>死亡状態かどうか</summary>
     public bool IsDead { get; private set; } = false;
 
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _fixedY = 0.55f;
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private Button _retryButton;
+    [SerializeField] private GameObject _blockEffectPrefab;
+    [SerializeField] private float _explosionForce = 5f;
+    [SerializeField] private float _explosionRadius = 2f;
+    [SerializeField] private int _pieceCount = 12;
+    [SerializeField] private Vector2 _pieceScaleRange = new Vector2(0.2f, 0.5f);
 
-    [Header("DoTween�̃A�j���[�V�����ݒ�")]
+    [Header("DoTweenジャンプアニメーション設定")]
     [SerializeField] private float animTime; // ��: 0.3f ���x
-    [Header("�W�����v�ݒ�")]
+    [Header("ジャンプ設定")]
     [SerializeField] private float jumpHight; // ��: 0.3f ���x
     private bool isJumping; // �W�����v���t���O
     private bool isInputReservation; // ���͗\��t���O
     private Vector3Int inputReservation; // �\�񂳂ꂽ�ړ�����
 
-    /// <summary>
-    /// ���݂̃O���b�h���W
-    /// </summary>
+    /// <summary>現在のグリッド座標</summary>
     private Vector3Int _currentGridPos;
-    /// <summary>
-    /// �ړ���̃��[���h���W
-    /// </summary>
+    /// <summary>移動先のワールド座標</summary>
     private Vector3 _targetWorldPos;
-    /// <summary>
-    /// �X�^�[�g���̃O���b�h���W
-    /// </summary> 
+    /// <summary>スタート時のグリッド座標</summary>
     private Vector3Int _startCell;
-    /// <summary>
-    /// ���ݏ���Ă��鋴�i����Ă��Ȃ��ꍇ��null�j
-    /// </summary>
+    /// <summary>現在乗っている橋（乗っていない場合はnull）</summary>
     private Transform _currentBridge = null;
+    /// <summary>スコア判定用の最後に到達したセル</summary>
     private Vector3Int _currentCellScore;
 
     private void Awake()
@@ -107,6 +102,7 @@ public class PlayerMove : MonoBehaviour
 
             IsDead = true;
             OnPlayerDeathAction?.Invoke();
+            DeadEffect();
         }
     }
 
@@ -212,6 +208,7 @@ public class PlayerMove : MonoBehaviour
             {
                 IsDead = true;
                 OnPlayerDeathAction?.Invoke();
+                //DeadEffect();
                 Debug.Log("��ɗ��� �� ���S");
                 return;
             }
@@ -227,7 +224,7 @@ public class PlayerMove : MonoBehaviour
             // �v���C���[�ʒu�A�\���͈͂��X�V
             _gridManager.UpdatePlayerCell(_currentGridPos);
             _gridManager.UpdateStageFlow();
-            
+
             if (isInputReservation) //入力予約があった場合、入力予約時の方向に移動する
             {
                 //予約方向をVector２に変換する
@@ -268,6 +265,29 @@ public class PlayerMove : MonoBehaviour
             isJumping = true;
             // �W�����v���o
             transform.DOMoveY(transform.position.y + jumpHight, animTime).SetEase(Ease.OutQuint);
+        }
+    }
+
+    [ContextMenu("爆発")]
+    private void DeadEffect()
+    {
+        for (int i = 0; i < _pieceCount; i++)
+        {
+            // ブロックの破片を生成
+            GameObject piece = Instantiate(_blockEffectPrefab, transform.position, Random.rotation);
+            // ランダムなスケールを設定
+            float s = UnityEngine.Random.Range(_pieceScaleRange.x, _pieceScaleRange.y);
+            piece.transform.localScale = new Vector3(s, s, s);
+            Rigidbody rb = piece.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                // ランダムな方向に力を加える
+                Vector3 dir = UnityEngine.Random.onUnitSphere;
+                rb.AddForce(dir * _explosionForce, ForceMode.Impulse);
+                rb.AddTorque(UnityEngine.Random.onUnitSphere * _explosionForce, ForceMode.Impulse);
+            }
+
+            Destroy(piece, 3f);
         }
     }
 }
