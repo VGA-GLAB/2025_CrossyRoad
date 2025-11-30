@@ -27,10 +27,16 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int renderDepthBackward = 5;
  
     // 環境情報の各種Prefab
+    // 地面タイルのプレハブ群
     [SerializeField] private GameObject grassPrefab;
     [SerializeField] private GameObject roadPrefab;
     [SerializeField] private GameObject riverPrefab;
-    [SerializeField] private GameObject treePrefab;
+
+    // 静的障害物のプレハブ群
+    [SerializeField] private GameObject tankPrefab;
+    [SerializeField] private GameObject controlPanelPrefab;
+    [SerializeField] private GameObject pressMachinePrefab;
+
 
     //==================================================
     // Unity標準イベント
@@ -395,7 +401,9 @@ public class GridManager : MonoBehaviour
             GameObject prefab = null;
             switch (type)
             {
-                case ObstacleType.Tree: prefab = treePrefab; break;
+                case ObstacleType.Tank :            prefab = tankPrefab;            break;
+                case ObstacleType.ControlPanel :    prefab = controlPanelPrefab;    break;
+                case ObstacleType.PressMachine:     prefab = pressMachinePrefab;    break;
             }
 
             if (prefab != null)

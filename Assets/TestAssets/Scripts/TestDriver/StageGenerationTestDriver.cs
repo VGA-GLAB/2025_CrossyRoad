@@ -147,7 +147,7 @@ public class StageGenerationTestDriver
                         // Note: y座標は1固定（地形の上に置く想定）
                         // マップ自動生成や動的障害物配置の際に調整したりY軸をどうするか規定する必要あり
                         Vector3Int pos = new Vector3Int(x, 1, z);
-                        data.staticObstacles[pos] = ObstacleType.Tree;
+                        data.staticObstacles[pos] = ObstacleType.Tank;
                     }
                 }
             }

@@ -42,6 +42,14 @@ public class StageGenerator : MonoBehaviour
     [Tooltip("橋・動的障害物の配置状況に応じてさらに加算される密度")]
     [SerializeField] private float bonusStaticFactor = 0.10f;
 
+    // 静的障害物の配置ルール指定
+    [Header("静的障害物の配置ルール")]
+    [Tooltip("外枠に配置する静的障害物")]
+    [SerializeField] private ObstacleType borderStaticObstacle = ObstacleType.Tank;
+    [Tooltip("ランダムで配置する静的障害物")]
+    [SerializeField] private List<ObstacleType> randomStaticObstacles;
+
+
     // 実行時用 Config のキャッシュ
     private readonly List<BridgeSpawnerGroupEntry> bridgeGroupEntries = new List<BridgeSpawnerGroupEntry>();
     private readonly List<DynamicObstaclesGroupEntry> dynamicGroupEntries = new List<DynamicObstaclesGroupEntry>();
@@ -388,10 +396,17 @@ public class StageGenerator : MonoBehaviour
                 if (x == safeColumn) continue; // 経路確保
 
                 // 算出した密度で静的障害物を配置
-                if (Random.value < effectiveDensity)
+                if (Random.value < effectiveDensity
+                    && randomStaticObstacles != null
+                    && randomStaticObstacles.Count > 0 )
                 {
                     var pos = new Vector3Int(x, 1, z);
-                    stageData.staticObstacles[pos] = ObstacleType.Tree;
+
+                    // ランダムにObstacleTypeを選択
+                    ObstacleType selectedType = randomStaticObstacles[Random.Range(0, randomStaticObstacles.Count)];
+
+                    // 選択したObstacleTypeを配置
+                    stageData.staticObstacles[pos] = selectedType;
                 }
             }
         }
@@ -407,17 +422,17 @@ public class StageGenerator : MonoBehaviour
 
             if (worldZ == 0 && z == 0)
             {
-                // 最初のチャンクのZ=0行目は全面木配置
+                // 最初のチャンクのZ=0行目は全面に「外枠の静的障害物」を配置
                 for (int x = 0; x < width; x++)
                 {
-                    stageData.staticObstacles[new Vector3Int(x, 1, z)] = ObstacleType.Tree;
+                    stageData.staticObstacles[new Vector3Int(x, 1, z)] = borderStaticObstacle;
                 }
             }
             else
             {
-                // 両端に木を強制配置
-                stageData.staticObstacles[new Vector3Int(0, 1, z)] = ObstacleType.Tree;
-                stageData.staticObstacles[new Vector3Int(width - 1, 1, z)] = ObstacleType.Tree;
+                // 両端に「外枠の静的障害物」を強制配置
+                stageData.staticObstacles[new Vector3Int(0, 1, z)] = borderStaticObstacle;
+                stageData.staticObstacles[new Vector3Int(width - 1, 1, z)] = borderStaticObstacle;
             }
         }
     }

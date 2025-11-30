@@ -4,5 +4,7 @@
 /// </summary>
 public enum ObstacleType
 {
-    Tree,
+    Tank,               // 貯水タンク
+    ControlPanel,       // コントロールパネル
+    PressMachine        // プレス機
 }
