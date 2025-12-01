@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bab6b1391a5b3a4195705199f13fda2, type: 3}
+  m_Name: DOSpawnerConfigSO_CircularSaw_Left_Default
+  m_EditorClassIdentifier: 
+  spawnerControllerPrefab: {fileID: 8612191763433995687, guid: c132ea35a1905dd4988bff5af33c2edd, type: 3}
+  dynamicObstaclePrefabs:
+  - {fileID: 2979842760539694034, guid: 8f43b0bc0ba92b341894e4c3904efb42, type: 3}
+  moveSpeed: 10
+  moveRight: 0
+  baseSpawnInterval: 3
+  spawnIntervalJitter: 0.5
+  minBatchCount: 1
+  maxBatchCount: 1
+  batchSpacing: 1.5
+  lifeTime: 12
+  roadCellType: 1

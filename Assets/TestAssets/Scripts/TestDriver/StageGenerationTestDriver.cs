@@ -81,7 +81,7 @@ public class StageGenerationTestDriver
                 data.laneTypes[z] = CellType.Grass;
             else if (z % 3 == 1)
             {
-                data.laneTypes[z] = CellType.Road;
+                data.laneTypes[z] = dynamicObstaclesSpawnerConfig.RoadCellType;
 
                 // ↓Roadレーンなら DynamicObstaclesSpawnerConfig を登録↓
                 var pos = new Vector3Int(0, -1, z); // Y=-1はSpawner配置用の慣例
@@ -106,7 +106,8 @@ public class StageGenerationTestDriver
                     dynamicObstaclesSpawnerConfig.MinBatchCount,
                     dynamicObstaclesSpawnerConfig.MaxBatchCount,
                     dynamicObstaclesSpawnerConfig.BatchSpacing,
-                    dynamicObstaclesSpawnerConfig.LifeTime
+                    dynamicObstaclesSpawnerConfig.LifeTime,
+                    dynamicObstaclesSpawnerConfig.RoadCellType
                 );
 
                 data.spawnerConfigs.Add(spawner);
@@ -147,7 +148,7 @@ public class StageGenerationTestDriver
                         // Note: y座標は1固定（地形の上に置く想定）
                         // マップ自動生成や動的障害物配置の際に調整したりY軸をどうするか規定する必要あり
                         Vector3Int pos = new Vector3Int(x, 1, z);
-                        data.staticObstacles[pos] = ObstacleType.Tree;
+                        data.staticObstacles[pos] = ObstacleType.Tank;
                     }
                 }
             }

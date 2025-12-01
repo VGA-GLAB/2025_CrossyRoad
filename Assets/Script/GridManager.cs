@@ -27,16 +27,53 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int renderDepthBackward = 5;
  
     // 環境情報の各種Prefab
+    // 地面タイルのプレハブ群
     [SerializeField] private GameObject grassPrefab;
-    [SerializeField] private GameObject roadPrefab;
     [SerializeField] private GameObject riverPrefab;
-    [SerializeField] private GameObject treePrefab;
+
+    // 道路タイルのプレハブ群
+    [System.Serializable]
+    public struct RoadPrefabEntry
+    {
+        public CellType cellType;
+        public GameObject roadPrefab;
+    }
+    public List<RoadPrefabEntry> roadPrefabEntries;
+    private Dictionary<CellType, GameObject> roadPrefabMap;
+
+    // 静的障害物のプレハブ群
+    [SerializeField] private GameObject tankPrefab;
+    [SerializeField] private GameObject controlPanelPrefab;
+    [SerializeField] private GameObject pressMachinePrefab;
+
 
     //==================================================
     // Unity標準イベント
     //==================================================
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// <summary>
+    /// Awake()
+    /// CellType と道路Prefabの対応関係を辞書に構築する
+    /// </summary>
+    void Awake()
+    {
+
+        roadPrefabMap = new Dictionary<CellType, GameObject>();
+        foreach (var entry in roadPrefabEntries)
+        {
+            if (!roadPrefabMap.ContainsKey(entry.cellType))
+            {
+                roadPrefabMap.Add(entry.cellType, entry.roadPrefab);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Start()
+    /// - StageGeneratorの初期化
+    /// - 最初のチャンクを生成
+    /// - プレイヤー初期セルを登録
+    /// </summary>
     void Start()
     {
         // StageGenerator をアタッチしている前提
@@ -59,6 +96,7 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
+    /// OnDestroy()
     /// 解放時、内部データと描画オブジェクトをすべて解放する。
     /// </summary>
     private void OnDestroy()
@@ -350,9 +388,14 @@ public class GridManager : MonoBehaviour
             switch (type)
             {
                 case CellType.Grass: prefab = grassPrefab; break;
-                case CellType.Road: prefab = roadPrefab; break;
                 case CellType.River: prefab = riverPrefab; break;
                 case CellType.Empty: prefab = null; break;
+                // RoadGear、RoadRobotの場合
+                case CellType.RoadGear:
+                case CellType.RoadRobot:
+                    if (roadPrefabMap.TryGetValue(type, out var road))
+                        prefab = road;
+                    break;
             }
 
             if (prefab != null)
@@ -395,7 +438,9 @@ public class GridManager : MonoBehaviour
             GameObject prefab = null;
             switch (type)
             {
-                case ObstacleType.Tree: prefab = treePrefab; break;
+                case ObstacleType.Tank :            prefab = tankPrefab;            break;
+                case ObstacleType.ControlPanel :    prefab = controlPanelPrefab;    break;
+                case ObstacleType.PressMachine:     prefab = pressMachinePrefab;    break;
             }
 
             if (prefab != null)

@@ -32,6 +32,9 @@ public class DynamicObstaclesSpawnerConfigSO : ScriptableObject
     [Header("Destroyするまでの時間")]
     public float lifeTime = 12.0f;
 
+    [Header("このスポナーが対応する道路タイプ")]
+    public CellType roadCellType = CellType.RoadRobot;
+
     /// <summary>
     /// ScriptableObject に保存された値をもとに、
     /// 実行時専用の <see cref="DynamicObstaclesSpawnerConfig"/> を生成する。
@@ -56,7 +59,8 @@ public class DynamicObstaclesSpawnerConfigSO : ScriptableObject
             minBatchCount,
             maxBatchCount,
             batchSpacing,
-            lifeTime
+            lifeTime,
+            roadCellType
         );
     }
 }
