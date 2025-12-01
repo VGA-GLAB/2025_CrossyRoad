@@ -81,7 +81,7 @@ public class StageGenerationTestDriver
                 data.laneTypes[z] = CellType.Grass;
             else if (z % 3 == 1)
             {
-                data.laneTypes[z] = CellType.Road;
+                data.laneTypes[z] = dynamicObstaclesSpawnerConfig.RoadCellType;
 
                 // ↓Roadレーンなら DynamicObstaclesSpawnerConfig を登録↓
                 var pos = new Vector3Int(0, -1, z); // Y=-1はSpawner配置用の慣例
@@ -106,7 +106,8 @@ public class StageGenerationTestDriver
                     dynamicObstaclesSpawnerConfig.MinBatchCount,
                     dynamicObstaclesSpawnerConfig.MaxBatchCount,
                     dynamicObstaclesSpawnerConfig.BatchSpacing,
-                    dynamicObstaclesSpawnerConfig.LifeTime
+                    dynamicObstaclesSpawnerConfig.LifeTime,
+                    dynamicObstaclesSpawnerConfig.RoadCellType
                 );
 
                 data.spawnerConfigs.Add(spawner);

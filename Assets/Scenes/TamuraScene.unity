@@ -154,9 +154,11 @@ MonoBehaviour:
   renderDepthForward: 24
   renderDepthBackward: 16
   grassPrefab: {fileID: 8270035575672199909, guid: dfd136c2b073ebc4e8e3ddeace5fa93b, type: 3}
-  roadPrefab: {fileID: 66852074560588856, guid: b5da490d1494170428cba87cdbfc08d8, type: 3}
   riverPrefab: {fileID: 3371744852525430483, guid: b2c5d3cfba4670b47b458318cc6014ce, type: 3}
-  treePrefab: {fileID: 3554983547509115662, guid: bf3235d0f7809d24c80ed08e9bf1f333, type: 3}
+  roadPrefabEntries: []
+  tankPrefab: {fileID: 0}
+  controlPanelPrefab: {fileID: 0}
+  pressMachinePrefab: {fileID: 0}
   gridWidth: 10
   gridChunkSize: 16
 --- !u!114 &315356502
@@ -486,6 +488,8 @@ MonoBehaviour:
   minStaticDensity: 0.05
   maxStaticDensity: 0.3
   bonusStaticFactor: 0.1
+  borderStaticObstacle: 0
+  randomStaticObstacles: 000000000100000002000000
 --- !u!114 &1802568417
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -502,10 +506,16 @@ MonoBehaviour:
   renderWidth: 16
   renderDepthForward: 20
   renderDepthBackward: 5
-  grassPrefab: {fileID: 8270035575672199909, guid: dfd136c2b073ebc4e8e3ddeace5fa93b, type: 3}
-  roadPrefab: {fileID: 66852074560588856, guid: b5da490d1494170428cba87cdbfc08d8, type: 3}
+  grassPrefab: {fileID: 1676679009036093696, guid: 18387a62c365e2d408c499e789f788e8, type: 3}
   riverPrefab: {fileID: 3371744852525430483, guid: b2c5d3cfba4670b47b458318cc6014ce, type: 3}
-  treePrefab: {fileID: 3554983547509115662, guid: bf3235d0f7809d24c80ed08e9bf1f333, type: 3}
+  roadPrefabEntries:
+  - cellType: 1
+    roadPrefab: {fileID: 2613893928778991401, guid: bc2945815582cfe43a34278fe3b2028f, type: 3}
+  - cellType: 2
+    roadPrefab: {fileID: 3680986231321827205, guid: 74040a4eb8b1dd14b9827b35a45aead8, type: 3}
+  tankPrefab: {fileID: 8739812327676038563, guid: 1f612710ce60f4047875f16cb59fd932, type: 3}
+  controlPanelPrefab: {fileID: 4873049708659539482, guid: 50b00a9b978e7df4cb833bd58b34c7af, type: 3}
+  pressMachinePrefab: {fileID: 6390851794838358319, guid: 064fee216c2f4bf42bb5443e4fe93799, type: 3}
   gridWidth: 16
   gridChunkSize: 16
 --- !u!114 &1802568418

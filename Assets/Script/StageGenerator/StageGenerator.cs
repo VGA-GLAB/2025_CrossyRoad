@@ -306,7 +306,7 @@ public class StageGenerator : MonoBehaviour
 
         // 配置:
         // 本体を Road に、直後を Grass に配置
-        ApplyLaneTypeWithBuffer(stageData, startZ, laneWidth, CellType.Road);
+        ApplyLaneTypeWithBuffer(stageData, startZ, laneWidth, config.RoadCellType);
 
         // 動的障害物も幅に応じて複数 SpawnerConfig を追加
         int spawnerZ = startZ;
@@ -327,7 +327,8 @@ public class StageGenerator : MonoBehaviour
                 cfg.MinBatchCount,
                 cfg.MaxBatchCount,
                 cfg.BatchSpacing,
-                cfg.LifeTime
+                cfg.LifeTime,
+                cfg.RoadCellType
             );
 
             AddSpawner(stageData, newCfg);
