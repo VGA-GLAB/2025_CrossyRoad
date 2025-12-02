@@ -140,6 +140,9 @@ public class PlayerMove : MonoBehaviour
 
         if (dir == Vector3Int.zero) return;
         
+        //入力方向にプレイヤーを向けさせる
+        var playerDir = new Vector3(input.x, 0, input.y).normalized;
+        transform.rotation = Quaternion.LookRotation(playerDir);
         if (IsMoving) //移動中
         {
             if (!isInputReservation) //入力予約がされていないとき、受け付ける
