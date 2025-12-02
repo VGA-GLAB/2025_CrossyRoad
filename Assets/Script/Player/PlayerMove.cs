@@ -2,23 +2,24 @@ using DG.Tweening;
 using NUnit.Framework.Internal;
 using System;
 using System.Threading.Tasks;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 /// <summary>
 /// プレイヤーの移動を制御するクラス。
-/// CrossyRoadのようなマス制移動を実現。
-/// ・移動方向はグリッド1マス単位
-/// ・移動開始時にジャンプアニメーションが入る（ただし実際には上昇のみ）
-/// ・川では橋の上でなければ死亡
+/// CrossyRoadのようなマス目単位の移動を実現する。
+/// ・移動はグリッドの1マスごと
+/// ・移動開始時にジャンプアニメーション（上昇のみ）を再生
+/// ・川では橋の上にいなければ死亡
 /// </summary>
 public class PlayerMove : MonoBehaviour
 {
-    /// <summary>スコアが上がったときのアクション</summary>
+    /// <summary>スコアが上昇したときに呼ばれるアクション</summary>
     public Action OnScoreUpAction;
 
-    /// <summary>プレイヤー死亡時のアクション（UI表示など）</summary>
+    /// <summary>プレイヤーが死亡したときに呼ばれるアクション（UI表示など）</summary>
     public Action OnPlayerDeathAction;
 
     /// <summary>現在移動中かどうか</summary>
@@ -39,24 +40,28 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private Ease _ease;
 
     [Header("DoTweenジャンプアニメーション設定")]
-    [SerializeField] private float animTime; // ��: 0.3f ���x
-    [Header("ジャンプ設定")]
-    [SerializeField] private float jumpHight; // ��: 0.3f ���x
-    private bool isJumping; // �W�����v���t���O
-    private bool isInputReservation; // ���͗\��t���O
-    private Vector3Int inputReservation; // �\�񂳂ꂽ�ړ�����
+    [SerializeField] private float animTime;
 
-    /// <summary>現在のグリッド座標</summary>
+    [Header("ジャンプ設定")]
+    [SerializeField] private float jumpHight;
+    private bool isJumping;              // ジャンプ中かどうか
+    private bool isInputReservation;     // 入力予約があるか
+    private Animator _animator;
+    private Vector3Int inputReservation; // 予約された移動方向
+
+    /// <summary>プレイヤーの現在グリッド座標</summary>
     private Vector3Int _currentGridPos;
     /// <summary>移動先のワールド座標</summary>
     private Vector3 _targetWorldPos;
-    /// <summary>スタート時のグリッド座標</summary>
+    /// <summary>初期グリッド座標</summary>
     private Vector3Int _startCell;
-    /// <summary>現在乗っている橋（乗っていない場合はnull）</summary>
+    /// <summary>現在乗っている橋（乗っていない場合は null）</summary>
     private Transform _currentBridge = null;
-    /// <summary>スコア判定用の最後に到達したセル</summary>
+    /// <summary>スコア判定用：最後に到達したセル</summary>
     private Vector3Int _currentCellScore;
     private Vector3 _startScale;
+    private string _animDieTrigger = "Die";
+    private string _animBoolMove = "isMoving";
 
     private void Awake()
     {
@@ -70,71 +75,62 @@ public class PlayerMove : MonoBehaviour
     {
         _gridManager = FindAnyObjectByType<GridManager>();
         _gridManager.RegisterPlayer(gameObject);
-
-        // �O�����l�����āA�����ʒu��1�}�X�O�ƉE�ɐi�߂ăX�^�[�g
+        // 初期位置をグリッド座標に変換し、少し前方にずらしてスタート
         _currentGridPos = _gridManager.WorldToGrid(transform.position);
         _currentGridPos += new Vector3Int(2, 0, 2);
-
-        // ���[���h���W�ɕϊ����Ĕz�u
+        // ワールド座標へ変換して反映
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
         _targetWorldPos.y = _fixedY;
         transform.position = _targetWorldPos;
-
         _startCell = _currentGridPos;
         IsDead = false;
         _startScale = transform.localScale;
+        _animator = GetComponent<Animator>();
     }
 
     /// <summary>
-    /// ��(Bridge)��Trigger�ɓ������Ƃ��ɋ��̎q�ɐݒ肷��
+    /// Bridgeタグのコライダーに触れた際、プレイヤーを橋の子として登録する
     /// </summary>
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Bridge"))
         {
-            Debug.Log("���ɏ����");
-
-            // Bridge�I�u�W�F�N�g�̐e���擾�iroot bridge�j
+            // Bridgeオブジェクトの親を取得（橋の root を想定）
             Transform bridgeRoot = other.transform.parent != null ? other.transform.parent : other.transform;
-
             _currentBridge = bridgeRoot;
             transform.SetParent(_currentBridge);
         }
-        // ���I��Q���̏Փ˔���
+        // 障害物に触れた場合は死亡処理
         else if (other.CompareTag("Obstacle"))
         {
-            Debug.Log("��Q���ɏՓ� �� ���S");
-
             IsDead = true;
             DeadEffect();
-            SquashEffect(transform, _duration);
+            //SquashEffect(transform, _duration);
+            _animator?.SetTrigger(_animDieTrigger);
             OnPlayerDeathAction?.Invoke();
         }
     }
 
     /// <summary>
-    /// ��(Bridge)��Trigger����o���Ƃ��ɐe�q�֌W������
+    /// Bridgeタグを離れたとき、橋との関連を解除する
     /// </summary>
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Bridge"))
         {
-            Debug.Log("�����痣�ꂽ");
-
             transform.SetParent(null);
             _currentBridge = null;
         }
     }
 
     /// <summary>
-    /// �v���C���[�̈ړ�����
-    /// ���̓x�N�g�����O���b�h�����ɕϊ����āA�ړ����ݒ肷��
+    /// プレイヤーの移動入力処理。
+    /// Vector2 の入力をグリッド方向に変換して移動を試みる。
     /// </summary>
     public void TryMove(Vector2 input)
     {
         if (IsDead) return;
-
-        // ���͕������x�N�g���ɕϊ�
+        // 入力方向をベクトルに変換
         Vector3Int dir = Vector3Int.zero;
         if (input.y > 0) dir = Vector3Int.forward;
         else if (input.y < 0) dir = Vector3Int.back;
@@ -143,39 +139,32 @@ public class PlayerMove : MonoBehaviour
 
         if (dir == Vector3Int.zero) return;
 
-        // ���̃}�X���W���v�Z
+        // 次のセルのタイプを取得
         Vector3Int nextGridPos = _currentGridPos + dir;
         var cellType = _gridManager.GetCellType(nextGridPos);
-
-        // �Z�����؂܂��͋�Ȃ���̓L�����Z��
+        // 移動できないセルは無視
         if (cellType == CellType.Occupied || cellType == CellType.Empty)
         {
             return;
         }
-
-        // ���̏�ɂ���ꍇ�͈�U����
+        // 橋上にいる場合は一旦親子関係を解除
         if (_currentBridge != null)
         {
             transform.SetParent(null);
             _currentBridge = null;
         }
-
-        // ���[���h���W�ɕϊ�
+        // ワールド座標に変換して移動開始
         _targetWorldPos = _gridManager.GridToWorld(nextGridPos);
         _targetWorldPos.y = _fixedY;
-
-        //_currentGridPos = nextGridPos;
         IsMoving = true;
-
-        // �X�R�A�A�b�v����
+        // スコア判定：前方（+Z）に進んだらスコアアップ
         if (_currentGridPos.z > _currentCellScore.z)
         {
             _currentCellScore = _currentGridPos;
             OnScoreUpAction?.Invoke();
-            Debug.Log("�X�R�A�A�b�v�I");
         }
 
-        // ���͗\��
+        // ジャンプ中なら入力を予約する
         if (isJumping && !isInputReservation)
         {
             isInputReservation = true;
@@ -186,7 +175,8 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         if (IsDead) return;
-
+        _animator?.SetBool(_animBoolMove, IsMoving);
+        // 橋上で停止中はグリッド座標を橋の位置に合わせて更新
         if (_currentBridge != null && !IsMoving)
         {
             _currentGridPos = _gridManager.WorldToGrid(transform.position);
@@ -194,47 +184,43 @@ public class PlayerMove : MonoBehaviour
 
         if (!IsMoving) return;
 
-        // --- �ʏ�̈ړ����� ---
+        // --- 通常の移動処理 ---
         Vector3 worldMoveDir = _targetWorldPos - transform.position;
         Vector3 step = worldMoveDir.normalized * _moveSpeed * Time.deltaTime;
 
         if (worldMoveDir.magnitude <= step.magnitude)
         {
-            // ���B
+            // 移動完了
             transform.position = _targetWorldPos;
             IsMoving = false;
-
-            isJumping = false; // �W�����v�I��
-            //isInputReservation = false;
-            //移動が完了したときに、現在のグリッドを更新する
+            isJumping = false;
+            // 到達したグリッド座標を更新
             _currentGridPos = _gridManager.WorldToGrid(_targetWorldPos);
-
+            // 川に落ちたか判定
             var cellType = _gridManager.GetCellType(_currentGridPos);
             if (cellType == CellType.River && _currentBridge == null)
             {
                 IsDead = true;
                 DeadEffect();
-                SquashEffect(transform, _duration);
+                _animator?.SetTrigger("Dead");
                 OnPlayerDeathAction?.Invoke();
-                Debug.Log("��ɗ��� �� ���S");
                 return;
             }
 
-            // ���n�Ɉړ������狴���痣��
+            // 川を抜けたタイミングで橋との親子関係を解除
             if (cellType != CellType.River && _currentBridge != null)
             {
                 transform.SetParent(null);
                 _currentBridge = null;
-                Debug.Log("�����痣�ꂽ�i���n�ɓ��B�j");
             }
 
-            // �v���C���[�ʒu�A�\���͈͂��X�V
+            // プレイヤー位置更新とステージスクロール処理
             _gridManager.UpdatePlayerCell(_currentGridPos);
             _gridManager.UpdateStageFlow();
 
-            if (isInputReservation) //入力予約があった場合、入力予約時の方向に移動する
+            // 入力予約がある場合は、その方向に移動を再開
+            if (isInputReservation)
             {
-                //予約方向をVector２に変換する
                 var input2D = new Vector2(inputReservation.x, inputReservation.z);
                 TryMove(input2D);
                 isInputReservation = false;
@@ -253,7 +239,6 @@ public class PlayerMove : MonoBehaviour
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
         _targetWorldPos.y = _fixedY;
         transform.position = _targetWorldPos;
-        IsMoving = true;
         IsMoving = false;
         IsDead = false;
         transform.SetParent(null);
@@ -264,15 +249,15 @@ public class PlayerMove : MonoBehaviour
     }
 
     /// <summary>
-    /// DoTween�ɂ��W�����v�A�j���[�V����
+    /// DoTween を使用したジャンプアニメーションの開始
     /// </summary>
     private void Jumping()
     {
-        if (!isJumping) // ���łɃW�����v���łȂ����
+        if (!isJumping)
         {
             isJumping = true;
-            // �W�����v���o
-            transform.DOMoveY(transform.position.y + jumpHight, animTime).SetEase(Ease.OutQuint);
+            transform.DOMoveY(transform.position.y + jumpHight, animTime)
+                .SetEase(Ease.OutQuint);
         }
     }
 
@@ -281,15 +266,16 @@ public class PlayerMove : MonoBehaviour
     {
         for (int i = 0; i < _pieceCount; i++)
         {
-            // ブロックの破片を生成
+            // 破片を生成
             GameObject piece = Instantiate(_blockEffectPrefab, transform.position, Random.rotation);
-            // ランダムなスケールを設定
+
+            // ランダムな大きさ
             float s = UnityEngine.Random.Range(_pieceScaleRange.x, _pieceScaleRange.y);
             piece.transform.localScale = new Vector3(s, s, s);
             Rigidbody rb = piece.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                // ランダムな方向に力を加える
+                // ランダム方向に力を加える
                 Vector3 dir = UnityEngine.Random.onUnitSphere;
                 rb.AddForce(dir * _explosionForce, ForceMode.Impulse);
                 rb.AddTorque(UnityEngine.Random.onUnitSphere * _explosionForce, ForceMode.Impulse);
@@ -299,14 +285,11 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    [ContextMenu("縮む")]
     private async Task SquashEffect(Transform player, float duration)
     {
         Vector3 startScale = _startScale;
-        Vector3 endScale = new Vector3(
-            startScale.x * 1.3f,
-            0.1f,
-            startScale.z);
+        Vector3 endScale = new Vector3(startScale.x * 1.3f, 0.1f, startScale.z);
+
         await player.DOScale(endScale, duration)
             .SetEase(_ease)
             .AsyncWaitForCompletion();

@@ -258,6 +258,28 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!95 &31471313
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31471304}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 043778cb621eb9f4fbee5f320b33d23b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &31755133 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3752938399714677720, guid: d16b0081362ca184cae331834696c8be, type: 3}
@@ -361,6 +383,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 968616499714663028, guid: 0ffd6385075b0784e900c6607007cd91, type: 3}
       insertIndex: -1
       addedObject: {fileID: 31471311}
+    - targetCorrespondingSourceObject: {fileID: 968616499714663028, guid: 0ffd6385075b0784e900c6607007cd91, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 31471313}
   m_SourcePrefab: {fileID: 100100000, guid: 0ffd6385075b0784e900c6607007cd91, type: 3}
 --- !u!1001 &36678839
 PrefabInstance:
