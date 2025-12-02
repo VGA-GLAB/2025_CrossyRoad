@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 317772293327960180}
   m_Layer: 0
   m_Name: EnemyRobotPurple
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -126,7 +126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8887320900778476565, guid: b36cf2bcaaee7de41b405eb7cbb32709, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8887320900778476565, guid: b36cf2bcaaee7de41b405eb7cbb32709, type: 3}
       propertyPath: m_LocalRotation.y
@@ -134,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8887320900778476565, guid: b36cf2bcaaee7de41b405eb7cbb32709, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8887320900778476565, guid: b36cf2bcaaee7de41b405eb7cbb32709, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

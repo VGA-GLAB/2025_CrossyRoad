@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnerControllerPrefab: {fileID: 8612191763433995687, guid: c132ea35a1905dd4988bff5af33c2edd, type: 3}
   dynamicObstaclePrefabs:
-  - {fileID: 7074169118364600061, guid: 5d9cffe0172681741a9fb0bee819cb54, type: 3}
-  moveSpeed: 1.5
+  - {fileID: 287203765585144545, guid: 2bf576de0d1f69447a6cc5d72e2a07aa, type: 3}
+  moveSpeed: 4.5
   moveRight: 1
-  baseSpawnInterval: 6
+  baseSpawnInterval: 5
   spawnIntervalJitter: 0.5
   minBatchCount: 1
   maxBatchCount: 3
   batchSpacing: 1.5
   lifeTime: 24
+  roadCellType: 2

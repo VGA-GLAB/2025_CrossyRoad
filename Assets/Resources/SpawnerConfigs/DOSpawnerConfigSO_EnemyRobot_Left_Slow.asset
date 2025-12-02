@@ -15,7 +15,7 @@ MonoBehaviour:
   spawnerControllerPrefab: {fileID: 8612191763433995687, guid: c132ea35a1905dd4988bff5af33c2edd, type: 3}
   dynamicObstaclePrefabs:
   - {fileID: 8710940384691058790, guid: 04718716ceccdff4badb476cea218999, type: 3}
-  moveSpeed: 1.5
+  moveSpeed: 2
   moveRight: 0
   baseSpawnInterval: 7
   spawnIntervalJitter: 0.5
@@ -23,3 +23,4 @@ MonoBehaviour:
   maxBatchCount: 3
   batchSpacing: 1.5
   lifeTime: 24
+  roadCellType: 2
