@@ -99,6 +99,8 @@ public class PlayerMove : MonoBehaviour
             Transform bridgeRoot = other.transform.parent != null ? other.transform.parent : other.transform;
             _currentBridge = bridgeRoot;
             transform.SetParent(_currentBridge);
+            
+            SoundManager.instance.PlaySE("橋に乗る");
         }
         // 障害物に触れた場合は死亡処理
         else if (other.CompareTag("Obstacle"))
@@ -137,6 +139,18 @@ public class PlayerMove : MonoBehaviour
         else if (input.x > 0) dir = Vector3Int.right;
 
         if (dir == Vector3Int.zero) return;
+        
+        if (IsMoving) //移動中
+        {
+            if (!isInputReservation) //入力予約がされていないとき、受け付ける
+            {
+                isInputReservation = true;
+                inputReservation = dir;
+                Debug.Log("入力予約");
+            }
+            
+            return;
+        }
 
         // 次のセルのタイプを取得
         Vector3Int nextGridPos = _currentGridPos + dir;
@@ -259,6 +273,9 @@ public class PlayerMove : MonoBehaviour
             isJumping = true;
             transform.DOMoveY(transform.position.y + jumpHight, animTime)
                 .SetEase(Ease.OutQuint);
+            
+            //SEを再生する
+            SoundManager.instance.PlaySE("移動");
         }
     }
 

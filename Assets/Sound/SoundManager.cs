@@ -11,12 +11,12 @@ public class SoundManager : MonoBehaviour
 
     public static SoundManager instance;
 
-    [Header("Ä¶‚µ‚½‚¢‰¹‚Æ–¼‘O")]
+    [Header("å†ç”Ÿã‚µã‚¦ãƒ³ãƒ‰")]
     [SerializeField] private SoundData[] sounds;
 
-    [Header("SE—p")]
+    [Header("SEç”¨")]
     [SerializeField] private AudioSource audioSourceSE;
-    [Header("BGM—p")]
+    [Header("BGMç”¨")]
     [SerializeField] private AudioSource audioSourceBGM;
 
 
@@ -45,9 +45,13 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlaySE(string clipName) //SE‚ğÄ¶‚·‚é
+    /// <summary>
+    /// SEå†ç”Ÿ
+    /// </summary>
+    /// <param name="clipName">é³´ã‚‰ã—ãŸã„SEã®åå‰</param>
+    public void PlaySE(string clipName)
     {
-        //Ä¶‚µ‚½‚¢ƒTƒEƒ“ƒh‚Ì–¼‘O‚ÆƒŠƒXƒg‚É‚ ‚éƒTƒEƒ“ƒh‚Ì–¼‘O‚ªˆê’v‚µ‚½‚çÄ¶‚·‚é
+        //ä¸€è‡´ã—ãŸSEã‚’å†ç”Ÿã™ã‚‹
         foreach(var sound in sounds)
         {
             if(sound.name == clipName)
@@ -57,19 +61,29 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlayBGM(string clipName) //BGM‚ğÄ¶‚·‚é
+    /// <summary>
+    /// BGMå†ç”Ÿ
+    /// </summary>
+    /// <param name="clipName">é³´ã‚‰ã—ãŸã„BGMã®åå‰</param>
+    public void PlayBGM(string clipName)
     {
         foreach (var sound in sounds)
         {
             if (sound.name == clipName)
             {
                 audioSourceBGM.clip = sound.clip;
+                audioSourceBGM.Play();
+                return;
             }
         }
     }
 
-    public void StopBGM() //Œ»İ—¬‚ê‚Ä‚¢‚éBGM‚ğ~‚ß‚é
+    /// <summary>
+    /// BGMã‚’æ­¢ã‚ã‚‹
+    /// </summary>
+    public void StopBGM()
     {
         audioSourceBGM.clip = null;
+        audioSourceBGM.Stop();
     }
 }
