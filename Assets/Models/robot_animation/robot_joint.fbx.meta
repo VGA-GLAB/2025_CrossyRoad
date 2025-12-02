@@ -22,7 +22,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -80,7 +80,217 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: robot_joint(Clone)
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: group1
+      parentName: robot_joint(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:anntena
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: anntena
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:eye
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: initialShadingGrouphead_mouse
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:shoulder
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:arm
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:hand
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:wrist
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:body
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:stomach
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:ear
+      parentName: group1
+      position: {x: -0, y: 0, z: 0.046384174}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: myrobot_body:head
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: initialShadingGroupleggs
+      parentName: group1
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: root
+      parentName: robot_joint(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Hip_c
+      parentName: root
+      position: {x: 0.00002858799, y: 0.4196771, z: -1.1243642e-19}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Spain_c
+      parentName: Hip_c
+      position: {x: -0.00008081478, y: 0.2402494, z: -0.020457795}
+      rotation: {x: 0.70709884, y: -0.7070021, z: -0.0033547028, w: -0.012169047}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Neck_c
+      parentName: Spain_c
+      position: {x: -0.21928541, y: 7.289308e-17, z: -5.551115e-19}
+      rotation: {x: -0.0042579686, y: -0.03744167, z: 0.00025324483, w: 0.99928975}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Head_c
+      parentName: Neck_c
+      position: {x: -0.16177374, y: -2.1684043e-18, z: -2.220446e-16}
+      rotation: {x: -0.70764875, y: 0.033810318, z: 0.034651905, w: 0.7049038}
+      scale: {x: 1, y: 1, z: 1}
+    - name: antenna_bottom_c
+      parentName: Head_c
+      position: {x: -0.12413301, y: -2.359312e-17, z: 1.09838e-16}
+      rotation: {x: 5.609321e-15, y: 0.00024148029, z: 2.299902e-11, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: antenna_top_c
+      parentName: antenna_bottom_c
+      position: {x: -0.09569243, y: -4.9952417e-11, z: -6.77488e-15}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: antenna_L
+      parentName: antenna_bottom_c
+      position: {x: -0.054131277, y: 0.0000000021448219, z: 0.028999865}
+      rotation: {x: -0.6270303, y: 0.32685333, z: 0.3268533, w: 0.62703025}
+      scale: {x: 1, y: 1, z: 1}
+    - name: antennaTop_L
+      parentName: antenna_L
+      position: {x: -0.26747608, y: -3.8678767e-18, z: 3.7774424e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: antenna_R
+      parentName: antenna_bottom_c
+      position: {x: -0.054157414, y: -0.0000000029912408, z: -0.028943814}
+      rotation: {x: -0.6272004, y: -0.3265267, z: -0.32652667, w: 0.62720037}
+      scale: {x: 1, y: 1, z: 1}
+    - name: antennaTop_R
+      parentName: antenna_R
+      position: {x: -0.26747653, y: 1.9539985e-16, z: 5.050433e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: shoulder_L
+      parentName: Spain_c
+      position: {x: -0.1138212, y: 0.19395089, z: -0.019888958}
+      rotation: {x: 0.70714873, y: -0.7069796, z: -0.0076110843, w: 0.007914997}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Elbow_L
+      parentName: shoulder_L
+      position: {x: -0.14625347, y: -3.638324e-17, z: 4.2758215e-18}
+      rotation: {x: -6.7768355e-21, y: 0.012245457, z: -0.0043396214, w: 0.9999156}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Hand_L
+      parentName: Elbow_L
+      position: {x: -0.18096232, y: 1.8137045e-16, z: 1.5634767e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: shoulder_R
+      parentName: Spain_c
+      position: {x: -0.11371487, y: -0.19439322, z: -0.015049373}
+      rotation: {x: 0.7069991, y: 0.70702314, z: -0.016423672, w: 0.00090082304}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Elbow_R
+      parentName: shoulder_R
+      position: {x: -0.14630839, y: 2.1294814e-17, z: -3.6219154e-18}
+      rotation: {x: 4.0661013e-20, y: 0.012245448, z: 0.004339583, w: 0.9999156}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Hand_R
+      parentName: Elbow_R
+      position: {x: -0.18096323, y: 2.1898114e-16, z: 2.2938827e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: UpLeg_L
+      parentName: Hip_c
+      position: {x: -0.0964131, y: -0.0028617785, z: 1.1243642e-19}
+      rotation: {x: -0.017526379, y: 0.017565986, z: 0.70609075, w: 0.7076864}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Knee_L
+      parentName: UpLeg_L
+      position: {x: -0.15088856, y: 8.3153105e-17, z: 3.330669e-18}
+      rotation: {x: -0.000008368512, y: -0.042206068, z: 0.001128635, w: 0.9991083}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Ancle_L
+      parentName: Knee_L
+      position: {x: -0.22640973, y: 9.980135e-18, z: -1.6764368e-16}
+      rotation: {x: -8.658699e-17, y: 0.7170094, z: 8.658699e-17, w: 0.69706345}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Foot_L
+      parentName: Ancle_L
+      position: {x: -0.09977599, y: -9.4850885e-14, z: -5.662137e-17}
+      rotation: {x: 4.930381e-32, y: -0.00037879593, z: 4.7017327e-13, w: 0.99999994}
+      scale: {x: 1, y: 1, z: 1}
+    - name: FootTop_L
+      parentName: Foot_L
+      position: {x: -0.059889708, y: -5.6317106e-14, z: -5.8971404e-15}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: UpLeg_R
+      parentName: Hip_c
+      position: {x: 0.09641311, y: -0.0028621205, z: 1.1243642e-19}
+      rotation: {x: -0.017566025, y: 0.017526416, z: 0.7076865, w: 0.70609075}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Knee_R
+      parentName: UpLeg_R
+      position: {x: -0.1508882, y: 8.289247e-18, z: -1.110223e-18}
+      rotation: {x: 0.000009279315, y: -0.041400257, z: -0.0011286774, w: 0.99914205}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Ancle_R
+      parentName: Knee_R
+      position: {x: -0.2264121, y: -3.3518785e-18, z: -1.9428903e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Foot_R
+      parentName: Ancle_R
+      position: {x: 0.0026559224, y: 1.6678224e-14, z: 0.09937543}
+      rotation: {x: 5.3878902e-17, y: 0.716183, z: 1.6238403e-15, w: 0.6979125}
+      scale: {x: 1, y: 1, z: 1}
+    - name: FootTop_R
+      parentName: Foot_R
+      position: {x: -0.059890218, y: -1.3744503e-16, z: 4.718448e-18}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5

@@ -1,8 +1,6 @@
 using DG.Tweening;
-using NUnit.Framework.Internal;
 using System;
 using System.Threading.Tasks;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -27,6 +25,7 @@ public class PlayerMove : MonoBehaviour
     /// <summary>死亡状態かどうか</summary>
     public bool IsDead { get; private set; } = false;
 
+    [SerializeField] GameObject _deadEffect;
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _fixedY = 0.55f;
     [SerializeField] private GridManager _gridManager;
@@ -60,7 +59,7 @@ public class PlayerMove : MonoBehaviour
     /// <summary>スコア判定用：最後に到達したセル</summary>
     private Vector3Int _currentCellScore;
     private Vector3 _startScale;
-    private string _animDieTrigger = "Die";
+    private string _animBoolDie = "isDeading";
     private string _animBoolMove = "isMoving";
 
     private void Awake()
@@ -86,6 +85,7 @@ public class PlayerMove : MonoBehaviour
         IsDead = false;
         _startScale = transform.localScale;
         _animator = GetComponent<Animator>();
+        _deadEffect.SetActive(false);
     }
 
     /// <summary>
@@ -105,8 +105,7 @@ public class PlayerMove : MonoBehaviour
         {
             IsDead = true;
             DeadEffect();
-            //SquashEffect(transform, _duration);
-            _animator?.SetTrigger(_animDieTrigger);
+            SquashEffect(transform, _duration);
             OnPlayerDeathAction?.Invoke();
         }
     }
@@ -201,8 +200,7 @@ public class PlayerMove : MonoBehaviour
             if (cellType == CellType.River && _currentBridge == null)
             {
                 IsDead = true;
-                DeadEffect();
-                _animator?.SetTrigger("Dead");
+                PlayRiverDeath();
                 OnPlayerDeathAction?.Invoke();
                 return;
             }
@@ -246,6 +244,9 @@ public class PlayerMove : MonoBehaviour
         _currentCellScore = _startCell;
         ScoreManager.instance.ResetScore();
         transform.localScale = _startScale;
+        _animator?.SetBool(_animBoolDie, IsDead);
+        _deadEffect.SetActive(false);
+        this.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -293,5 +294,14 @@ public class PlayerMove : MonoBehaviour
         await player.DOScale(endScale, duration)
             .SetEase(_ease)
             .AsyncWaitForCompletion();
+    }
+
+    private void PlayRiverDeath()
+    {
+        if (_animator == null) return;
+        this.gameObject.SetActive(false);
+        _deadEffect.transform.position = this.transform.position;
+        _deadEffect.SetActive(true);
+        _animator.SetBool(_animBoolDie, IsDead);
     }
 }
