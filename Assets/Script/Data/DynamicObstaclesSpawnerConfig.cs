@@ -15,6 +15,7 @@ public class DynamicObstaclesSpawnerConfig : SpawnerConfigBase
     public int MaxBatchCount { get; }
     public float BatchSpacing { get; }
     public float LifeTime { get; }
+    public CellType RoadCellType { get; }
 
     public DynamicObstaclesSpawnerConfig(
         Vector3Int position,
@@ -27,7 +28,8 @@ public class DynamicObstaclesSpawnerConfig : SpawnerConfigBase
         int minBatchCount,
         int maxBatchCount,
         float batchSpacing,
-        float lifeTime
+        float lifeTime,
+        CellType roadCellType
     ) : base(position, spawnerControllerPrefab, dynamicObstaclePrefabs)
     {
         MoveSpeed = moveSpeed;
@@ -38,5 +40,6 @@ public class DynamicObstaclesSpawnerConfig : SpawnerConfigBase
         MaxBatchCount = maxBatchCount;
         BatchSpacing = batchSpacing;
         LifeTime = lifeTime;
+        RoadCellType = roadCellType;
     }
 }

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bab6b1391a5b3a4195705199f13fda2, type: 3}
+  m_Name: DOSpawnerConfigSO_EnemyRobot_Right_Slow
+  m_EditorClassIdentifier: 
+  spawnerControllerPrefab: {fileID: 8612191763433995687, guid: c132ea35a1905dd4988bff5af33c2edd, type: 3}
+  dynamicObstaclePrefabs:
+  - {fileID: 8710940384691058790, guid: 04718716ceccdff4badb476cea218999, type: 3}
+  moveSpeed: 2
+  moveRight: 1
+  baseSpawnInterval: 7
+  spawnIntervalJitter: 0.5
+  minBatchCount: 1
+  maxBatchCount: 3
+  batchSpacing: 1.5
+  lifeTime: 24
+  roadCellType: 2

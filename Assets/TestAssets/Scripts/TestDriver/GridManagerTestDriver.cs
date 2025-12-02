@@ -106,8 +106,8 @@ public class GridManagerTestDriver : MonoBehaviour
             Debug.Log("存在しないセル: " + gridManager.GetCellType(new Vector3Int(999, 0, 999)));
 
             var testPos = new Vector3Int(0, 0, 0);
-            gridManager.PlaceObstacleCell(testPos, ObstacleType.Tree);
-            gridManager.PlaceObstacleCell(testPos, ObstacleType.Tree); // 2回目は無視されるはず
+            gridManager.PlaceObstacleCell(testPos, ObstacleType.Tank);
+            gridManager.PlaceObstacleCell(testPos, ObstacleType.Tank); // 2回目は無視されるはず
 
             Debug.Log("Emptyセル描画テスト: prefab=null のため生成されないことを確認");
             gridManager.UpdateRenderArea();

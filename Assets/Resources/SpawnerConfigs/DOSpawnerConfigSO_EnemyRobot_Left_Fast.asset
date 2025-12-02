@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bab6b1391a5b3a4195705199f13fda2, type: 3}
-  m_Name: DynamicObstaclesSpawnerRightConfigSO_Default 1
+  m_Name: DOSpawnerConfigSO_EnemyRobot_Left_Fast
   m_EditorClassIdentifier: 
   spawnerControllerPrefab: {fileID: 8612191763433995687, guid: c132ea35a1905dd4988bff5af33c2edd, type: 3}
   dynamicObstaclePrefabs:
-  - {fileID: 3060368603207947674, guid: f04aa8b097d3a6442bfea79afe77896a, type: 3}
-  moveSpeed: 10
+  - {fileID: 287203765585144545, guid: 2bf576de0d1f69447a6cc5d72e2a07aa, type: 3}
+  moveSpeed: 4.5
   moveRight: 0
-  baseSpawnInterval: 3
+  baseSpawnInterval: 5
   spawnIntervalJitter: 0.5
   minBatchCount: 1
-  maxBatchCount: 1
+  maxBatchCount: 3
   batchSpacing: 1.5
-  lifeTime: 12
+  lifeTime: 24
+  roadCellType: 2
