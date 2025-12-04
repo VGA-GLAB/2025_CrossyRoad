@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -18,8 +19,15 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource audioSourceSE;
     [Header("BGM用")]
     [SerializeField] private AudioSource audioSourceBGM;
+    
+    [Header("鳴らす距離")] 
+    [SerializeField] private float minDistance;
 
-
+    [Header("プレイヤー")]
+    [SerializeField] private GameObject player;
+    
+    private Dictionary<int, AudioSource> obstacleSourceSE  = new Dictionary<int, AudioSource>();
+    
     void Awake()
     {
         if(instance == null)
@@ -54,7 +62,7 @@ public class SoundManager : MonoBehaviour
         //一致したSEを再生する
         foreach(var sound in sounds)
         {
-            if(sound.name == clipName)
+            if (sound.name == clipName)
             {
                 audioSourceSE.PlayOneShot(sound.clip);
             }
@@ -85,5 +93,71 @@ public class SoundManager : MonoBehaviour
     {
         audioSourceBGM.clip = null;
         audioSourceBGM.Stop();
+    }
+
+    /// <summary>
+    /// 障害物用のSE再生
+    /// </summary>
+    /// <param name="clipName">鳴らすSE</param>
+    /// <param name="obstacle">障害物</param>
+    public void ObstaclePlaySE(string clipName, GameObject obstacle)
+    {
+        //障害物とプレイヤーの距離が鳴らす範囲外なら処理をしない
+        var distance =  Vector3.Distance(obstacle.transform.position, player.transform.position);
+        if(distance > minDistance) return;
+
+        foreach (var sound in sounds)
+        {
+            if (sound.name == clipName)
+            {
+                var id = obstacle.transform.GetInstanceID();
+                
+                // 新規AudioSource生成
+                var sourceGO = new GameObject($"LoopSource_{id}_{clipName}");
+                sourceGO.transform.SetParent(transform);
+
+                var source = sourceGO.AddComponent<AudioSource>();
+                source.clip = sound.clip;
+                source.loop = true;
+                source.playOnAwake = false;
+                source.volume = 0.5f;
+
+                obstacleSourceSE[id] = source;
+                source.Play();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 障害物のSE再生
+    /// </summary>
+    /// <param name="obstacle">障害物</param>
+    public void ObstacleStopSE(GameObject obstacle)
+    {
+        if(!obstacleSourceSE.ContainsKey(obstacle.transform.GetInstanceID())) return;
+        
+        var id =  obstacle.transform.GetInstanceID();
+        obstacleSourceSE[id].Stop();
+        
+        //AudioSourceを削除
+        Destroy(obstacleSourceSE[id]);
+        
+        //削除
+        obstacleSourceSE.Remove(id);
+        
+    }
+
+    /// <summary>
+    /// プレイヤーとの距離を判定する
+    /// </summary>
+    /// <param name="obstacle">障害物</param>
+    /// <returns>範囲外かを返す</returns>
+    public bool PlayerDistance(GameObject obstacle)
+    {
+        //障害物とプレイヤーの距離が鳴らす範囲外なら処理をしない
+        var distance =  Vector3.Distance(obstacle.transform.position, player.transform.position);
+        if(distance > minDistance) return true;
+        
+        return false;
     }
 }

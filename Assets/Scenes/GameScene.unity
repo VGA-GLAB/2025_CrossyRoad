@@ -124,7 +124,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -1911279522263037125, guid: 0ffd6385075b0784e900c6607007cd91, type: 3}
   m_PrefabInstance: {fileID: 36154839}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 864447696}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6475c1e9d20f50479bd940e4c94141b, type: 3}
@@ -880,6 +880,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 4f9022b1d2971fe4182d2ac0e8d02f00, type: 3}
   audioSourceSE: {fileID: 863729391}
   audioSourceBGM: {fileID: 863729390}
+  minDistance: 20
+  player: {fileID: 864447696}
 --- !u!4 &863729389
 Transform:
   m_ObjectHideFlags: 0
@@ -1089,6 +1091,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &864447696 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 968616499714663028, guid: 0ffd6385075b0784e900c6607007cd91, type: 3}
+  m_PrefabInstance: {fileID: 36154839}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &883690276
 GameObject:
   m_ObjectHideFlags: 0

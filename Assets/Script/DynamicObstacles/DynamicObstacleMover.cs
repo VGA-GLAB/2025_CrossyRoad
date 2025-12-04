@@ -1,52 +1,57 @@
+using System;
 using UnityEngine;
 
 /// <summary>
-/// “®“IáŠQ•¨i—áFÔ‚È‚Çj‚ÉƒAƒ^ƒbƒ`‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒgB
-/// ƒXƒ|ƒi[‚©‚ç‰Šú‰»ƒpƒ‰ƒ[ƒ^‚ğó‚¯æ‚èAˆÈ~‚Í©—§‚µ‚Äˆê•ûŒü‚ÉˆÚ“®‚·‚éB
-/// Transform.Translate ‚Åˆê•ûŒü‚ÉˆÚ“®‚·‚éB
+/// ï¿½ï¿½ï¿½Iï¿½ï¿½Qï¿½ï¿½ï¿½iï¿½ï¿½Fï¿½Ô‚È‚Çjï¿½ÉƒAï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½|ï¿½[ï¿½lï¿½ï¿½ï¿½gï¿½B
+/// ï¿½Xï¿½|ï¿½iï¿½[ï¿½ï¿½ï¿½ç‰ï¿½ï¿½ï¿½ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½ï¿½ó‚¯ï¿½ï¿½Aï¿½È~ï¿½Íï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äˆï¿½ï¿½ï¿½ï¿½ï¿½ÉˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½B
+/// Transform.Translate ï¿½Åˆï¿½ï¿½ï¿½ï¿½ï¿½ÉˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½B
 /// </summary>
 public class DynamicObstacleMover : MonoBehaviour
 {
-    // ƒAƒjƒ[ƒ^[i•K—v‚É‰‚¶‚Äg—pj
+    // ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½iï¿½Kï¿½vï¿½É‰ï¿½ï¿½ï¿½ï¿½Ägï¿½pï¿½j
     [SerializeField] private Animator animator;
 
-    // ƒXƒ|ƒi[‘¤‚©‚çó‚¯æ‚é‰Šú’lİ’è
-    private float moveSpeed;     // ˆÚ“®‘¬“x
-    private Vector3 moveDir;     // ˆÚ“®•ûŒüi‰E or ¶j
+    // ï¿½Xï¿½|ï¿½iï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó‚¯ï¿½é‰ï¿½ï¿½ï¿½lï¿½İ’ï¿½
+    private float moveSpeed;     // ï¿½Ú“ï¿½ï¿½ï¿½ï¿½x
+    private Vector3 moveDir;     // ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½E or ï¿½ï¿½ï¿½j
 
     private bool initialized = false;
+    
+    private ObjectType objectType; //è‡ªèº«ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—ã‚’ä¿æŒ
+    private bool isSound; //SEå†ç”Ÿæ¸ˆã¿ã‹
 
     /// <summary>
-    /// ƒXƒ|ƒi[‚©‚çŒÄ‚Î‚ê‚é‰Šú‰»ƒƒ\ƒbƒhB
+    /// ï¿½Xï¿½|ï¿½iï¿½[ï¿½ï¿½ï¿½ï¿½Ä‚Î‚ï¿½é‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½B
     /// </summary>
-    public void Initialize(float speed, bool moveRight)
+    public void Initialize(float speed, bool moveRight, ObjectType type)
     {
         moveSpeed = speed;
         moveDir = moveRight ? Vector3.right : Vector3.left;
         initialized = true;
+        objectType = type;
 
-        // ƒ‚ƒfƒ‹”½“]ˆ—
+        // ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½
         Vector3 localScale = transform.localScale;
         if (moveRight)
         {
-            // ‰EŒü‚« ¨ ³íƒXƒP[ƒ‹
+            // ï¿½Eï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Xï¿½Pï¿½[ï¿½ï¿½
             localScale.x = Mathf.Abs(localScale.x);
         }
         else
         {
-            // ¶Œü‚« ¨ X²”½“]
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Xï¿½ï¿½ï¿½ï¿½ï¿½]
             localScale.x = -Mathf.Abs(localScale.x);
         }
 
         transform.localScale = localScale;
 
 
-        // Animator ‚ª‚ ‚ê‚Î‘–sƒAƒjƒ‚ğÄ¶
-        // (Animator ‚Å©“®‚Åƒ‹[ƒvÄ¶‚³‚ê‚é‚½‚ßŒ»óAƒvƒƒOƒ‰ƒ€§Œä•s—v)
+        // Animator ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î‘ï¿½ï¿½sï¿½Aï¿½jï¿½ï¿½ï¿½ï¿½ï¿½Äï¿½
+        // (Animator ï¿½Åï¿½ï¿½ï¿½ï¿½Åƒï¿½ï¿½[ï¿½vï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ßŒï¿½ï¿½ï¿½Aï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½v)
         //animator = GetComponent<Animator>();
         //if (animator != null)
         //{
-        //    // ToDo: Ä¶‚·‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ğİ’è
+        //    // ToDo: ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
         //    // animator.SetBool("IsMoving", true);
         //}
     }
@@ -55,7 +60,41 @@ public class DynamicObstacleMover : MonoBehaviour
     {
         if (!initialized) return;
 
-        // –ˆƒtƒŒ[ƒ€ˆê’è‘¬“x‚ÅˆÚ“®
+        // ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½è‘¬ï¿½xï¿½ÅˆÚ“ï¿½
         transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
+        SoundType();
+    }
+
+    /// <summary>
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—ã«å¿œã˜ã¦SEã‚’å†ç”Ÿã™ã‚‹
+    /// </summary>
+    private void SoundType()
+    {
+        if (isSound)
+        {
+            if (SoundManager.instance.PlayerDistance(this.gameObject))
+            {
+                SoundManager.instance.ObstacleStopSE(this.gameObject);
+            }
+            return;
+        }
+        
+        switch (objectType)
+        {
+            case ObjectType.EnemyRobot:
+                SoundManager.instance.ObstaclePlaySE("æ•µãƒ­ãƒœãƒƒãƒˆã®ç§»å‹•", this.gameObject);
+                isSound = true;
+                break;
+            
+            case ObjectType.Saw:
+                SoundManager.instance.ObstaclePlaySE("ãƒã‚³ã‚®ãƒªç§»å‹•", this.gameObject);
+                isSound = true;
+                break;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        SoundManager.instance.ObstacleStopSE(this.gameObject);
     }
 }
