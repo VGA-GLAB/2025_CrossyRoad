@@ -4,17 +4,21 @@ public class ResultState : IGameState
 {
     public void Enter()
     {
-        Debug.Log("ƒŠƒUƒ‹ƒg");
+        Debug.Log("ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½g");
 
         GameManager.instance.inGameUIManager.ResultUI.SetActive(true);
         GameManager.instance.UIEffect.ButtonAppearanceAnimation();
+        
+        SoundManager.instance.PlayBGM("ãƒªã‚¶ãƒ«ãƒˆ");
     }
 
     public void Exit()
     {
-        Debug.Log("ƒŠƒUƒ‹ƒgI—¹");
+        Debug.Log("ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½gï¿½Iï¿½ï¿½");
 
         GameManager.instance.inGameUIManager.ResultUI?.SetActive(false);
+        
+        SoundManager.instance.StopBGM();
     }
 
     public void Key() { }

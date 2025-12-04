@@ -5,18 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class ClickUI : MonoBehaviour, IPointerClickHandler
 {
-    [Header("kÚ")]
+    [Header("ï¿½kï¿½ï¿½")]
     [SerializeField] private Vector2 changeScale;
-    [Header("Œ³‚ÌƒTƒCƒY")]
+    [Header("ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Y")]
     [SerializeField] private Vector2 originalScale;
-    [Header("‰‰oŠÔ")]
+    [Header("ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private float scaleDuration;
 
-    private bool isClicked; //ƒNƒŠƒbƒNÏ‚İ‚©
+    private bool isClicked; //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½Ï‚İ‚ï¿½
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        //Šù‚É‰Ÿ‚µ‚½ê‡‚ÍAƒNƒŠƒbƒNo—ˆ‚È‚¢‚æ‚¤‚É‚·‚é
+        //ï¿½ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ÍAï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½oï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
         if (isClicked) return;
         isClicked = true;
 
@@ -26,6 +26,7 @@ public class ClickUI : MonoBehaviour, IPointerClickHandler
                 this.gameObject.transform.DOScale(originalScale, scaleDuration).
                 OnComplete(Click);
             });
+        SoundManager.instance.PlaySE("ã‚¯ãƒªãƒƒã‚¯");
     }
 
     void Click()

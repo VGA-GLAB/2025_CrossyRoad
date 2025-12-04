@@ -51,6 +51,11 @@ public class CameraManager : MonoBehaviour
         _camTargetPos.x = _playerPosition.position.x;
         _camTargetPos.y = _playerPosition.position.y;
         _cameraFollowTransform.position = _camTargetPos;
+        //âÊñ äOÇ…èoÇΩÇÁéÄñSèàóù
+        if (!IsInScrean(Camera.main, _playerPosition.position))
+        {
+            _playerMove.OnPlayerDeathAction();
+        }
     }
 
     private void ResetCameraPosition()
@@ -59,5 +64,11 @@ public class CameraManager : MonoBehaviour
         _cameraFollowTransform.position = _startPos;
         _camTargetPos = _startPos;
         Debug.Log("CameraReset");
+    }
+
+    private bool IsInScrean(Camera cam, Vector3 pos)
+    {
+        var viewPos = cam.WorldToViewportPoint(pos);
+        return (0 <= viewPos.x && viewPos.x <= 1) && (0 <= viewPos.y && viewPos.y <= 1);
     }
 }

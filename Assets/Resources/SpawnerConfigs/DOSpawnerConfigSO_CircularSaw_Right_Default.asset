@@ -24,3 +24,4 @@ MonoBehaviour:
   batchSpacing: 1.5
   lifeTime: 12
   roadCellType: 1
+  objectType: 1

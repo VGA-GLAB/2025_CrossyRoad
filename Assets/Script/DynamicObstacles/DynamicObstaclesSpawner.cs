@@ -24,6 +24,9 @@ public class DynamicObstaclesSpawner : MonoBehaviour
 
     [Header("Destroyするまでの時間")]
     [SerializeField] private float lifeTime                     = 12.0f;        // 生成後に自動破棄するまでの時間
+    
+    [Header("オブジェクトタイプ")]
+    [SerializeField] private ObjectType objectType;
 
     // 次回スポーン予定時刻（絶対時間）
     private float nextSpawnTime;
@@ -46,6 +49,8 @@ public class DynamicObstaclesSpawner : MonoBehaviour
         maxBatchCount = config.MaxBatchCount;
         batchSpacing = config.BatchSpacing;
         lifeTime = config.LifeTime;
+        
+        objectType = config.ObjectType;
 
         // 初回スポーンタイマーをリセット
         SetNextSpawnTime();
@@ -146,7 +151,7 @@ public class DynamicObstaclesSpawner : MonoBehaviour
             DynamicObstacleMover mover = instance.GetComponent<DynamicObstacleMover>();
             if (mover != null)
             {
-                mover.Initialize(moveSpeed, moveRight);
+                mover.Initialize(moveSpeed, moveRight, objectType);
             }
 
             // 一定時間後に自動破棄

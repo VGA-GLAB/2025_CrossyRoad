@@ -6,7 +6,7 @@ public class ResaltManager : MonoBehaviour
 {
     public static ResaltManager instance;
 
-    [Header("ƒvƒŒƒCƒ„[‚ª€‚ñ‚¾‚Æ‚ÌƒCƒxƒ“ƒg—p")]
+    [Header("ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ñ‚¾‚Æ‚ÌƒCï¿½xï¿½ï¿½ï¿½gï¿½p")]
     [SerializeField] private PlayerMove _playerMove;
     [SerializeField] private GameObject _gameOverPanel;
     [SerializeField] private TextMeshProUGUI _gameOverText;
@@ -15,7 +15,7 @@ public class ResaltManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _currentScoreText;
     [SerializeField] private Button _retryButton;
 
-    [Header("ƒCƒ“ƒQ[ƒ€’†‚ÌƒeƒLƒXƒg")]
+    [Header("ï¿½Cï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Ìƒeï¿½Lï¿½Xï¿½g")]
     [SerializeField] private TextMeshProUGUI _inGameMaxScoreText;
     [SerializeField] private TextMeshProUGUI _inGameCurrentScore;
 
@@ -57,17 +57,17 @@ public class ResaltManager : MonoBehaviour
         _scorePanel.gameObject.SetActive(true);
         _maxScoreText.gameObject.SetActive(true);
         _currentScoreText.gameObject.SetActive(true);
-        _retryButton.gameObject.SetActive(true);
+        //_retryButton.gameObject.SetActive(true);
         _gameOverText.text = "GAME OVER";
         int max = ScoreManager.instance.MaxScore;
         int current = ScoreManager.instance.CurrentScore;
-        _maxScoreText.text = "Å‚@‹L˜^ :" + max;
-        _currentScoreText.text = "¡‰ñ :" + current;
+        _maxScoreText.text = "æœ€é«˜ã‚¹ã‚³ã‚¢ :" + max;
+        _currentScoreText.text = "ä»Šå›ã®ã‚¹ã‚³ã‚¢ :" + current;
     }
 
     private void RetryGame()
     {
-        // UI‚ğƒŠƒZƒbƒg
+        // UIï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½g
         _gameOverPanel.SetActive(false);
         _scorePanel.SetActive(false);
         _retryButton.gameObject.SetActive(false);
