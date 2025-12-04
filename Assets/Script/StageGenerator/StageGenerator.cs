@@ -328,7 +328,8 @@ public class StageGenerator : MonoBehaviour
                 cfg.MaxBatchCount,
                 cfg.BatchSpacing,
                 cfg.LifeTime,
-                cfg.RoadCellType
+                cfg.RoadCellType,
+                cfg.ObjectType
             );
 
             AddSpawner(stageData, newCfg);

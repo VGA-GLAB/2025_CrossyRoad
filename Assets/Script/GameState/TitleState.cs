@@ -8,6 +8,8 @@ public class TitleState : IGameState
 
         GameManager.instance.inGameUIManager.TitleUI.SetActive(true);
         GameManager.instance.UIEffect.TitleFadeIn();
+        
+        
     }
 
     public void Exit()

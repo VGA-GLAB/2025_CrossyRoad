@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// “®“IáŠQ•¨ƒXƒ|ƒi[‚Ìİ’èƒf[ƒ^‚ğ•Û‚·‚é ScriptableObjectB
+/// ï¿½ï¿½ï¿½Iï¿½ï¿½Qï¿½ï¿½ï¿½Xï¿½|ï¿½iï¿½[ï¿½Ìİ’ï¿½fï¿½[ï¿½^ï¿½ï¿½Ûï¿½ï¿½ï¿½ï¿½ï¿½ ScriptableObjectï¿½B
 /// </summary>
 [CreateAssetMenu(
     fileName = "DynamicObstaclesSpawnerConfigSO_Default",
@@ -10,46 +10,49 @@ using UnityEngine;
     order = 0)]
 public class DynamicObstaclesSpawnerConfigSO : ScriptableObject
 {
-    [Header("ƒXƒ|ƒi[–{‘Ì‚ÌPrefab")]
+    [Header("ï¿½Xï¿½|ï¿½iï¿½[ï¿½{ï¿½Ì‚ï¿½Prefab")]
     public GameObject spawnerControllerPrefab;
 
-    [Header("ƒXƒ|[ƒ“‘ÎÛ‚ÌáŠQ•¨‚ÌPrefabƒŠƒXƒg")]
+    [Header("ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ÎÛ‚Ìï¿½Qï¿½ï¿½ï¿½ï¿½Prefabï¿½ï¿½ï¿½Xï¿½g")]
     public List<GameObject> dynamicObstaclePrefabs;
 
-    [Header("ƒXƒ|[ƒ“‘ÎÛ‚ÌáŠQ•¨‚ÌˆÚ“®‘¬“xiƒŒ[ƒ“’PˆÊ‚ÅŒÅ’èj")]
+    [Header("ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ÎÛ‚Ìï¿½Qï¿½ï¿½ï¿½ÌˆÚ“ï¿½ï¿½ï¿½ï¿½xï¿½iï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Pï¿½Ê‚ÅŒÅ’ï¿½j")]
     public float moveSpeed = 10.0f;
     public bool moveRight = true;
 
-    [Header("ƒXƒ|[ƒ“ŠÔŠuİ’è")]
+    [Header("ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ÔŠuï¿½İ’ï¿½")]
     public float baseSpawnInterval = 3.0f;
     public float spawnIntervalJitter = 0.5f;
 
-    [Header("•Ò‘àİ’è")]
+    [Header("ï¿½Ò‘ï¿½ï¿½İ’ï¿½")]
     public int minBatchCount = 1;
     public int maxBatchCount = 1;
     public float batchSpacing = 1.5f;
 
-    [Header("Destroy‚·‚é‚Ü‚Å‚ÌŠÔ")]
+    [Header("Destroyï¿½ï¿½ï¿½ï¿½Ü‚Å‚Ìï¿½ï¿½ï¿½")]
     public float lifeTime = 12.0f;
 
-    [Header("‚±‚ÌƒXƒ|ƒi[‚ª‘Î‰‚·‚é“¹˜Hƒ^ƒCƒv")]
+    [Header("ï¿½ï¿½ï¿½ÌƒXï¿½|ï¿½iï¿½[ï¿½ï¿½ï¿½Î‰ï¿½ï¿½ï¿½ï¿½é“¹ï¿½Hï¿½^ï¿½Cï¿½v")]
     public CellType roadCellType = CellType.RoadRobot;
 
+    [Header("ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¿ã‚¤ãƒ—")] 
+    public ObjectType objectType;
+
     /// <summary>
-    /// ScriptableObject ‚É•Û‘¶‚³‚ê‚½’l‚ğ‚à‚Æ‚ÉA
-    /// Àsê—p‚Ì <see cref="DynamicObstaclesSpawnerConfig"/> ‚ğ¶¬‚·‚éB
+    /// ScriptableObject ï¿½É•Û‘ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ÉA
+    /// ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½pï¿½ï¿½ <see cref="DynamicObstaclesSpawnerConfig"/> ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½B
     /// 
-    /// - ƒXƒe[ƒW©“®¶¬ƒR[ƒh‚Í‚±‚Ìƒƒ\ƒbƒh‚ğ’Ê‚¶‚Ä Config ‚ğæ“¾‚·‚éB
-    /// - Config ‚Í“Ç‚İæ‚èê—p‚Ì•s•ÏƒIƒuƒWƒFƒNƒg‚Æ‚µ‚Äˆµ‚í‚ê‚é‚½‚ßA
-    ///   Às’†‚É’l‚ª‘‚«Š·‚í‚é‚±‚Æ‚ğ–h‚°‚éB
-    /// - ‚Ü‚½A‚±‚Ì•ÏŠ·ˆ—‚ÍuDynamicObstaclesSpawnerConfig ‚Æ SO ‚Ì€–Ú‚ªˆê’v‚µ‚Ä‚¢‚é‚©v
-    ///   ‚ğƒRƒ“ƒpƒCƒ‹‚Éƒ`ƒFƒbƒN‚·‚é–ğŠ„‚àŒ“‚Ë‚Ä‚¢‚éB
-    ///   i€–Ú‚ª‘Œ¸‚µ‚½ê‡A‚±‚±‚ÅƒRƒ“ƒpƒCƒ‹ƒGƒ‰[‚Æ‚È‚è‹C•t‚¯‚éj
+    /// - ï¿½Xï¿½eï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½Í‚ï¿½ï¿½Ìƒï¿½ï¿½\ï¿½bï¿½hï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ Config ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½B
+    /// - Config ï¿½Í“Ç‚İï¿½ï¿½ï¿½pï¿½Ì•sï¿½ÏƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½Æ‚ï¿½ï¿½Äˆï¿½ï¿½ï¿½ï¿½é‚½ï¿½ßA
+    ///   ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½É’lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‚±ï¿½Æ‚ï¿½hï¿½ï¿½ï¿½ï¿½B
+    /// - ï¿½Ü‚ï¿½ï¿½Aï¿½ï¿½ï¿½Ì•ÏŠï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÍuDynamicObstaclesSpawnerConfig ï¿½ï¿½ SO ï¿½Ìï¿½ï¿½Ú‚ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½v
+    ///   ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½pï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Éƒ`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë‚Ä‚ï¿½ï¿½ï¿½B
+    ///   ï¿½iï¿½ï¿½ï¿½Ú‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ÅƒRï¿½ï¿½ï¿½pï¿½Cï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½Æ‚È‚ï¿½Cï¿½tï¿½ï¿½ï¿½ï¿½j
     /// </summary>
     public DynamicObstaclesSpawnerConfig ToRuntimeConfig()
     {
         return new DynamicObstaclesSpawnerConfig(
-            Vector3Int.zero,            // Position‚ÍŒã‚ÅStageGeneration‘¤‚Åİ’è
+            Vector3Int.zero,            // Positionï¿½ÍŒï¿½ï¿½StageGenerationï¿½ï¿½ï¿½Åİ’ï¿½
             spawnerControllerPrefab,
             dynamicObstaclePrefabs,
             moveSpeed,
@@ -60,7 +63,8 @@ public class DynamicObstaclesSpawnerConfigSO : ScriptableObject
             maxBatchCount,
             batchSpacing,
             lifeTime,
-            roadCellType
+            roadCellType,
+            objectType
         );
     }
 }

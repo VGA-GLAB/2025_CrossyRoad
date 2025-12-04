@@ -1,31 +1,31 @@
 using UnityEngine;
 
 /// <summary>
-/// ƒXƒe[ƒW¶¬‚ÌƒeƒXƒg—pƒhƒ‰ƒCƒoB
-/// ŒÅ’èƒ‹[ƒ‹‚Å StageData ‚ğ¶¬‚·‚éB
-/// PhaseBetaŒã‚ÉƒXƒe[ƒW©“®¶¬‚É·‚µ‘Ö‚¦—\’èB
+/// ï¿½Xï¿½eï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ìƒeï¿½Xï¿½gï¿½pï¿½hï¿½ï¿½ï¿½Cï¿½oï¿½B
+/// ï¿½Å’èƒ‹ï¿½[ï¿½ï¿½ï¿½ï¿½ StageData ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½B
+/// PhaseBetaï¿½ï¿½ÉƒXï¿½eï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éï¿½ï¿½ï¿½ï¿½Ö‚ï¿½ï¿½\ï¿½ï¿½B
 /// </summary>
 public class StageGenerationTestDriver
 {
-    // ¶¬‚µ‚½ƒXƒe[ƒWƒf[ƒ^‚ğ•Ûi•K—v‚É‰‚¶‚ÄŠO•”‚©‚çQÆ‰Â”\j
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½fï¿½[ï¿½^ï¿½ï¿½Ûï¿½ï¿½iï¿½Kï¿½vï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄŠOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½Æ‰Â”\ï¿½j
     public StageData data = null;
 
-    // ScriptableObject‚©‚çƒ[ƒh‚µ‚½Às—pConfig
+    // ScriptableObjectï¿½ï¿½ï¿½çƒï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½pConfig
     private BridgeSpawnerConfig bridgeSpawnerConfig;
     private DynamicObstaclesSpawnerConfig dynamicObstaclesSpawnerConfig;
 
 
     /// <summary>
-    /// ƒeƒXƒg—p‚ÌƒXƒe[ƒWƒf[ƒ^‚ğ¶¬‚µ‚Ä•Ô‚·B
-    /// - •20, ‰œs‚«100
-    /// - XZ—¼•ûŒü‚ÌŠOü‚Í Empty
-    /// - Grass ƒŒ[ƒ“‚É‚Íƒ‰ƒ“ƒ_ƒ€‚Å Tree ‚ğ”z’u
-    /// - Road ƒŒ[ƒ“‚Íˆê—¥ Road
-    /// - River ƒŒ[ƒ“‚Íˆê—¥ River
+    /// ï¿½eï¿½Xï¿½gï¿½pï¿½ÌƒXï¿½eï¿½[ï¿½Wï¿½fï¿½[ï¿½^ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½Ä•Ô‚ï¿½ï¿½B
+    /// - ï¿½ï¿½20, ï¿½ï¿½ï¿½sï¿½ï¿½100
+    /// - XZï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŠOï¿½ï¿½ï¿½ï¿½ Empty
+    /// - Grass ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½É‚Íƒï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ Tree ï¿½ï¿½zï¿½u
+    /// - Road ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Íˆê—¥ Road
+    /// - River ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Íˆê—¥ River
     /// </summary>
     public void Initialize()
     {
-        // Resources/SpawnerConfigs/BridgeSpawnerConfigSO_Default.asset ‚ğƒ[ƒh
+        // Resources/SpawnerConfigs/BridgeSpawnerConfigSO_Default.asset ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½h
         var configBridgeSO = Resources.Load<BridgeSpawnerConfigSO>("SpawnerConfigs/BridgeSpawnerConfigSO_Default");
         if (configBridgeSO != null)
         {
@@ -33,10 +33,10 @@ public class StageGenerationTestDriver
         }
         else
         {
-            Debug.LogError("BridgeSpawnerConfigSO_Default ‚ªƒ[ƒh‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B");
+            Debug.LogError("BridgeSpawnerConfigSO_Default ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½B");
         }
 
-        // Resources/SpawnerConfigs/DynamicObstaclesSpawnerConfigSO_Default.asset ‚ğƒ[ƒh
+        // Resources/SpawnerConfigs/DynamicObstaclesSpawnerConfigSO_Default.asset ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½h
         var configDynamicObstaclesSO = Resources.Load<DynamicObstaclesSpawnerConfigSO>("SpawnerConfigs/DynamicObstaclesSpawnerConfigSO_Default");
         if (configDynamicObstaclesSO != null)
         {
@@ -44,17 +44,17 @@ public class StageGenerationTestDriver
         }
         else
         {
-            Debug.LogError("DynamicObstaclesConfigSO_Default ‚ªƒ[ƒh‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B");
+            Debug.LogError("DynamicObstaclesConfigSO_Default ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½B");
         }
     }
 
     /// <summary>
-    /// ƒeƒXƒg—p‚ÌƒXƒe[ƒWƒf[ƒ^‚ğ¶¬‚µ‚Ä•Ô‚·B
-    /// - •20, ‰œs‚«100
-    /// - XZ—¼•ûŒü‚ÌŠOü‚Í Empty
-    /// - Grass ƒŒ[ƒ“‚É‚Íƒ‰ƒ“ƒ_ƒ€‚Å Tree ‚ğ”z’u
-    /// - Road ƒŒ[ƒ“‚Íˆê—¥ Road
-    /// - River ƒŒ[ƒ“‚Íˆê—¥ River
+    /// ï¿½eï¿½Xï¿½gï¿½pï¿½ÌƒXï¿½eï¿½[ï¿½Wï¿½fï¿½[ï¿½^ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½Ä•Ô‚ï¿½ï¿½B
+    /// - ï¿½ï¿½20, ï¿½ï¿½ï¿½sï¿½ï¿½100
+    /// - XZï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŠOï¿½ï¿½ï¿½ï¿½ Empty
+    /// - Grass ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½É‚Íƒï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ Tree ï¿½ï¿½zï¿½u
+    /// - Road ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Íˆê—¥ Road
+    /// - River ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Íˆê—¥ River
     /// </summary>
     public StageData GenerateTestStage()
     {
@@ -65,34 +65,34 @@ public class StageGenerationTestDriver
         data.width = 20;
         data.depth = 100;
 
-        // ƒŒ[ƒ“‚²‚Æ‚Ì’nŒ`‚ğŒˆ’è
+        // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚Ì’nï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         int roadLaneIndex = 0;
         for (int z = 0; z < data.depth; z++)
         {
-            // Z•ûŒü‚ÌŠOü‚Í Empty
+            // Zï¿½ï¿½ï¿½ï¿½ï¿½ÌŠOï¿½ï¿½ï¿½ï¿½ Empty
             if (z == 0 || z == data.depth - 1)
             {
                 data.laneTypes[z] = CellType.Empty;
                 continue;
             }
 
-            // ƒTƒ“ƒvƒ‹ƒ‹[ƒ‹: 3ƒŒ[ƒ“‚²‚Æ‚É Grass, Road, River ‚ğŒJ‚è•Ô‚·
+            // ï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½: 3ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ Grass, Road, River ï¿½ï¿½ï¿½Jï¿½ï¿½Ô‚ï¿½
             if (z % 3 == 0)
                 data.laneTypes[z] = CellType.Grass;
             else if (z % 3 == 1)
             {
                 data.laneTypes[z] = dynamicObstaclesSpawnerConfig.RoadCellType;
 
-                // «RoadƒŒ[ƒ“‚È‚ç DynamicObstaclesSpawnerConfig ‚ğ“o˜^«
-                var pos = new Vector3Int(0, -1, z); // Y=-1‚ÍSpawner”z’u—p‚ÌŠµ—á
+                // ï¿½ï¿½Roadï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½È‚ï¿½ DynamicObstaclesSpawnerConfig ï¿½ï¿½oï¿½^ï¿½ï¿½
+                var pos = new Vector3Int(0, -1, z); // Y=-1ï¿½ï¿½Spawnerï¿½zï¿½uï¿½pï¿½ÌŠï¿½ï¿½ï¿½
 
-                // ŒğŒİ‚É¶‰E‚É”z’u
+                // ï¿½ï¿½ï¿½İ‚Éï¿½ï¿½Eï¿½É”zï¿½u
                 bool isMoveRight = (roadLaneIndex % 2 == 1);
                 roadLaneIndex++;
 
                 if (!isMoveRight)
                 {
-                    pos += new Vector3Int(data.width - 1, 0, 0); // ‰EƒŒ[ƒ“‚Í‰E’[‚É”z’u
+                    pos += new Vector3Int(data.width - 1, 0, 0); // ï¿½Eï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Í‰Eï¿½[ï¿½É”zï¿½u
                 }
 
                 var spawner = new DynamicObstaclesSpawnerConfig(
@@ -107,19 +107,20 @@ public class StageGenerationTestDriver
                     dynamicObstaclesSpawnerConfig.MaxBatchCount,
                     dynamicObstaclesSpawnerConfig.BatchSpacing,
                     dynamicObstaclesSpawnerConfig.LifeTime,
-                    dynamicObstaclesSpawnerConfig.RoadCellType
+                    dynamicObstaclesSpawnerConfig.RoadCellType,
+                    dynamicObstaclesSpawnerConfig.ObjectType
                 );
 
                 data.spawnerConfigs.Add(spawner);
-                // ª“o˜^Š®—¹ª
+                // ï¿½ï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 
             }
             else
             {
                 data.laneTypes[z] = CellType.River;
 
-                // «ìƒŒ[ƒ“‚È‚ç BridgeSpawnerConfig ‚ğ“o˜^«
-                var pos = new Vector3Int(0, -1, z);      // Note: À•W‚Íƒ}ƒbƒv©“®¶¬‚ÅŠm’è‚·‚é
+                // ï¿½ï¿½ï¿½ìƒŒï¿½[ï¿½ï¿½ï¿½È‚ï¿½ BridgeSpawnerConfig ï¿½ï¿½oï¿½^ï¿½ï¿½
+                var pos = new Vector3Int(0, -1, z);      // Note: ï¿½ï¿½ï¿½Wï¿½Íƒ}ï¿½bï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅŠmï¿½è‚·ï¿½ï¿½
                 var spawner = new BridgeSpawnerConfig(
                     pos,
                     bridgeSpawnerConfig.SpawnerControllerPrefab,
@@ -131,22 +132,22 @@ public class StageGenerationTestDriver
                 );
 
                 data.spawnerConfigs.Add(spawner);
-                // ª“o˜^Š®—¹ª
+                // ï¿½ï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             }
         }
 
-        // Grass ƒŒ[ƒ“‚Éƒ‰ƒ“ƒ_ƒ€‚Å Tree ‚ğ”z’u
+        // Grass ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Éƒï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ Tree ï¿½ï¿½zï¿½u
         for (int z = 1; z < data.depth - 1; z++)
         {
             if (data.laneTypes[z] == CellType.Grass)
             {
                 for (int x = 0; x < data.width; x++)
                 {
-                    // 20% ‚ÌŠm—¦‚Å–Ø‚ğ”z’u
+                    // 20% ï¿½ÌŠmï¿½ï¿½ï¿½Å–Ø‚ï¿½zï¿½u
                     if (Random.value < 0.2f)
                     {
-                        // Note: yÀ•W‚Í1ŒÅ’èi’nŒ`‚Ìã‚É’u‚­‘z’èj
-                        // ƒ}ƒbƒv©“®¶¬‚â“®“IáŠQ•¨”z’u‚ÌÛ‚É’²®‚µ‚½‚èY²‚ğ‚Ç‚¤‚·‚é‚©‹K’è‚·‚é•K—v‚ ‚è
+                        // Note: yï¿½ï¿½ï¿½Wï¿½ï¿½1ï¿½Å’ï¿½iï¿½nï¿½`ï¿½Ìï¿½É’uï¿½ï¿½ï¿½zï¿½ï¿½j
+                        // ï¿½}ï¿½bï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â“®ï¿½Iï¿½ï¿½Qï¿½ï¿½ï¿½zï¿½uï¿½ÌÛ‚É’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½é‚©ï¿½Kï¿½è‚·ï¿½ï¿½Kï¿½vï¿½ï¿½ï¿½ï¿½
                         Vector3Int pos = new Vector3Int(x, 1, z);
                         data.staticObstacles[pos] = ObstacleType.Tank;
                     }

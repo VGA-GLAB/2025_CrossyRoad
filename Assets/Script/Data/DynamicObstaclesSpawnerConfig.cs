@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// “®“IáŠQ•¨ƒXƒ|ƒi[‚ÌÀsİ’èƒf[ƒ^B
-/// StageData ‚ÉŠi”[‚³‚êAGridManager ‚ª‰ğß‚µ‚Ä DynamicObstaclesSpawner ‚ğ¶¬‚·‚éB
+/// ï¿½ï¿½ï¿½Iï¿½ï¿½Qï¿½ï¿½ï¿½Xï¿½|ï¿½iï¿½[ï¿½Ìï¿½ï¿½sï¿½ï¿½ï¿½İ’ï¿½fï¿½[ï¿½^ï¿½B
+/// StageData ï¿½ÉŠiï¿½[ï¿½ï¿½ï¿½ï¿½AGridManager ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½ï¿½ï¿½ DynamicObstaclesSpawner ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½B
 /// </summary>
 public class DynamicObstaclesSpawnerConfig : SpawnerConfigBase
 {
@@ -16,6 +16,8 @@ public class DynamicObstaclesSpawnerConfig : SpawnerConfigBase
     public float BatchSpacing { get; }
     public float LifeTime { get; }
     public CellType RoadCellType { get; }
+    
+    public ObjectType ObjectType { get; }
 
     public DynamicObstaclesSpawnerConfig(
         Vector3Int position,
@@ -29,7 +31,8 @@ public class DynamicObstaclesSpawnerConfig : SpawnerConfigBase
         int maxBatchCount,
         float batchSpacing,
         float lifeTime,
-        CellType roadCellType
+        CellType roadCellType,
+        ObjectType objectType
     ) : base(position, spawnerControllerPrefab, dynamicObstaclePrefabs)
     {
         MoveSpeed = moveSpeed;
@@ -41,5 +44,6 @@ public class DynamicObstaclesSpawnerConfig : SpawnerConfigBase
         BatchSpacing = batchSpacing;
         LifeTime = lifeTime;
         RoadCellType = roadCellType;
+        ObjectType = objectType;
     }
 }
