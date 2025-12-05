@@ -2,26 +2,26 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// ���I��Q���i��F�ԂȂǁj�ɃA�^�b�`����R���|�[�l���g�B
-/// �X�|�i�[���珉�����p�����[�^���󂯎��A�ȍ~�͎������Ĉ�����Ɉړ�����B
-/// Transform.Translate �ň�����Ɉړ�����B
+/// 動的障害物（敵ロボットなど）にアタッチするコンポーネント。
+/// スポナーから初期化パラメータを受け取り、その後は自動的に移動を開始する。
+/// Transform.Translate によって移動を行う。
 /// </summary>
 public class DynamicObstacleMover : MonoBehaviour
 {
-    // �A�j���[�^�[�i�K�v�ɉ����Ďg�p�j
+    // アニメーター（必要に応じて使用）
     [SerializeField] private Animator animator;
 
-    // �X�|�i�[������󂯎�鏉���l�ݒ�
-    private float moveSpeed;     // �ړ����x
-    private Vector3 moveDir;     // �ړ������i�E or ���j
+    // スポナーから渡される初期化用の値
+    private float moveSpeed;     // 移動速度
+    private Vector3 moveDir;     // 移動方向（右 or 左）
 
     private bool initialized = false;
-    
-    private ObjectType objectType; //自身のオブジェクトタイプを保持
-    private bool isSound; //SE再生済みか
+
+    private ObjectType objectType; // 自身のオブジェクトタイプを保持
+    private bool isSound; // SE再生済みかどうか
 
     /// <summary>
-    /// �X�|�i�[����Ă΂�鏉�������\�b�h�B
+    /// スポナーから呼ばれる初期化メソッド。
     /// </summary>
     public void Initialize(float speed, bool moveRight, ObjectType type)
     {
@@ -30,28 +30,24 @@ public class DynamicObstacleMover : MonoBehaviour
         initialized = true;
         objectType = type;
 
-        // ���f�����]����
-        Vector3 localScale = transform.localScale;
+        // 見た目の反転処理
         if (moveRight)
         {
-            // �E���� �� ����X�P�[��
-            localScale.x = Mathf.Abs(localScale.x);
+            // 右向き → 回転なし
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         else
         {
-            // ������ �� X�����]
-            localScale.x = -Mathf.Abs(localScale.x);
+            // 左向き → 回転で反転
+            transform.rotation = Quaternion.Euler(0, 180, 0);
         }
 
-        transform.localScale = localScale;
-
-
-        // Animator ������Α��s�A�j�����Đ�
-        // (Animator �Ŏ����Ń��[�v�Đ�����邽�ߌ���A�v���O��������s�v)
+        // Animator の初期化（必要なら使用）
+        // (Animator で移動ループを再生するための準備。プログラム側で制御する想定)
         //animator = GetComponent<Animator>();
         //if (animator != null)
         //{
-        //    // ToDo: �Đ�����A�j���[�V������ݒ�
+        //    // ToDo: 移動用アニメーションを設定
         //    // animator.SetBool("IsMoving", true);
         //}
     }
@@ -60,7 +56,7 @@ public class DynamicObstacleMover : MonoBehaviour
     {
         if (!initialized) return;
 
-        // ���t���[����葬�x�ňړ�
+        // 毎フレーム移動速度に応じて移動
         transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
         SoundType();
     }
@@ -78,14 +74,14 @@ public class DynamicObstacleMover : MonoBehaviour
             }
             return;
         }
-        
+
         switch (objectType)
         {
             case ObjectType.EnemyRobot:
                 SoundManager.instance.ObstaclePlaySE("敵ロボットの移動", this.gameObject);
                 isSound = true;
                 break;
-            
+
             case ObjectType.Saw:
                 SoundManager.instance.ObstaclePlaySE("ノコギリ移動", this.gameObject);
                 isSound = true;

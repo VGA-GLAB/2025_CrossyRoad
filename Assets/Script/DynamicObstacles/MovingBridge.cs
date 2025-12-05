@@ -40,4 +40,14 @@ public class MovingBridge : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    private void OnDestroy()
+    {
+        // 子にプレイヤーがいる場合は親子関係を解除
+        var player = GetComponentInChildren<PlayerMove>();
+        if (player != null)
+        {
+            player.transform.SetParent(null);
+        }
+    }
 }
