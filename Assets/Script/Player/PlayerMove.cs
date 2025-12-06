@@ -100,7 +100,8 @@ public class PlayerMove : MonoBehaviour
             _currentBridge = bridgeRoot;
             transform.SetParent(_currentBridge);
             
-            SoundManager.instance.PlaySE("橋に乗る");
+            //SoundManager.instance.PlaySE("橋に乗る");
+            CuePlay.instance.PlaySE("SE_Bridge");
         }
         // 障害物に触れた場合は死亡処理
         else if (other.CompareTag("Obstacle"))
@@ -111,6 +112,19 @@ public class PlayerMove : MonoBehaviour
                 .ContinueWith(t => Debug.LogError(t.Exception), TaskContinuationOptions.OnlyOnFaulted); // 非同期処理結果の例外はエラーメッセージを出力
 
             OnPlayerDeathAction?.Invoke();
+            
+            //障害物の情報を取得する
+            if (other.gameObject.TryGetComponent<DynamicObstacleMover>(out var obstacle))
+            {
+                //触れた障害物に応じて、再生するSEを変化させる
+                switch (obstacle.ObjectType)
+                {
+                    case ObjectType.Saw:
+                        CuePlay.instance.PlaySE("SE_Saw_Hit");
+                        Debug.Log("チェンソーにヒット");
+                        break;
+                }
+            }
         }
     }
 
@@ -160,13 +174,13 @@ public class PlayerMove : MonoBehaviour
         //入力方向にプレイヤーを向けさせる
         var playerDir = new Vector3(input.x, 0, input.y).normalized;
         transform.rotation = Quaternion.LookRotation(playerDir);
+        transform.localScale = new Vector3(1, 1, 1);
         if (IsMoving) //移動中
         {
             if (!isInputReservation) //入力予約がされていないとき、受け付ける
             {
                 isInputReservation = true;
                 inputReservation = dir;
-                Debug.Log("入力予約");
             }
             
             return;
@@ -295,7 +309,8 @@ public class PlayerMove : MonoBehaviour
                 .SetEase(Ease.OutQuint);
             
             //SEを再生する
-            SoundManager.instance.PlaySE("移動");
+            //SoundManager.instance.PlaySE("移動");
+            CuePlay.instance.PlaySE("SE_Player_Move");
         }
     }
 

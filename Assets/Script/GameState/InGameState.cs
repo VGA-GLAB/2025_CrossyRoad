@@ -4,20 +4,22 @@ public class InGameState : IGameState
 {
     public void Enter()
     {
-        Debug.Log("ƒCƒ“ƒQ[ƒ€");
+        Debug.Log("ï¿½Cï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½");
 
-        //ƒCƒ“ƒQ[ƒ€’†‚Ìó‘Ô‚É‚·‚é
+        //ï¿½Cï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½Ô‚É‚ï¿½ï¿½ï¿½
         GameManager.instance.inGameUIManager.InGameUI.SetActive(true);
         GameManager.instance.ChangeInGamePlay(true);
     }
 
     public void Exit()
     {
-        Debug.Log("ƒCƒ“ƒQ[ƒ€I—¹");
+        Debug.Log("ï¿½Cï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½ï¿½");
 
-        //ƒCƒ“ƒQ[ƒ€I—¹‚Ìó‘Ô‚É‚·‚é
+        //ï¿½Cï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Ìï¿½Ô‚É‚ï¿½ï¿½ï¿½
         GameManager.instance.inGameUIManager.InGameUI.SetActive(false);
         GameManager.instance.ChangeInGamePlay(false);
+        
+        CuePlay.instance.StopBGM();
     }
 
     public void Key() { }
