@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bridgeConfigs:
   - {fileID: 11400000, guid: 2d38d14e5c294f647ae999dbd1094c74, type: 2}
-  - {fileID: 11400000, guid: 2d38d14e5c294f647ae999dbd1094c74, type: 2}
+  - {fileID: 11400000, guid: 1c4b62f19d60be0459bd2c7129fdf01e, type: 2}
   difficultyAppear: 64
   difficultyCost: 4

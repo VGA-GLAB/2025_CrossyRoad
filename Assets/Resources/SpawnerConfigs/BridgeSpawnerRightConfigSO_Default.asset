@@ -15,9 +15,8 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   spawnerControllerPrefab: {fileID: 8619366110931969009, guid: a8d93e59d04c8724dac7ec91ed9bb535, type: 3}
   bridgePrefabs:
-  - {fileID: 4684303592860879409, guid: eae1240bebf546a429172aa647976250, type: 3}
-  - {fileID: 4684303592860879409, guid: 0add8fce42bc18d4b899c541439966a4, type: 3}
-  - {fileID: 4684303592860879409, guid: a8c260ae03d8c01479db0ad389f09147, type: 3}
-  spawnInterval: 2
+  - {fileID: 383921571617150343, guid: bf208ab25802d8f48aa0d968a67cbd3d, type: 3}
+  spawnInterval: 4
   bridgeInterval: 1
   bridgeCountPerLane: 4
+  moveRight: 0

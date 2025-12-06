@@ -107,7 +107,9 @@ public class PlayerMove : MonoBehaviour
         {
             IsDead = true;
             DeadEffect();
-            SquashEffect(transform, _duration);
+            SquashEffect(transform, _duration)  // 潰れるエフェクト
+                .ContinueWith(t => Debug.LogError(t.Exception), TaskContinuationOptions.OnlyOnFaulted); // 非同期処理結果の例外はエラーメッセージを出力
+
             OnPlayerDeathAction?.Invoke();
         }
     }
@@ -122,6 +124,21 @@ public class PlayerMove : MonoBehaviour
             transform.SetParent(null);
             _currentBridge = null;
         }
+    }
+
+    /// <summary>
+    /// 外部からプレイヤーを死亡させたいときに呼ぶ公開メソッド。
+    /// 内部の死亡処理を一元化し、外部から直接 IsDead を触らせない。
+    /// </summary>
+    public void Kill()
+    {
+        if (IsDead) return; // すでに死亡している場合は何もしない
+
+        IsDead = true; // 内部状態を更新
+        DeadEffect();  // 爆発エフェクトなどの演出
+        SquashEffect(transform, _duration)  // つぶれる演出
+            .ContinueWith(t => Debug.LogError(t.Exception), TaskContinuationOptions.OnlyOnFaulted); // 非同期処理結果の例外はエラーメッセージを出力
+        OnPlayerDeathAction?.Invoke(); // UIやスコア処理など外部通知
     }
 
     /// <summary>

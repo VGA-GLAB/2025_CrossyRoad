@@ -45,7 +45,12 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject tankPrefab;
     [SerializeField] private GameObject controlPanelPrefab;
     [SerializeField] private GameObject pressMachinePrefab;
+    [SerializeField] private GameObject cardboardboxPrefab;
 
+    // 川の両端におく不可視のコリジョン(当たったらゲームオーバーとなる)
+    [SerializeField] private GameObject invisibleObstaclePrefab;
+    // ゲームオーバー判定用の不可視障害物
+    private Dictionary<Vector3Int, GameObject> invisibleObstaclesPrefabs = new Dictionary<Vector3Int, GameObject>();
 
     //==================================================
     // Unity標準イベント
@@ -388,7 +393,41 @@ public class GridManager : MonoBehaviour
             switch (type)
             {
                 case CellType.Grass: prefab = grassPrefab; break;
-                case CellType.River: prefab = riverPrefab; break;
+                case CellType.River:
+                    // 川の地形タイル
+                    prefab = riverPrefab;
+
+                    // 両端InvisibleObstacle生成（端セルのみ）
+                    if (invisibleObstaclePrefab != null)
+                    {
+                        // 左端コリジョンのためのプレハブ生成
+                        if (pos2D.X == 0)
+                        {
+                            var leftPos = new Vector3Int(0, 1, pos2D.Z);
+                            if (!invisibleObstaclesPrefabs.ContainsKey(leftPos))
+                            {
+                                Vector3 worldPos = GridToWorld(leftPos);
+                                worldPos.y = 0.5f * cellSize;
+                                var leftObj = Instantiate(invisibleObstaclePrefab, worldPos, Quaternion.identity, this.transform);
+                                invisibleObstaclesPrefabs[leftPos] = leftObj;
+                            }
+                        }
+                        // 右端コリジョンのためのプレハブ生成
+                        else if (pos2D.X == gridWidth - 1)
+                        {
+                            var rightPos = new Vector3Int(gridWidth - 1, 1, pos2D.Z);
+                            if (!invisibleObstaclesPrefabs.ContainsKey(rightPos))
+                            {
+                                Vector3 worldPos = GridToWorld(rightPos);
+                                worldPos.y = 0.5f * cellSize;
+                                var rightObj = Instantiate(invisibleObstaclePrefab, worldPos, Quaternion.identity, this.transform);
+                                invisibleObstaclesPrefabs[rightPos] = rightObj;
+                            }
+                        }
+                    }
+
+                    break;
+
                 case CellType.Empty: prefab = null; break;
                 // RoadGear、RoadRobotの場合
                 case CellType.RoadGear:
@@ -441,6 +480,7 @@ public class GridManager : MonoBehaviour
                 case ObstacleType.Tank :            prefab = tankPrefab;            break;
                 case ObstacleType.ControlPanel :    prefab = controlPanelPrefab;    break;
                 case ObstacleType.PressMachine:     prefab = pressMachinePrefab;    break;
+                case ObstacleType.Cardboardbox:     prefab = cardboardboxPrefab;    break;
             }
 
             if (prefab != null)
@@ -735,6 +775,18 @@ public class GridManager : MonoBehaviour
                 spawnerPrefabs.Remove(kv);
             }
         }
+
+        // 川両端の不可視のコリジョンを破棄
+        foreach (var kv in new List<Vector3Int>(invisibleObstaclesPrefabs.Keys))
+        {
+            var pos2D = new GridPos2D(kv.x, kv.z);
+            if (!newVisible.Contains(pos2D))
+            {
+                Destroy(invisibleObstaclesPrefabs[kv]);
+                invisibleObstaclesPrefabs.Remove(kv);
+            }
+        }
+
     }
 
     /// <summary>

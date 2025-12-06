@@ -6,5 +6,6 @@ public enum ObstacleType
 {
     Tank,               // 貯水タンク
     ControlPanel,       // コントロールパネル
-    PressMachine        // プレス機
+    PressMachine,       // プレス機
+    Cardboardbox        // 段ボール箱
 }
