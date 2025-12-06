@@ -53,6 +53,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    /*
     /// <summary>
     /// SE再生
     /// </summary>
@@ -68,7 +69,9 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+    */
 
+    /*
     /// <summary>
     /// BGM再生
     /// </summary>
@@ -94,6 +97,7 @@ public class SoundManager : MonoBehaviour
         audioSourceBGM.clip = null;
         audioSourceBGM.Stop();
     }
+    */
 
     /// <summary>
     /// 障害物用のSE再生
@@ -112,7 +116,7 @@ public class SoundManager : MonoBehaviour
             {
                 var id = obstacle.transform.GetInstanceID();
                 
-                // 新規AudioSource生成
+                //新規AudioSource生成
                 var sourceGO = new GameObject($"LoopSource_{id}_{clipName}");
                 sourceGO.transform.SetParent(transform);
 
