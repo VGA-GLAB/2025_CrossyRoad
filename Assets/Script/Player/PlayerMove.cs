@@ -64,10 +64,6 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
-        if (_retryButton != null)
-        {
-            _retryButton.onClick.AddListener(ResetPosition);
-        }
     }
 
     private void Start()

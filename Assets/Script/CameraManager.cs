@@ -14,10 +14,6 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {
-        if (_retryButton != null)
-        {
-            _retryButton.onClick.AddListener(ResetCameraPosition);
-        }
     }
 
     private void Start()
@@ -54,7 +50,7 @@ public class CameraManager : MonoBehaviour
         //‰æ–ÊŠO‚Éo‚½‚ç€–Sˆ—
         if (!IsInScrean(Camera.main, _playerPosition.position))
         {
-            _playerMove.OnPlayerDeathAction();
+            _playerMove.Kill();
         }
     }
 

@@ -29,9 +29,6 @@ public class ResaltManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        if (_retryButton != null)
-            _retryButton.onClick.AddListener(RetryGame);
-
         _playerMove.OnPlayerDeathAction += OnPlayerDeath;
     }
 
