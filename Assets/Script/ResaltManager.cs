@@ -29,6 +29,8 @@ public class ResaltManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+        if (_retryButton != null)
+            _retryButton.onClick.AddListener(RetryGame);
         _playerMove.OnPlayerDeathAction += OnPlayerDeath;
     }
 
@@ -39,8 +41,6 @@ public class ResaltManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(false);
         _maxScoreText.gameObject.SetActive(false);
         _currentScoreText.gameObject.SetActive(false);
-        if (_retryButton != null)
-            _retryButton.onClick.AddListener(RetryGame);
         _retryButton.gameObject.SetActive(false);
     }
 
@@ -57,8 +57,8 @@ public class ResaltManager : MonoBehaviour
         _scorePanel.gameObject.SetActive(true);
         _maxScoreText.gameObject.SetActive(true);
         _currentScoreText.gameObject.SetActive(true);
-        //_retryButton.gameObject.SetActive(true);
-        _gameOverText.text = "GAME OVER";
+        _retryButton.gameObject.SetActive(true);
+        _gameOverText.gameObject.SetActive(true);
         int max = ScoreManager.instance.MaxScore;
         int current = ScoreManager.instance.CurrentScore;
         _maxScoreText.text = "MAX_SCORE :" + max;
@@ -68,6 +68,7 @@ public class ResaltManager : MonoBehaviour
     private void RetryGame()
     {
         // UI�����Z�b�g
+        _gameOverText.gameObject.SetActive(false);
         _gameOverPanel.SetActive(false);
         _scorePanel.SetActive(false);
         _retryButton.gameObject.SetActive(false);

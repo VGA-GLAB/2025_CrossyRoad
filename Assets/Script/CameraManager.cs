@@ -58,7 +58,7 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    private void ResetCameraPosition()
+    public void ResetCameraPosition()
     {
         //カメラを初期位置にリセット
         _cameraFollowTransform.position = _startPos;

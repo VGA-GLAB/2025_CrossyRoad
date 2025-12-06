@@ -265,7 +265,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void ResetPosition()
+    public void ResetPosition()
     {
         _currentGridPos = _startCell;
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
