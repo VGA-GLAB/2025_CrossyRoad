@@ -5,28 +5,28 @@ using CriWare;
 public class CuePlay : MonoBehaviour
 {
     public static CuePlay instance;
-    
+
     private GameObject player;
 
-    [Header("鳴らす距離")] 
+    [Header("鳴らす距離")]
     [SerializeField] private float minDistance;
-    
+
     private CriAtomExPlayer criAtomExPlayer;
     private CriAtomExPlayer bgmCriAtomExPlayer;
     private CriAtomEx.CueInfo[] cueInfos;
     private CriAtomExAcb criAtomExAcb;
-    
+
 
     //再生したサウンドを保持しておく
     //private Dictionary<int, CriAtomSource> sounds = new Dictionary<int, CriAtomSource>();
-    
+
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
-            
+
             //生成
             criAtomExPlayer = new CriAtomExPlayer();
             bgmCriAtomExPlayer = new CriAtomExPlayer();
@@ -35,21 +35,22 @@ public class CuePlay : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
-        player =  GameObject.FindGameObjectWithTag("Player");
+
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     IEnumerator Start()
     {
         //キューシートファイルのロード待ち
-        while (CriAtom.CueSheetsAreLoading) {
+        while (CriAtom.CueSheetsAreLoading)
+        {
             yield return null;
         }
-        
+
         //Cueの情報を取得
         criAtomExAcb = CriAtom.GetAcb("CueSheet_0");
         cueInfos = criAtomExAcb.GetCueInfoList();
-        
+
         //タイトルのBGMを再生する
         PlayBGM("BGM_Title");
     }
@@ -71,7 +72,7 @@ public class CuePlay : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// BGM再生
     /// </summary>
@@ -102,7 +103,7 @@ public class CuePlay : MonoBehaviour
         bgmCriAtomExPlayer.Stop();
     }
 
-    
+
     //ここから下はＣＲＩの実装
     //なぜか、ロボットのＳＥが再生されない
     //ＣＲＩは一部だけに使用する
@@ -118,18 +119,18 @@ public class CuePlay : MonoBehaviour
             Debug.Log(obstacle.name);
             return;
         }
-        
+
         //障害物とプレイヤーの距離が鳴らす範囲外なら処理をしない
-        var distance =  Vector3.Distance(obstacle.transform.position, player.transform.position);
-        if(distance > minDistance) return;
-        
+        var distance = Vector3.Distance(obstacle.transform.position, player.transform.position);
+        if (distance > minDistance) return;
+
         foreach (var cue in cueInfos)
         {
             //名前と一致したら
             if (cue.name == name)
             {
                 var id = obstacle.transform.GetInstanceID();
-                
+
                 /*
                 //プレイヤーを生成し、SEを再生する
                 var cri = new CriAtomExPlayer();
@@ -174,7 +175,7 @@ public class CuePlay : MonoBehaviour
     {
         var distance = Vector3.Distance(obstacle.transform.position, player.transform.position);
         if (distance < minDistance) return true;
-        
+
         return false;
     }
 }
