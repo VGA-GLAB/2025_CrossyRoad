@@ -6,6 +6,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform _cameraFollowTransform;
     [SerializeField] private Transform _playerPosition;
     [SerializeField] private PlayerMove _playerMove;
+    [SerializeField] private ResaltManager _resaltManager;
     [SerializeField] private float _cameraZUpdateSpeed = 0.5f;
     [SerializeField] private Button _retryButton;
     private GameManager _gameManager;
@@ -32,6 +33,7 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
+        if(_resaltManager.IsResetting) return;
         if (_playerMove != null && _playerMove.IsDead) return;
         _camTargetPos = _cameraFollowTransform.position;
         if (_camTargetPos.z < _playerPosition.position.z)

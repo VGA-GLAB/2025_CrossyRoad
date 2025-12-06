@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class ResaltManager : MonoBehaviour
 {
     public static ResaltManager instance;
+    public bool IsResetting { get; private set; }   
 
     [Header("�v���C���[�����񂾂Ƃ̃C�x���g�p")]
     [SerializeField] private PlayerMove _playerMove;
@@ -75,5 +76,15 @@ public class ResaltManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(false);
         ScoreManager.instance.ResetScore();
         GameManager.instance.ChangeGameState(GameState.InGame);
+    }
+
+    public void BeginReset()
+    {
+        IsResetting = true;
+    }
+
+    public void EndReset()
+    {
+        IsResetting = false;
     }
 }

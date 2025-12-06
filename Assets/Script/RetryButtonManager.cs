@@ -8,9 +8,11 @@ public class RetryButtonManager : MonoBehaviour
 
     public void OnRetryButtonPressed()
     {
+        _resaltManager.BeginReset();
         _playerMove.ResetPosition();
         _cameraManager.ResetCameraPosition();
         _resaltManager.RetryGame();
+        _resaltManager.EndReset();
     }
 
 }

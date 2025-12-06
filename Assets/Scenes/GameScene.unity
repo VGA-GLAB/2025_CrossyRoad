@@ -636,6 +636,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 983176874022830345, guid: d16b0081362ca184cae331834696c8be, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 983176874022830345, guid: d16b0081362ca184cae331834696c8be, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 456754180, guid: 62ca5a32e21a9464e9f6ab0b60ae244b, type: 3}
     - target: {fileID: 1254290276985457156, guid: d16b0081362ca184cae331834696c8be, type: 3}
       propertyPath: m_fontSize
       value: 497.2
@@ -680,6 +688,14 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2930068991340058697, guid: d16b0081362ca184cae331834696c8be, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2930068991340058697, guid: d16b0081362ca184cae331834696c8be, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 456754180, guid: 62ca5a32e21a9464e9f6ab0b60ae244b, type: 3}
     - target: {fileID: 4240658865993063518, guid: d16b0081362ca184cae331834696c8be, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -139.5
@@ -931,7 +947,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Retry
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1961,6 +1977,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1996557028}
     - target: {fileID: 7247538972314250731, guid: d46b7162874bb4c42b6864e32f384526, type: 3}
+      propertyPath: _resaltManager
+      value: 
+      objectReference: {fileID: 165905679}
+    - target: {fileID: 7247538972314250731, guid: d46b7162874bb4c42b6864e32f384526, type: 3}
       propertyPath: _playerPosition
       value: 
       objectReference: {fileID: 31471310}
@@ -2696,8 +2716,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -1351471197, guid: 99683b749d8ba934f9d6f1dbe75e1c88, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
