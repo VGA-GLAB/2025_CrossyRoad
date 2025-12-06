@@ -277,6 +277,7 @@ public class PlayerMove : MonoBehaviour
 
     public void ResetPosition()
     {
+        transform.DOKill();
         _currentGridPos = _startCell;
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
         _targetWorldPos.y = _fixedY;
