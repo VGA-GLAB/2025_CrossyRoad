@@ -26,7 +26,8 @@ public class ClickUI : MonoBehaviour, IPointerClickHandler
                 this.gameObject.transform.DOScale(originalScale, scaleDuration).
                 OnComplete(Click);
             });
-        SoundManager.instance.PlaySE("クリック");
+        //SoundManager.instance.PlaySE("クリック");
+        CuePlay.instance.PlaySE("SE_Select");
     }
 
     void Click()
