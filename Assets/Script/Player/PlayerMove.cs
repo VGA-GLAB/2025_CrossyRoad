@@ -64,10 +64,6 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
-        if (_retryButton != null)
-        {
-            _retryButton.onClick.AddListener(ResetPosition);
-        }
     }
 
     private void Start()
@@ -279,8 +275,9 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void ResetPosition()
+    public void ResetPosition()
     {
+        transform.DOKill();
         _currentGridPos = _startCell;
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
         _targetWorldPos.y = _fixedY;
