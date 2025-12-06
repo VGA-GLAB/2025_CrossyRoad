@@ -18,6 +18,7 @@ public class DynamicObstacleMover : MonoBehaviour
     private bool initialized = false;
 
     private ObjectType objectType; // 自身のオブジェクトタイプを保持
+    public ObjectType ObjectType => objectType;
     private bool isSound; // SE再生済みかどうか
 
     /// <summary>
@@ -66,11 +67,13 @@ public class DynamicObstacleMover : MonoBehaviour
     /// </summary>
     private void SoundType()
     {
-        if (isSound)
+        if (isSound) //サウンド再生中
         {
+            //範囲外になったら、SEを停止する
             if (SoundManager.instance.PlayerDistance(this.gameObject))
             {
                 SoundManager.instance.ObstacleStopSE(this.gameObject);
+                //CuePlay.instance.ObstacleStopSE(this.gameObject);
             }
             return;
         }
@@ -79,18 +82,24 @@ public class DynamicObstacleMover : MonoBehaviour
         {
             case ObjectType.EnemyRobot:
                 SoundManager.instance.ObstaclePlaySE("敵ロボットの移動", this.gameObject);
+                //CuePlay.instance.ObstaclePlaySE("robott", this.gameObject);
+                Debug.Log("ロボット再生");
                 isSound = true;
                 break;
 
             case ObjectType.Saw:
                 SoundManager.instance.ObstaclePlaySE("ノコギリ移動", this.gameObject);
+                //CuePlay.instance.ObstaclePlaySE("SE_Saw_Move", this.gameObject);
                 isSound = true;
                 break;
         }
     }
-
+    
+    /*　画面の比率を9:16　スマホみたくした結果、直ぐに画面外に出てSEがならないため使用を辞める
     private void OnDestroy()
     {
         SoundManager.instance.ObstacleStopSE(this.gameObject);
+        //CuePlay.instance.ObstacleStopSE(this.gameObject);
     }
+    */
 }

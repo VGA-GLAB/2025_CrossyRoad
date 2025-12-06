@@ -8,8 +8,6 @@ public class TitleState : IGameState
 
         GameManager.instance.inGameUIManager.TitleUI.SetActive(true);
         GameManager.instance.UIEffect.TitleFadeIn();
-        
-        
     }
 
     public void Exit()
@@ -25,6 +23,8 @@ public class TitleState : IGameState
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
         {
             GameManager.instance.ChangeGameState(GameState.InGame);
+            CuePlay.instance.StopBGM();
+            CuePlay.instance.PlayBGM("BGM_Ingame");
         }
     }
 }

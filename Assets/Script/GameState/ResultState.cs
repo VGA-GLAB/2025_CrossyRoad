@@ -9,7 +9,8 @@ public class ResultState : IGameState
         GameManager.instance.inGameUIManager.ResultUI.SetActive(true);
         GameManager.instance.UIEffect.ButtonAppearanceAnimation();
         
-        SoundManager.instance.PlayBGM("リザルト");
+        //SoundManager.instance.PlayBGM("リザルト");
+        CuePlay.instance.PlayBGM("BGM_Result");
     }
 
     public void Exit()
@@ -18,7 +19,9 @@ public class ResultState : IGameState
 
         GameManager.instance.inGameUIManager.ResultUI?.SetActive(false);
         
-        SoundManager.instance.StopBGM();
+        //SoundManager.instance.StopBGM();
+        CuePlay.instance.StopBGM();
+        CuePlay.instance.PlayBGM("BGM_Title");
     }
 
     public void Key() { }
