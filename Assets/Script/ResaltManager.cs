@@ -61,8 +61,8 @@ public class ResaltManager : MonoBehaviour
         _gameOverText.text = "GAME OVER";
         int max = ScoreManager.instance.MaxScore;
         int current = ScoreManager.instance.CurrentScore;
-        _maxScoreText.text = "最高スコア :" + max;
-        _currentScoreText.text = "今回のスコア :" + current;
+        _maxScoreText.text = "MAX_SCORE :" + max;
+        _currentScoreText.text = "SCORE :" + current;
     }
 
     private void RetryGame()
