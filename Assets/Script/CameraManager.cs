@@ -45,12 +45,6 @@ public class CameraManager : MonoBehaviour
             _camera.transform.position = _playerPosition.position + new Vector3(0f, 12f, -6f);
             _camera.transform.LookAt(_playerPosition); // 必要なら注視方向も設定
         }
-        Debug.Log($"[Start] Player position: {_playerPosition.position}");
-        Debug.Log($"[Start] Camera position: {_camera.transform.position}");
-        var vp = Camera.main.WorldToViewportPoint(_playerPosition.position);
-        Debug.Log($"[Start] Viewport: {vp}, IsInScreen={IsInScrean(Camera.main, _playerPosition.position)}");
-        Debug.Log($"[Start] CameraFollowTransform position: {_cameraFollowTransform.position}");
-
     }
 
     private void Update()
@@ -77,10 +71,6 @@ public class CameraManager : MonoBehaviour
         //画面外に出たら死亡処理
         if (!IsInScrean(Camera.main, _playerPosition.position))
         {
-            var vp = Camera.main.WorldToViewportPoint(_playerPosition.position);
-            Debug.Log($"Viewport: {vp}, IsInScreen={IsInScrean(Camera.main, _playerPosition.position)}");
-
-
             _playerMove.OnPlayerDeathAction();
         }
     }
