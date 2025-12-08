@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// グリッド全体を管理するクラス。
@@ -19,6 +17,7 @@ public class GridManager : MonoBehaviour
     //==================================================
     // 1セルのワールドサイズ。
     [SerializeField] private float cellSize = 1.0f;
+    public float CellSize => cellSize;
 
     // 幅（左右方向）の描画範囲
     [SerializeField] private int renderWidth = 10;
@@ -205,6 +204,64 @@ public class GridManager : MonoBehaviour
         float z = gridPos.Z * cellSize + (cellSize / 2f);
         return new Vector3(x, y, z);
     }
+
+    /// <summary>
+    /// マップ左端のワールド座標Xを返す。
+    /// 注意: 左端マスの「中央座標」を返す。左辺ではない。
+    /// </summary>
+    public float GetMapLeftX()
+    {
+        return cellSize / 2f;
+    }
+
+    /// <summary>
+    /// マップ右端のワールド座標Xを返す。
+    /// 注意: 右端マスの「中央座標」を返す。右辺ではない。
+    /// </summary>
+    public float GetMapRightX()
+    {
+        return (gridWidth - 1) * cellSize + (cellSize / 2f);
+    }
+
+    /// <summary>
+    /// マップ左端のワールド座標Xを返す。
+    /// 注意: 左端マスの「左辺座標」を返す。中央ではない。
+    /// </summary>
+    public float GetMapLeftBoundaryX()
+    {
+        return 0f;
+    }
+
+    /// <summary>
+    /// マップ右端のワールド座標Xを返す。
+    /// 注意: 右端マスの「右辺座標」を返す。中央ではない。
+    /// </summary>
+    public float GetMapRightBoundaryX()
+    {
+        return gridWidth * cellSize;
+    }
+
+    /// <summary>
+    /// マップ中央のワールド座標Xを返す。
+    /// 注意: 中央マスの「中央座標」を返す。境界ではない。
+    /// </summary>
+    public float GetMapCenterX()
+    {
+        // 中央セルのインデックスを算出（偶数幅の場合は中央寄りのセル）
+        int centerIndex = gridWidth / 2;
+        return centerIndex * cellSize + (cellSize / 2f);
+    }
+
+    /// <summary>
+    /// マップ中央のセル座標Xを返す。
+    /// 注意: セルインデックスを返す。ワールド座標ではない。
+    /// </summary>
+    public int GetMapCenterCellX()
+    {
+        // 幅が偶数の場合は右寄りの中央セルを返す
+        return gridWidth / 2;
+    }
+
 
     //==================================================
     // 2. 占有管理系（静的障害物用）
@@ -536,14 +593,14 @@ public class GridManager : MonoBehaviour
             if (config is BridgeSpawnerConfig bridgeConfig)
             {
                 var bridgeSpawn = instance.GetComponent<BridgeSpawn>();
-                bridgeSpawn?.Initialize(bridgeConfig);
+                bridgeSpawn?.Initialize(bridgeConfig, GetMapLeftBoundaryX(), GetMapRightBoundaryX());
             }
 
             // 動的障害物のスポナー
             else if (config is DynamicObstaclesSpawnerConfig dynamicConfig)
             {
                 var dynamicSpawner = instance.GetComponent<DynamicObstaclesSpawner>();
-                dynamicSpawner?.Initialize(dynamicConfig);
+                dynamicSpawner?.Initialize(dynamicConfig, GetMapLeftBoundaryX(), GetMapRightBoundaryX());
             }
         }
     }
