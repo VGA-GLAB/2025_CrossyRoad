@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class ResaltManager : MonoBehaviour
 {
     public static ResaltManager instance;
+    public bool IsResetting { get; private set; }   
 
     [Header("�v���C���[�����񂾂Ƃ̃C�x���g�p")]
     [SerializeField] private PlayerMove _playerMove;
@@ -39,8 +40,6 @@ public class ResaltManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(false);
         _maxScoreText.gameObject.SetActive(false);
         _currentScoreText.gameObject.SetActive(false);
-        if (_retryButton != null)
-            _retryButton.onClick.AddListener(RetryGame);
         _retryButton.gameObject.SetActive(false);
     }
 
@@ -54,20 +53,19 @@ public class ResaltManager : MonoBehaviour
         _inGameCurrentScore.gameObject.SetActive(false);
         _inGameMaxScoreText.gameObject.SetActive(false);
         _gameOverPanel.gameObject.SetActive(true);
+        _gameOverText.gameObject.SetActive(true);
         _scorePanel.gameObject.SetActive(true);
         _maxScoreText.gameObject.SetActive(true);
         _currentScoreText.gameObject.SetActive(true);
-        //_retryButton.gameObject.SetActive(true);
-        _gameOverText.text = "GAME OVER";
+        _retryButton.gameObject.SetActive(true);
         int max = ScoreManager.instance.MaxScore;
         int current = ScoreManager.instance.CurrentScore;
-        _maxScoreText.text = "最高スコア" + "\n" + max;
-        _currentScoreText.text = "今回のスコア" + "\n" + current;
+        _maxScoreText.text = "MaxScore" + "\n" + max;
+        _currentScoreText.text = "Score" + "\n" + current;
     }
 
-    private void RetryGame()
+    public void RetryGame()
     {
-        // UI�����Z�b�g
         _gameOverPanel.SetActive(false);
         _scorePanel.SetActive(false);
         _retryButton.gameObject.SetActive(false);
@@ -75,7 +73,18 @@ public class ResaltManager : MonoBehaviour
         _maxScoreText.gameObject.SetActive(false);
         _inGameCurrentScore.gameObject.SetActive(true);
         _inGameMaxScoreText.gameObject.SetActive(true);
+        _gameOverText.gameObject.SetActive(false);
         ScoreManager.instance.ResetScore();
         GameManager.instance.ChangeGameState(GameState.InGame);
+    }
+
+    public void BeginReset()
+    {
+        IsResetting = true;
+    }
+
+    public void EndReset()
+    {
+        IsResetting = false;
     }
 }

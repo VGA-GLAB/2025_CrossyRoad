@@ -6,6 +6,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform _cameraFollowTransform;
     [SerializeField] private Transform _playerPosition;
     [SerializeField] private PlayerMove _playerMove;
+    [SerializeField] private ResaltManager _resaltManager;
     [SerializeField] private float _cameraZUpdateSpeed = 0.5f;
     [SerializeField] private Button _retryButton;
     private GameManager _gameManager;
@@ -14,10 +15,6 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {
-        if (_retryButton != null)
-        {
-            _retryButton.onClick.AddListener(ResetCameraPosition);
-        }
     }
 
     private void Start()
@@ -36,6 +33,7 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
+        if(_resaltManager.IsResetting) return;
         if (_playerMove != null && _playerMove.IsDead) return;
         _camTargetPos = _cameraFollowTransform.position;
         if (_camTargetPos.z < _playerPosition.position.z)
@@ -54,11 +52,11 @@ public class CameraManager : MonoBehaviour
         //画面外に出たら死亡処理
         if (!IsInScrean(Camera.main, _playerPosition.position))
         {
-            _playerMove.OnPlayerDeathAction();
+            _playerMove.Kill();
         }
     }
 
-    private void ResetCameraPosition()
+    public void ResetCameraPosition()
     {
         //カメラを初期位置にリセット
         _cameraFollowTransform.position = _startPos;
