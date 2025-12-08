@@ -235,10 +235,16 @@ public class PlayerMove : MonoBehaviour
         Vector3 worldMoveDir = _targetWorldPos - transform.position;
         Vector3 step = worldMoveDir.normalized * _moveSpeed * Time.deltaTime;
 
-        if (worldMoveDir.magnitude <= step.magnitude)
+        // MoveTowards を使用することにより、
+        // 目的地に近づき、到達時には transform.position を正確に _targetWorldPos に揃えた値に設定する。
+        // これにより、浮動小数点誤差による移動完了判定の失敗を防ぐ。
+        transform.position = Vector3.MoveTowards(transform.position, _targetWorldPos, _moveSpeed * Time.deltaTime);
+
+        // MoveTowardsしているので(transform.position == _targetWorldPos)が保証されるが、
+        // 念のため距離で判定して安全性をさらに高める
+        if (Vector3.Distance(transform.position, _targetWorldPos) < 0.0001f)
         {
             // 移動完了
-            transform.position = _targetWorldPos;
             IsMoving = false;
             isJumping = false;
             // 到達したグリッド座標を更新
