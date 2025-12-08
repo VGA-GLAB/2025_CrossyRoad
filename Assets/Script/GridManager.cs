@@ -17,6 +17,7 @@ public class GridManager : MonoBehaviour
     //==================================================
     // 1セルのワールドサイズ。
     [SerializeField] private float cellSize = 1.0f;
+    public float CellSize => cellSize;
 
     // 幅（左右方向）の描画範囲
     [SerializeField] private int renderWidth = 10;
@@ -239,6 +240,28 @@ public class GridManager : MonoBehaviour
     {
         return gridWidth * cellSize;
     }
+
+    /// <summary>
+    /// マップ中央のワールド座標Xを返す。
+    /// 注意: 中央マスの「中央座標」を返す。境界ではない。
+    /// </summary>
+    public float GetMapCenterX()
+    {
+        // 中央セルのインデックスを算出（偶数幅の場合は中央寄りのセル）
+        int centerIndex = gridWidth / 2;
+        return centerIndex * cellSize + (cellSize / 2f);
+    }
+
+    /// <summary>
+    /// マップ中央のセル座標Xを返す。
+    /// 注意: セルインデックスを返す。ワールド座標ではない。
+    /// </summary>
+    public int GetMapCenterCellX()
+    {
+        // 幅が偶数の場合は右寄りの中央セルを返す
+        return gridWidth / 2;
+    }
+
 
     //==================================================
     // 2. 占有管理系（静的障害物用）

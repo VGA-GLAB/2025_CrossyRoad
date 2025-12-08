@@ -1,8 +1,10 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CameraManager : MonoBehaviour
 {
+    [SerializeField] private CinemachineCamera _camera;
     [SerializeField] private Transform _cameraFollowTransform;
     [SerializeField] private Transform _playerPosition;
     [SerializeField] private PlayerMove _playerMove;
@@ -31,7 +33,24 @@ public class CameraManager : MonoBehaviour
         {
             _gameManager = FindAnyObjectByType<GameManager>();
         }
+        //_startPos = _cameraFollowTransform.position;
         _startPos = _cameraFollowTransform.position;
+        _startPos.x = _playerPosition.position.x;
+        _cameraFollowTransform.position = _startPos;
+
+        if (_camera != null && _playerPosition != null)
+        {
+            // Inspectorで FollowTarget にプレイヤーを設定済みと仮定
+            // 初期位置をコードで明示的に調整
+            _camera.transform.position = _playerPosition.position + new Vector3(0f, 12f, -6f);
+            _camera.transform.LookAt(_playerPosition); // 必要なら注視方向も設定
+        }
+        Debug.Log($"[Start] Player position: {_playerPosition.position}");
+        Debug.Log($"[Start] Camera position: {_camera.transform.position}");
+        var vp = Camera.main.WorldToViewportPoint(_playerPosition.position);
+        Debug.Log($"[Start] Viewport: {vp}, IsInScreen={IsInScrean(Camera.main, _playerPosition.position)}");
+        Debug.Log($"[Start] CameraFollowTransform position: {_cameraFollowTransform.position}");
+
     }
 
     private void Update()
@@ -51,13 +70,20 @@ public class CameraManager : MonoBehaviour
         _camTargetPos.x = _playerPosition.position.x;
         _camTargetPos.y = _playerPosition.position.y;
         _cameraFollowTransform.position = _camTargetPos;
+    }
+
+    private void LateUpdate()
+    {
         //画面外に出たら死亡処理
         if (!IsInScrean(Camera.main, _playerPosition.position))
         {
+            var vp = Camera.main.WorldToViewportPoint(_playerPosition.position);
+            Debug.Log($"Viewport: {vp}, IsInScreen={IsInScrean(Camera.main, _playerPosition.position)}");
+
+
             _playerMove.OnPlayerDeathAction();
         }
     }
-
     private void ResetCameraPosition()
     {
         //カメラを初期位置にリセット

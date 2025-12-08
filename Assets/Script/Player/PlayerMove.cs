@@ -74,9 +74,12 @@ public class PlayerMove : MonoBehaviour
     {
         _gridManager = FindAnyObjectByType<GridManager>();
         _gridManager.RegisterPlayer(gameObject);
-        // 初期位置をグリッド座標に変換し、少し前方にずらしてスタート
-        _currentGridPos = _gridManager.WorldToGrid(transform.position);
-        _currentGridPos += new Vector3Int(2, 0, 2);
+        // 初期位置をマップ中央Xに変更
+        _currentGridPos = new Vector3Int(
+             _gridManager.GetMapCenterCellX(),      // マップ中央セルのX座標
+            0,
+            1       // マップ外枠マスを考慮した位置
+        );
         // ワールド座標へ変換して反映
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
         _targetWorldPos.y = _fixedY;
