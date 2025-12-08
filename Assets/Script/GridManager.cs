@@ -204,6 +204,42 @@ public class GridManager : MonoBehaviour
         return new Vector3(x, y, z);
     }
 
+    /// <summary>
+    /// マップ左端のワールド座標Xを返す。
+    /// 注意: 左端マスの「中央座標」を返す。左辺ではない。
+    /// </summary>
+    public float GetMapLeftX()
+    {
+        return cellSize / 2f;
+    }
+
+    /// <summary>
+    /// マップ右端のワールド座標Xを返す。
+    /// 注意: 右端マスの「中央座標」を返す。右辺ではない。
+    /// </summary>
+    public float GetMapRightX()
+    {
+        return (gridWidth - 1) * cellSize + (cellSize / 2f);
+    }
+
+    /// <summary>
+    /// マップ左端のワールド座標Xを返す。
+    /// 注意: 左端マスの「左辺座標」を返す。中央ではない。
+    /// </summary>
+    public float GetMapLeftBoundaryX()
+    {
+        return 0f;
+    }
+
+    /// <summary>
+    /// マップ右端のワールド座標Xを返す。
+    /// 注意: 右端マスの「右辺座標」を返す。中央ではない。
+    /// </summary>
+    public float GetMapRightBoundaryX()
+    {
+        return gridWidth * cellSize;
+    }
+
     //==================================================
     // 2. 占有管理系（静的障害物用）
     //==================================================
@@ -534,14 +570,14 @@ public class GridManager : MonoBehaviour
             if (config is BridgeSpawnerConfig bridgeConfig)
             {
                 var bridgeSpawn = instance.GetComponent<BridgeSpawn>();
-                bridgeSpawn?.Initialize(bridgeConfig);
+                bridgeSpawn?.Initialize(bridgeConfig, GetMapLeftBoundaryX(), GetMapRightBoundaryX());
             }
 
             // 動的障害物のスポナー
             else if (config is DynamicObstaclesSpawnerConfig dynamicConfig)
             {
                 var dynamicSpawner = instance.GetComponent<DynamicObstaclesSpawner>();
-                dynamicSpawner?.Initialize(dynamicConfig);
+                dynamicSpawner?.Initialize(dynamicConfig, GetMapLeftBoundaryX(), GetMapRightBoundaryX());
             }
         }
     }

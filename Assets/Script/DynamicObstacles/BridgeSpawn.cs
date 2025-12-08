@@ -14,12 +14,17 @@ public class BridgeSpawn : MonoBehaviour
     // 次回スポーン予定時刻（絶対時間）
     private float nextSpawnTime;
 
+    // マップ左右端の座標
+    private float mapLeftBoundaryX;
+    private float mapRightBoundaryX;
+
     /// <summary>
     /// 初期化メソッド
     /// ・BridgeSpawnerConfigの反映
+    /// ・マップ左右端座標の保持
     /// ・初回スポーンをスケジューリング
     /// </summary>
-    public void Initialize(BridgeSpawnerConfig config)
+    public void Initialize(BridgeSpawnerConfig config, float mapLeftBoundaryX, float mapRightBoundaryX)
     {
 
         // BridgeSpawnerConfig 値の反映
@@ -33,6 +38,10 @@ public class BridgeSpawn : MonoBehaviour
             // 先頭の要素を bridgeObj に設定
             bridgeObj = config.SpawnTargetPrefabs[0];
         }
+
+        // マップ左右端の座標を保持
+        this.mapLeftBoundaryX = mapLeftBoundaryX;
+        this.mapRightBoundaryX = mapRightBoundaryX;
 
         // 初回スポーンをスケジューリング
         SetNextSpawnTime();
@@ -87,7 +96,7 @@ public class BridgeSpawn : MonoBehaviour
         var mover = instance.GetComponent<MovingBridge>();
         if (mover != null)
         {
-            mover.Initialize(moveRight);
+            mover.Initialize(moveRight, mapLeftBoundaryX, mapRightBoundaryX);
         }
 
         // 次回のスポーン予定時刻を設定

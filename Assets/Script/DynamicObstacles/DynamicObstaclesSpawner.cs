@@ -31,13 +31,17 @@ public class DynamicObstaclesSpawner : MonoBehaviour
     // 次回スポーン予定時刻（絶対時間）
     private float nextSpawnTime;
 
+    // マップ左右端の座標
+    private float mapLeftBoundaryX;
+    private float mapRightBoundaryX;
+
     /// <summary>
     /// 初期化メソッド
     /// ScriptableObject → RuntimeConfig で設定された値を反映する
     /// メンバー変数を初期化する
     /// </summary>
     // GridManager から呼ばれる
-    public void Initialize(DynamicObstaclesSpawnerConfig config)
+    public void Initialize(DynamicObstaclesSpawnerConfig config, float mapLeftBoundaryX, float mapRightBoundaryX)
     {
         // ScriptableObject → RuntimeConfig で設定された値を反映
         spawnTargetPrefabs = config.SpawnTargetPrefabs;
@@ -51,6 +55,10 @@ public class DynamicObstaclesSpawner : MonoBehaviour
         lifeTime = config.LifeTime;
         
         objectType = config.ObjectType;
+
+        // マップ左右端の座標を保持
+        this.mapLeftBoundaryX = mapLeftBoundaryX;
+        this.mapRightBoundaryX = mapRightBoundaryX;
 
         // 初回スポーンタイマーをリセット
         SetNextSpawnTime();
@@ -151,7 +159,7 @@ public class DynamicObstaclesSpawner : MonoBehaviour
             DynamicObstacleMover mover = instance.GetComponent<DynamicObstacleMover>();
             if (mover != null)
             {
-                mover.Initialize(moveSpeed, moveRight, objectType);
+                mover.Initialize(moveSpeed, moveRight, mapLeftBoundaryX, mapRightBoundaryX, objectType);
             }
 
             // 一定時間後に自動破棄

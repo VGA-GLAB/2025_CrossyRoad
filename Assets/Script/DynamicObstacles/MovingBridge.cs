@@ -14,12 +14,22 @@ public class MovingBridge : MonoBehaviour
 
     private Rigidbody rb;
 
+    // マップ左右端の座標
+    private float mapLeftBoundaryX;
+    private float mapRightBoundaryX;
+
+
     /// <summary>
     /// スポナーから呼ばれる初期化メソッド。
     /// </summary>
-    public void Initialize(bool moveRight)
+    public void Initialize(bool moveRight, float mapLeftBoundaryX, float mapRightBoundaryX)
     {
+        // 進行方向の左右を保持
         moveDir = moveRight ? Vector3.right : Vector3.left;
+
+        // マップ左右端の座標を保持
+        this.mapLeftBoundaryX = mapLeftBoundaryX;
+        this.mapRightBoundaryX = mapRightBoundaryX;
     }
 
     void Start()
@@ -38,6 +48,12 @@ public class MovingBridge : MonoBehaviour
         if(destoryTimer >= destoryTime)
         {
             Destroy(this.gameObject);
+        }
+
+        // マップ範囲外に移動したら、橋を消す
+        if (transform.position.x < mapLeftBoundaryX || transform.position.x > mapRightBoundaryX)
+        {
+            Destroy(gameObject);
         }
     }
 
