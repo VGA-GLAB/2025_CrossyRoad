@@ -233,8 +233,7 @@ public class PlayerMove : MonoBehaviour
 
         // --- 通常の移動処理 ---
         Vector3 worldMoveDir = _targetWorldPos - transform.position;
-        Vector3 step = worldMoveDir.normalized * _moveSpeed * Time.deltaTime;
-
+        
         // MoveTowards を使用することにより、
         // 目的地に近づき、到達時には transform.position を正確に _targetWorldPos に揃えた値に設定する。
         // これにより、浮動小数点誤差による移動完了判定の失敗を防ぐ。
@@ -280,7 +279,6 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            transform.position += step;
             Jumping();
         }
     }
