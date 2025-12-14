@@ -656,11 +656,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46abed59a7349f84b8fabf9919be3a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: {fileID: 2052043745}
+  titleRectTransform: {fileID: 883690277}
   titleImage: {fileID: 1742577959}
-  titlePositonFirst: {x: -20, y: 4, z: 0}
-  titlePositionMiddle: {x: 1.12, y: 4, z: 0}
-  titlePositionFinal: {x: 13, y: 4, z: 0}
+  titlePositionFirst: {x: 0, y: 0}
+  titlePositionMiddle: {x: 16, y: 0}
+  titlePositionFinal: {x: 29, y: 0}
   titleDuration: 1
   retryButtonRectTransform: {fileID: 1996557026}
   retryButtonPosition: {x: 0, y: -138}
