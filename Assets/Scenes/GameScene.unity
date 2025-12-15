@@ -656,11 +656,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46abed59a7349f84b8fabf9919be3a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: {fileID: 2052043745}
+  titleRectTransform: {fileID: 883690277}
   titleImage: {fileID: 1742577959}
-  titlePositonFirst: {x: -20, y: 4, z: 0}
-  titlePositionMiddle: {x: 1.12, y: 4, z: 0}
-  titlePositionFinal: {x: 13, y: 4, z: 0}
+  titlePositionFirst: {x: 0, y: 0}
+  titlePositionMiddle: {x: 16, y: 0}
+  titlePositionFinal: {x: 29, y: 0}
   titleDuration: 1
   retryButtonRectTransform: {fileID: 1996557026}
   retryButtonPosition: {x: 0, y: -138}
@@ -750,8 +750,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u30EA\u30C8\u30E9\u30A4"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d883b91bc44be4c4ab32e35eaa878748, type: 2}
-  m_sharedMaterial: {fileID: -8751711424299613078, guid: d883b91bc44be4c4ab32e35eaa878748, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -832,6 +832,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1363246752217724210, guid: f9fe3511e02ae894084d884adf685881, type: 3}
   m_PrefabInstance: {fileID: 3690072634630110574}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &724605208 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8074909640283641114, guid: b2e6e25181dfe0a42ada094ce538151b, type: 3}
+  m_PrefabInstance: {fileID: 1606583960}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &863729387
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1770,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7247538972314250731, guid: d46b7162874bb4c42b6864e32f384526, type: 3}
+      propertyPath: _camera
+      value: 
+      objectReference: {fileID: 724605208}
+    - target: {fileID: 7247538972314250731, guid: d46b7162874bb4c42b6864e32f384526, type: 3}
       propertyPath: _playerMove
       value: 
       objectReference: {fileID: 31471305}
@@ -2097,8 +2112,8 @@ Camera:
   m_GameObject: {fileID: 1851948438}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

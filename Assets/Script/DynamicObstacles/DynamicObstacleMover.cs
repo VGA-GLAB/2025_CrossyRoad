@@ -21,10 +21,14 @@ public class DynamicObstacleMover : MonoBehaviour
     public ObjectType ObjectType => objectType;
     private bool isSound; // SE再生済みかどうか
 
+    // マップ左右端の座標
+    private float mapLeftBoundaryX;
+    private float mapRightBoundaryX;
+
     /// <summary>
     /// スポナーから呼ばれる初期化メソッド。
     /// </summary>
-    public void Initialize(float speed, bool moveRight, ObjectType type)
+    public void Initialize(float speed, bool moveRight, float mapLeftBoundaryX, float mapRightBoundaryX, ObjectType type)
     {
         moveSpeed = speed;
         moveDir = moveRight ? Vector3.right : Vector3.left;
@@ -43,6 +47,10 @@ public class DynamicObstacleMover : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
 
+        // マップ左右端の座標を保持
+        this.mapLeftBoundaryX = mapLeftBoundaryX;
+        this.mapRightBoundaryX = mapRightBoundaryX;
+
         // Animator の初期化（必要なら使用）
         // (Animator で移動ループを再生するための準備。プログラム側で制御する想定)
         //animator = GetComponent<Animator>();
@@ -60,6 +68,12 @@ public class DynamicObstacleMover : MonoBehaviour
         // 毎フレーム移動速度に応じて移動
         transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
         SoundType();
+
+        // マップ範囲外に移動したら削除
+        if (transform.position.x < mapLeftBoundaryX || transform.position.x > mapRightBoundaryX)
+        {
+            Destroy(gameObject);
+        }
     }
 
     /// <summary>

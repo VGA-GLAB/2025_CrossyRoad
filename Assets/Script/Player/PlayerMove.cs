@@ -74,9 +74,12 @@ public class PlayerMove : MonoBehaviour
     {
         _gridManager = FindAnyObjectByType<GridManager>();
         _gridManager.RegisterPlayer(gameObject);
-        // 初期位置をグリッド座標に変換し、少し前方にずらしてスタート
-        _currentGridPos = _gridManager.WorldToGrid(transform.position);
-        _currentGridPos += new Vector3Int(2, 0, 2);
+        // 初期位置をマップ中央Xに変更
+        _currentGridPos = new Vector3Int(
+             _gridManager.GetMapCenterCellX(),      // マップ中央セルのX座標
+            0,
+            1       // マップ外枠マスを考慮した位置
+        );
         // ワールド座標へ変換して反映
         _targetWorldPos = _gridManager.GridToWorld(_currentGridPos);
         _targetWorldPos.y = _fixedY;
@@ -233,12 +236,17 @@ public class PlayerMove : MonoBehaviour
 
         // --- 通常の移動処理 ---
         Vector3 worldMoveDir = _targetWorldPos - transform.position;
-        Vector3 step = worldMoveDir.normalized * _moveSpeed * Time.deltaTime;
+        
+        // MoveTowards を使用することにより、
+        // 目的地に近づき、到達時には transform.position を正確に _targetWorldPos に揃えた値に設定する。
+        // これにより、浮動小数点誤差による移動完了判定の失敗を防ぐ。
+        transform.position = Vector3.MoveTowards(transform.position, _targetWorldPos, _moveSpeed * Time.deltaTime);
 
-        if (worldMoveDir.magnitude <= step.magnitude)
+        // MoveTowardsしているので(transform.position == _targetWorldPos)が保証されるが、
+        // 念のため距離で判定して安全性をさらに高める
+        if (Vector3.Distance(transform.position, _targetWorldPos) < 0.0001f)
         {
             // 移動完了
-            transform.position = _targetWorldPos;
             IsMoving = false;
             isJumping = false;
             // 到達したグリッド座標を更新
@@ -274,7 +282,6 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            transform.position += step;
             Jumping();
         }
     }

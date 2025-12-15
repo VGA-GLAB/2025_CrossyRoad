@@ -5,13 +5,13 @@ using UnityEngine.UI;
 public class UIEffect : MonoBehaviour
 {
     [Header("タイトル")]
-    [SerializeField] GameObject title;
+    [SerializeField] private RectTransform titleRectTransform;
     [Header("タイトル背景")]
     [SerializeField] Image titleImage;
     [Header("各位置")]
-    [SerializeField] Vector3 titlePositonFirst;
-    [SerializeField] Vector3 titlePositionMiddle;
-    [SerializeField] Vector3 titlePositionFinal;
+    [SerializeField] Vector2 titlePositionFirst;
+    [SerializeField] Vector2 titlePositionMiddle;
+    [SerializeField] Vector2 titlePositionFinal;
     [Header("演出時間")]
     [SerializeField] float titleDuration;
 
@@ -24,18 +24,27 @@ public class UIEffect : MonoBehaviour
 
     public void TitleFadeIn()
     {
-        title.transform.DOMove(titlePositionMiddle, titleDuration).SetEase(Ease.InOutSine);
-        titleImage.DOFade(1, titleDuration);
+        titleRectTransform.anchoredPosition = titlePositionFirst;
+
+        titleRectTransform
+            .DOAnchorPos(titlePositionMiddle, titleDuration)
+            .SetEase(Ease.InOutSine);
+
+        titleImage.DOFade(1f, titleDuration);
     }
 
     public void TitleFadeOut()
     {
-        titleImage.DOFade(0, titleDuration);
-        title.transform.DOMove(titlePositionFinal, titleDuration).SetEase(Ease.InOutSine).
-            OnComplete(() =>
+        titleImage.DOFade(0f, titleDuration);
+
+        titleRectTransform
+            .DOAnchorPos(titlePositionFinal, titleDuration)
+            .SetEase(Ease.InOutSine)
+            .OnComplete(() =>
             {
                 GameManager.instance.inGameUIManager.TitleUI.SetActive(false);
-                title.transform.position = titlePositonFirst;
+                // 次回用に初期ローカル位置へ戻す
+                titleRectTransform.anchoredPosition = titlePositionFirst;
             });
     }
 
